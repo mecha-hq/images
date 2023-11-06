@@ -1,0 +1,6 @@
+oci-image/
+packages/
+reports/
+sboms/
+oci-image.tar
+.envrc
