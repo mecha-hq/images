@@ -1,44 +1,76 @@
-# check-variable-%: Check if the variable is defined.
+.PHONY: check-variable-% image-kind
+
 check-variable-%:
 	@[[ "${${*}}" ]] || (echo '*** Please define variable `${*}` ***' && exit 1)
 
-.PHONY: keygen melange apko docker-load
+image-kind: check-variable-IMAGE
+	@find . -name "${IMAGE}" -type d | cut -d '/' -f -2
+
+.PHONY: keygen melange apko docker-load clean clean-all run
 
 keygen:
 	@docker run --rm -v $${PWD}:/work -w /work cgr.dev/chainguard/melange:latest keygen
 
-melange: check-variable-ARCH check-variable-TOOL
-	@docker run --privileged --rm \
+melange: check-variable-ARCH check-variable-IMAGE
+	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	docker run --privileged --rm \
 		-v $${PWD}:/work -w /work \
 		cgr.dev/chainguard/melange:latest \
 		build --arch=${ARCH} --debug \
 			--signing-key=melange.rsa \
-			--out-dir=${TOOL}/packages \
-			${TOOL}/melange.yaml
+			--out-dir=$${KIND}/${IMAGE}/packages \
+			$${KIND}/${IMAGE}/melange.yaml
 
-apko: check-variable-ARCH check-variable-TOOL
-	@mkdir -p "${TOOL}/sboms"
-	@docker run --rm \
+apko: check-variable-ARCH check-variable-IMAGE
+	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	mkdir -p "$${KIND}/${IMAGE}/sboms" && \
+	docker run --rm \
 		-v $${PWD}:/work -w /work \
 		cgr.dev/chainguard/apko:latest \
 		build --arch=${ARCH} --debug \
 			--keyring-append=melange.rsa.pub \
-			--sbom-path=${TOOL}/sboms \
-			${TOOL}/apko.yaml tenwarp/${TOOL}:latest ${TOOL}/oci-image.tar
+			--sbom-path=$${KIND}/${IMAGE}/sboms \
+			$${KIND}/${IMAGE}/apko.yaml tenwarp/${IMAGE}:latest $${KIND}/${IMAGE}/oci-image.tar
 
-docker-load: check-variable-ARCH check-variable-TOOL
-	@docker load -i ${TOOL}/oci-image.tar
+docker-load: check-variable-IMAGE
+	@if [ -f tools/${IMAGE}/oci-image.tar ]; then docker load -i tools/${IMAGE}/oci-image.tar; fi
+	@if [ -f collections/${IMAGE}/oci-image.tar ]; then docker load -i collections/${IMAGE}/oci-image.tar; fi
 
-.PHONY: dockle grype trivy snyk
+run: check-variable-IMAGE check-variable-ARCH clean melange apko docker-load
+	@docker run --rm -it tenwarp/${IMAGE}:latest-${ARCH}
 
-dockle: check-variable-ARCH check-variable-TOOL
-	@dockle -f json -o "reports/${TOOL}/dockle.json" --debug "tenwarp/${TOOL}:latest-${ARCH}"
+clean: check-variable-IMAGE
+	@find . -path "*/${IMAGE}/*" -name "oci-image.tar" -type f -delete
+	@find . -path "*/${IMAGE}/*" -name "packages" -type d -exec rm -rf {} +
+	@find . -path "*/${IMAGE}/*" -name "sboms" -type d -exec rm -rf {} +
 
-grype: check-variable-ARCH check-variable-TOOL
-	@grype -o json --file "reports/${TOOL}/grype.json" "tenwarp/${TOOL}:latest-${ARCH}" -vv
+clean-all:
+	@find . -name "oci-image.tar" -type f -delete
+	@find . -name "packages" -type d -exec rm -rf {} +
+	@find . -name "sboms" -type d -exec rm -rf {} +
 
-trivy: check-variable-ARCH check-variable-TOOL
-	@trivy image -d -f json -o "reports/${TOOL}/trivy.json" "tenwarp/${TOOL}:latest-${ARCH}"
+.PHONY: dockle grype trivy snyk scan
 
-snyk: check-variable-ARCH check-variable-TOOL
-	@snyk container test -d --json-file-output="reports/${TOOL}/snyk.json" --org=275c6446-f43f-4876-a84d-4c71738b5f7f "tenwarp/${TOOL}:latest-${ARCH}"
+dockle: check-variable-ARCH check-variable-IMAGE
+	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	mkdir -p "$${KIND}/${IMAGE}/reports" && \
+	dockle -f json -o "$${KIND}/${IMAGE}/reports/dockle.json" --debug "tenwarp/${IMAGE}:latest-${ARCH}"
+
+grype: check-variable-ARCH check-variable-IMAGE
+	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	mkdir -p "$${KIND}/${IMAGE}/reports" && \
+	grype -o json --file "$${KIND}/${IMAGE}/reports/grype.json" "tenwarp/${IMAGE}:latest-${ARCH}" -vv
+
+trivy: check-variable-ARCH check-variable-IMAGE
+	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	mkdir -p "$${KIND}/${IMAGE}/reports" && \
+	trivy image -d -f json -o "$${KIND}/${IMAGE}/reports/trivy.json" "tenwarp/${IMAGE}:latest-${ARCH}"
+
+snyk: check-variable-ARCH check-variable-IMAGE check-variable-SNYK_ORG
+	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	mkdir -p "$${KIND}/${IMAGE}/reports" && \
+	snyk container test -d \
+		--org=$${SNYK_ORG} "tenwarp/${IMAGE}:latest-${ARCH}" \
+		--json-file-output="$${KIND}/${IMAGE}/reports/snyk.json"
+
+scan: check-variable-ARCH check-variable-IMAGE dockle grype trivy snyk
