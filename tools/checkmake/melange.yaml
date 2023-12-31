@@ -1,0 +1,31 @@
+package:
+  name: checkmake
+  version: 0.2.2
+  description: mrtazz/checkmake image.
+  target-architecture:
+    - all
+  copyright:
+    - license: MIT
+      paths:
+        - "*"
+  dependencies:
+    runtime: []
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+      - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+    packages:
+      - apk-tools
+      - busybox
+      - go
+
+pipeline:
+  - name: Update registries
+    runs: apk update
+  - name: Install checkmake
+    uses: go/install
+    with:
+      package: github.com/mrtazz/checkmake/cmd/checkmake
+      version: ${{package.version}}

@@ -1,0 +1,35 @@
+package:
+  name: yamllint
+  version: 1.33.0
+  description: adrienverge/yamllint image.
+  target-architecture:
+    - all
+  copyright:
+    - license: MIT
+      paths:
+        - "*"
+  dependencies:
+    runtime:
+      - python3
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+      - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+    packages:
+      - apk-tools
+      - busybox
+      - python3
+      - py3-pip
+
+pipeline:
+  - name: Update registries
+    runs: apk update
+  - name: Install yamllint
+    runs: |
+      pip install yamllint==${{package.version}}
+      mkdir -p ${{targets.destdir}}/usr/lib/python3.11
+      cp -R /usr/lib/python3.11/site-packages/ ${{targets.destdir}}/usr/lib/python3.11/
+      mkdir -p ${{targets.destdir}}/usr/bin
+      cp /usr/bin/yamllint ${{targets.destdir}}/usr/bin/yamllint

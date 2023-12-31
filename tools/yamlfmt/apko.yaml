@@ -1,0 +1,21 @@
+contents:
+  repositories:
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+    - '@local /work/tools/yamlfmt/packages'
+  packages:
+    - yamlfmt@local
+
+accounts:
+  groups:
+    - groupname: yamlfmt
+      gid: 65532
+  users:
+    - username: yamlfmt
+      uid: 65532
+  run-as: yamlfmt
+
+entrypoint:
+  command: /usr/bin/yamlfmt
+
+cmd: --help

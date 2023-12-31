@@ -1,0 +1,20 @@
+contents:
+  repositories:
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+    - '@local /work/tools/file-lint/packages'
+  packages:
+    - busybox
+    - file-lint@local
+
+accounts:
+  groups:
+    - groupname: file-lint
+      gid: 65532
+  users:
+    - username: file-lint
+      uid: 65532
+  run-as: file-lint
+
+entrypoint:
+  command: /usr/bin/usage

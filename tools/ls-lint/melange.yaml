@@ -1,0 +1,30 @@
+package:
+  name: ls-lint
+  version: 2.2.2
+  description: loeffel-io/ls-lint image.
+  target-architecture:
+    - all
+  copyright:
+    - license: MIT
+      paths:
+        - "*"
+  dependencies:
+    runtime:
+      - nodejs-current
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+      - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+    packages:
+      - apk-tools
+      - busybox
+      - nodejs-current
+      - npm
+
+pipeline:
+  - name: Update registries
+    runs: apk update
+  - name: Build NPM Base Image
+    runs: npm install @ls-lint/ls-lint@${{package.version}} -g --prefix "${{targets.destdir}}"

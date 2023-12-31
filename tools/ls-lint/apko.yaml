@@ -1,0 +1,21 @@
+contents:
+  repositories:
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+    - '@local /work/tools/ls-lint/packages'
+  packages:
+    - ls-lint@local
+
+accounts:
+  groups:
+    - groupname: ls-lint
+      gid: 65532
+  users:
+    - username: ls-lint
+      uid: 65532
+  run-as: ls-lint
+
+entrypoint:
+  command: /bin/ls-lint
+
+cmd: --help

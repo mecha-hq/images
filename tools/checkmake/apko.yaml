@@ -1,0 +1,21 @@
+contents:
+  repositories:
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+    - '@local /work/tools/checkmake/packages'
+  packages:
+    - checkmake@local
+
+accounts:
+  groups:
+    - groupname: checkmake
+      gid: 65532
+  users:
+    - username: checkmake
+      uid: 65532
+  run-as: checkmake
+
+entrypoint:
+  command: /usr/bin/checkmake
+
+cmd: --help

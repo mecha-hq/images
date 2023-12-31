@@ -1,7 +1,7 @@
 package:
-  name: jsonlint
-  version: 1.6.3
-  description: zaach/jsonlint image.
+  name: yamlfmt
+  version: 0.10.0
+  description: google/yamlfmt image.
   target-architecture:
     - all
   copyright:
@@ -9,8 +9,7 @@ package:
       paths:
         - "*"
   dependencies:
-    runtime:
-      - nodejs-current
+    runtime: []
 
 environment:
   contents:
@@ -18,15 +17,14 @@ environment:
       - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
       - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
     packages:
-      - alpine-baselayout-data
       - apk-tools
-      - ca-certificates-bundle
-      - busybox
-      - nodejs-current
-      - npm
+      - go
 
 pipeline:
   - name: Update registries
     runs: apk update
-  - name: Build NPM Base Image
-    runs: npm install jsonlint@1.6.3 -g --prefix "${{targets.destdir}}"
+  - name: Install yamlfmt
+    uses: go/install
+    with:
+      package: github.com/google/yamlfmt/cmd/yamlfmt
+      version: v${{package.version}}

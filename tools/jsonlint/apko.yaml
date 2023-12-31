@@ -1,0 +1,22 @@
+contents:
+  repositories:
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
+    - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+    - '@local /work/tools/jsonlint/packages'
+  packages:
+    - nodejs-current
+    - jsonlint@local
+
+accounts:
+  groups:
+    - groupname: jsonlint
+      gid: 65532
+  users:
+    - username: jsonlint
+      uid: 65532
+  run-as: jsonlint
+
+entrypoint:
+  command: /bin/jsonlint
+
+cmd: --help

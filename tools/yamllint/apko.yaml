@@ -2,22 +2,20 @@ contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
-    - '@local /work/jsonlint/packages'
+    - '@local /work/tools/yamllint/packages'
   packages:
-    - alpine-baselayout-data
-    - nodejs-current
-    - jsonlint@local
+    - yamllint@local
 
 accounts:
   groups:
-    - groupname: jsonlint
+    - groupname: yamllint
       gid: 65532
   users:
-    - username: jsonlint
+    - username: yamllint
       uid: 65532
-  run-as: jsonlint
+  run-as: yamllint
 
 entrypoint:
-  command: /bin/jsonlint
+  command: /usr/bin/yamllint
 
 cmd: --help
