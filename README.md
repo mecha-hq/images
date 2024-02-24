@@ -1,4 +1,4 @@
-# Tenwarp Images
+# Mecha Images
 
 Collection of secure OCI images for CI/CD pipelines.
 

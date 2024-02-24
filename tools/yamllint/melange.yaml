@@ -15,8 +15,8 @@ package:
 environment:
   contents:
     repositories:
-      - https://dl-cdn.alpinelinux.org/alpine/v3.18/main
-      - https://dl-cdn.alpinelinux.org/alpine/v3.18/community
+      - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
+      - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
     packages:
       - apk-tools
       - busybox
@@ -28,8 +28,10 @@ pipeline:
     runs: apk update
   - name: Install yamllint
     runs: |
+      python3 -m venv /opt/yamllint
+      . /opt/yamllint/bin/activate
       pip install yamllint==${{package.version}}
       mkdir -p ${{targets.destdir}}/usr/lib/python3.11
       cp -R /usr/lib/python3.11/site-packages/ ${{targets.destdir}}/usr/lib/python3.11/
       mkdir -p ${{targets.destdir}}/usr/bin
-      cp /usr/bin/yamllint ${{targets.destdir}}/usr/bin/yamllint
+      cp /opt/yamllint/bin/yamllint ${{targets.destdir}}/usr/bin/yamllint

@@ -1,4 +1,7 @@
+apko 0.13.2
 dockle 0.4.13
-grype 0.73.5
-snyk 1.1266.0
-trivy 0.48.1
+golang 1.22.0
+grype 0.74.2
+melange 0.6.1
+snyk 1.1274.0
+trivy 0.48.3
