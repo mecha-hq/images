@@ -1,0 +1,49 @@
+name: update file-lint version
+
+scms:
+  images-ci:
+    kind: github
+    spec:
+      user: {{ .github.user }}
+      email: {{ .github.email }}
+      owner: {{ .github.owner }}
+      repository: {{ .github.repository }}
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: {{ .github.username }}
+      branch: main
+
+actions:
+  update-deps:
+    kind: "github/pullrequest"
+    scmid: "images-ci"
+    spec:
+      automerge: false
+      mergemethod: "squash"
+      description: "Update file-lint version"
+      labels:
+        - "dependencies"
+      title: "deps: Update file-lint version"
+
+sources:
+  file-lint:
+    name: Get latest github release version
+    kind: githubrelease
+    spec:
+      owner: "cytopia"
+      repository: "docker-file-lint"
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: {{ .github.username }} 
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: "v"
+
+targets:
+  melange.yaml:
+    name: Bump file-lint version
+    kind: yaml
+    scmid: images-ci
+    sourceid: file-lint
+    spec:
+      key: $.package.version
+      file: tools/file-lint/melange.yaml

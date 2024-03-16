@@ -1,0 +1,42 @@
+name: update ls-lint version
+
+scms:
+  images-ci:
+    kind: github
+    spec:
+      user: {{ .github.user }}
+      email: {{ .github.email }}
+      owner: {{ .github.owner }}
+      repository: {{ .github.repository }}
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: {{ .github.username }}
+      branch: main
+
+actions:
+  update-deps:
+    kind: "github/pullrequest"
+    scmid: "images-ci"
+    spec:
+      automerge: false
+      mergemethod: "squash"
+      description: "Update ls-lint version"
+      labels:
+        - "dependencies"
+      title: "deps: Update ls-lint version"
+
+sources:
+  ls-lint:
+    name: Get latest version from npm registry
+    kind: npm
+    spec: 
+      name: "@ls-lint/ls-lint"
+
+targets:
+  melange.yaml:
+    name: Bump ls-lint version
+    kind: yaml
+    scmid: images-ci
+    sourceid: ls-lint
+    spec:
+      key: $.package.version
+      file: tools/ls-lint/melange.yaml
