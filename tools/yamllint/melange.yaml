@@ -1,6 +1,6 @@
 package:
   name: yamllint
-  version: 1.33.0
+  version: 1.35.1
   description: adrienverge/yamllint image.
   target-architecture:
     - all
@@ -11,7 +11,6 @@ package:
   dependencies:
     runtime:
       - python3
-
 environment:
   contents:
     repositories:
@@ -22,7 +21,6 @@ environment:
       - busybox
       - python3
       - py3-pip
-
 pipeline:
   - name: Update registries
     runs: apk update
