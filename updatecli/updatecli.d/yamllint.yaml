@@ -1,0 +1,54 @@
+name: update yamllint version
+
+scms:
+  images-ci:
+    kind: github
+    spec:
+      user: {{ .github.user }}
+      email: {{ .github.email }}
+      owner: {{ .github.owner }}
+      repository: {{ .github.repository }}
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: {{ .github.username }}
+      branch: main
+  yamllint:
+    kind: github
+    spec:
+      owner: "adrienverge"
+      repository: "yamllint"
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      branch: master
+
+actions:
+  update-deps:
+    kind: "github/pullrequest"
+    scmid: "images-ci"
+    spec:
+      automerge: false
+      mergemethod: "squash"
+      description: "Update yamllint version"
+      labels:
+        - "dependencies"
+      title: "deps: Update yamllint version"
+
+sources:
+  yamllint:
+    name: Get latest github tag version from yamllint repository
+    kind: gittag
+    scmid: yamllint
+    spec:
+      versionfilter:
+        kind: semver
+        pattern: "v*"
+    transformers:
+      - trimprefix: "v"
+
+targets:
+  melange.yaml:
+    name: Bump yamllint version
+    kind: yaml
+    scmid: images-ci
+    sourceid: yamllint
+    spec:
+      key: $.package.version
+      file: tools/yamllint/melange.yaml

@@ -1,0 +1,42 @@
+name: update jsonlint version
+
+scms:
+  images-ci:
+    kind: github
+    spec:
+      user: {{ .github.user }}
+      email: {{ .github.email }}
+      owner: {{ .github.owner }}
+      repository: {{ .github.repository }}
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: {{ .github.username }}
+      branch: main
+
+actions:
+  update-deps:
+    kind: "github/pullrequest"
+    scmid: "images-ci"
+    spec:
+      automerge: false
+      mergemethod: "squash"
+      description: "Update jsonlint version"
+      labels:
+        - "dependencies"
+      title: "deps: Update jsonlint version"
+
+sources:
+  jsonlint:
+    name: Get latest version from npm registry
+    kind: npm
+    spec: 
+      name: jsonlint
+
+targets:
+  melange.yaml:
+    name: Bump jsonlint version
+    kind: yaml
+    scmid: images-ci
+    sourceid: jsonlint
+    spec:
+      key: $.package.version
+      file: tools/jsonlint/melange.yaml

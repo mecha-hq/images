@@ -1,0 +1,49 @@
+name: update yamlfmt version
+
+scms:
+  images-ci:
+    kind: github
+    spec:
+      user: {{ .github.user }}
+      email: {{ .github.email }}
+      owner: {{ .github.owner }}
+      repository: {{ .github.repository }}
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: {{ .github.username }}
+      branch: main
+
+actions:
+  update-deps:
+    kind: "github/pullrequest"
+    scmid: "images-ci"
+    spec:
+      automerge: false
+      mergemethod: "squash"
+      description: "Update yamlfmt version"
+      labels:
+        - "dependencies"
+      title: "deps: Update yamlfmt version"
+
+sources:
+  yamlfmt:
+    name: Get latest github release version
+    kind: githubrelease
+    spec:
+      owner: "google"
+      repository: "yamlfmt"
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: {{ .github.username }} 
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: "v"
+
+targets:
+  melange.yaml:
+    name: Bump yamlfmt version
+    kind: yaml
+    scmid: images-ci
+    sourceid: yamlfmt
+    spec:
+      key: $.package.version
+      file: tools/yamlfmt/melange.yaml
