@@ -1,0 +1,26 @@
+---
+name: Checkmake Pushes on Main
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "tools/checkmake/**"
+      - ".github/workflows/checkmake-*.yaml"
+      - Makefile
+      - melange.rsa.pub
+
+jobs:
+  checkmake-publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install mise
+        uses: jdx/mise-action@v1
+      - name: Publish new tool version
+        uses: ./.github/actions/tool
+        with:
+          tool: checkmake
+          publish: true
