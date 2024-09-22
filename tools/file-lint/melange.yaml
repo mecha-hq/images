@@ -10,6 +10,10 @@ package:
         - "*"
   dependencies:
     runtime: []
+  target-architecture:
+    - arm64
+    - amd64
+
 environment:
   contents:
     repositories:
@@ -17,6 +21,7 @@ environment:
     packages:
       - apk-tools
       - busybox
+
 pipeline:
   - name: Update registries
     runs: apk update

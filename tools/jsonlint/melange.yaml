@@ -10,6 +10,9 @@ package:
   dependencies:
     runtime:
       - nodejs-current
+  target-architecture:
+    - arm64
+    - amd64
 
 environment:
   contents:

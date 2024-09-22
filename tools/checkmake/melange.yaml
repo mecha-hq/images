@@ -9,6 +9,9 @@ package:
         - "*"
   dependencies:
     runtime: []
+  target-architecture:
+    - arm64
+    - amd64
 
 environment:
   contents:
