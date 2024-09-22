@@ -27,7 +27,9 @@ runs:
     - shell: sh
       run: sudo apt install -y mise
     - shell: sh
-      run: mise activate bash --yes
+      run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+    - shell: sh
+      run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
     - shell: sh
       run: mise install --yes
       if: ${{ inputs.install }} == 'true'
