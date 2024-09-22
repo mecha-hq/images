@@ -27,6 +27,7 @@ jobs:
         uses: ./.github/actions/tool
         with:
           tool: checkmake
+          arch: amd64
           publish: true
       - name: Remove the signing key
         run: shred -v -z -u -n 5 melange.rsa
