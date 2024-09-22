@@ -1,6 +1,6 @@
 package:
   name: yamlfmt
-  version: 0.10.0
+  version: 0.13.0
   description: google/yamlfmt image.
   target-architecture:
     - all
@@ -10,7 +10,6 @@ package:
         - "*"
   dependencies:
     runtime: []
-
 environment:
   contents:
     repositories:
@@ -19,7 +18,6 @@ environment:
     packages:
       - apk-tools
       - go
-
 pipeline:
   - name: Update registries
     runs: apk update
