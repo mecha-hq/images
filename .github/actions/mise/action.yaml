@@ -1,0 +1,22 @@
+name: Install mise
+description: Install mise on debian-based systems
+inputs:
+  arch:
+    description: "The arch to install mise for. default is amd64"
+    default: "amd64"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: apt update -y && apt install -y gpg sudo wget curl
+    - shell: bash
+      run: sudo install -dm 755 /etc/apt/keyrings
+    - shell: bash
+      run: wget -qO - https://mise.jdx.dev/gpg-key.pub | gpg --dearmor | sudo tee /etc/apt/keyrings/mise-archive-keyring.gpg 1> /dev/null
+    - shell: bash
+      run: echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=${{ inputs.arch }}] https://mise.jdx.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/mise.list
+    - shell: bash
+      run: sudo apt update
+    - shell: bash
+      run: sudo apt install -y mise

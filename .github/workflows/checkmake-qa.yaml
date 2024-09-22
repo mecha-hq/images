@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install mise
-        uses: jdx/mise-action@v1
+        uses: ./.github/actions/mise
       - name: Test new tool version
         uses: ./.github/actions/tool
         with:
