@@ -27,7 +27,7 @@ runs:
     - shell: sh
       run: sudo apt install -y mise
     - shell: sh
-      run: mise activate --shims
+      run: mise activate bash --yes
     - shell: sh
       run: mise install --yes
       if: ${{ inputs.install }} == 'true'
