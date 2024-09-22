@@ -1,5 +1,5 @@
 REGISTRY ?= ghcr.io
-OWNER ?= mecha-ci
+OWNER ?= mecha-hq
 REPOSITORY ?= images
 
 .PHONY: check-variable-% image-kind
