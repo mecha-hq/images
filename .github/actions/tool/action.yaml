@@ -19,7 +19,7 @@ runs:
     - name: Build APK package
       id: build-apk-package
       shell: sh
-      run: make melange IMAGE=${{ inputs.tool }} ARCH=${{ inputs.arch }}
+      run: make melange IMAGE=${{ inputs.tool }} ARCH=${{ inputs.arch }} SUDO=true
     - name: Create OCI Image
       id: create-oci-image
       shell: sh
