@@ -9,7 +9,9 @@ runs:
   using: "composite"
   steps:
     - shell: bash
-      run: apt update -y && apt install -y gpg sudo wget curl
+      run: sudo apt update -y
+    - shell: bash
+      run: sudo apt install -y gpg sudo wget curl
     - shell: bash
       run: sudo install -dm 755 /etc/apt/keyrings
     - shell: bash
