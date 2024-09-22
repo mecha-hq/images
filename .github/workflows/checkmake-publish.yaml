@@ -19,6 +19,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Install mise
         uses: ./.github/actions/mise
+      - name: Install os deps
+        run: sudo apt-get install -y bubblewrap
       - name: Dump the signing key
         run: echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa
       - name: Publish new tool version
