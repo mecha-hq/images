@@ -1,10 +1,8 @@
 [env]
 
 [tools]
-act = "0.2.67"
 apko = "0.19.1"
 dockle = "0.4.14"
-golang = "1.23.1"
 grype = "0.80.1"
 melange = "0.12.1"
 shellbits = "0.2.0"

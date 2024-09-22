@@ -4,4 +4,5 @@ packages/
 reports/
 sboms/
 oci-image.tar
-.envrc
+.mise.local.toml
+.mise.*.local.toml
