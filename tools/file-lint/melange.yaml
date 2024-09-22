@@ -1,6 +1,6 @@
 package:
   name: file-lint
-  version: 0.9.0
+  version: 0.8
   description: cytopia/file-lint image.
   target-architecture:
     - all
@@ -10,7 +10,6 @@ package:
         - "*"
   dependencies:
     runtime: []
-
 environment:
   contents:
     repositories:
@@ -18,7 +17,6 @@ environment:
     packages:
       - apk-tools
       - busybox
-
 pipeline:
   - name: Update registries
     runs: apk update
