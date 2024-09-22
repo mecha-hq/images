@@ -2,8 +2,8 @@
 
 Collection of secure OCI images for CI/CD pipelines.
 
-Images are built using [Chainguard][https://www.chainguard.dev]'s [Melange][https://github.com/chainguard-dev/melange]
-and [Apko][https://github.com/chainguard-dev/apko] tools, resulting in small, cve-free artifacts that reduce the
+Images are built using [Chainguard](https://www.chainguard.dev)'s [Melange](https://github.com/chainguard-dev/melange)
+and [Apko](https://github.com/chainguard-dev/apko) tools, resulting in small, cve-free artifacts that reduce the
 attack surface of your CI/CD pipelines, while providing a handy set of tools for your builds.
 
 They are divided in `Tools` and `Collections`, where `Tools` are single-tool images, while `Collections`
