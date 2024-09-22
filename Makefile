@@ -4,7 +4,7 @@ REPOSITORY ?= images
 
 .PHONY: check-variable-%
 check-variable-%:
-	@[[ "${${*}}" ]] || (echo '*** Please define variable `${*}` ***' && exit 1)
+	@[ -n "$(${*})" ] || (echo '*** Please define variable `${*}` ***' && exit 1)
 
 .PHONY: image-kind
 image-kind: check-variable-IMAGE
