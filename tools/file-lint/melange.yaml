@@ -1,9 +1,9 @@
 package:
   name: file-lint
-  version: 0.8
+  version: "0.8"
+  epoch: 0
   description: cytopia/file-lint image.
-  target-architecture:
-    - all
+
   copyright:
     - license: MIT
       paths:

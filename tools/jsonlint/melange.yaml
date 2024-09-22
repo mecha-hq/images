@@ -1,9 +1,8 @@
 package:
   name: jsonlint
   version: 1.6.3
+  epoch: 0
   description: zaach/jsonlint image.
-  target-architecture:
-    - all
   copyright:
     - license: MIT
       paths:

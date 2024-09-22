@@ -1,9 +1,8 @@
 package:
   name: yamllint
   version: 1.35.1
+  epoch: 0
   description: adrienverge/yamllint image.
-  target-architecture:
-    - all
   copyright:
     - license: MIT
       paths:

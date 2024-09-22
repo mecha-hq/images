@@ -1,9 +1,8 @@
 package:
   name: yamlfmt
   version: 0.13.0
+  epoch: 0
   description: google/yamlfmt image.
-  target-architecture:
-    - all
   copyright:
     - license: MIT
       paths:
