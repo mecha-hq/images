@@ -17,7 +17,7 @@ keygen:
 .PHONY: melange
 melange: check-variable-ARCH check-variable-IMAGE
 	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
-	MELANGE=$$(if [ "$(SUDO)" = "true" ]; then echo "sudo melange"; else echo "melange"; fi) && \
+	MELANGE=$$(if [ "$(SUDO)" = "true" ]; then echo "sudo -E melange"; else echo "melange"; fi) && \
 	$$MELANGE build --arch=${ARCH} --debug \
 		--signing-key=melange.rsa \
 		--out-dir=$${KIND}/${IMAGE}/packages \
