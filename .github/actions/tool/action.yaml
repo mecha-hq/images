@@ -19,7 +19,9 @@ runs:
     - name: Build APK package
       id: build-apk-package
       shell: sh
-      run: make melange IMAGE=${{ inputs.tool }} ARCH=${{ inputs.arch }} SUDO=true
+      run: |
+        sudo env PATH=$PATH:$HOME/.local/bin:$HOME/.local/share/mise/shims \
+          make melange IMAGE=${{ inputs.tool }} ARCH=${{ inputs.arch }}
     - name: Create OCI Image
       id: create-oci-image
       shell: sh

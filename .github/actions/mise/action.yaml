@@ -31,9 +31,5 @@ runs:
     - shell: sh
       run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
     - shell: sh
-      run: sudo sh -c 'echo "$HOME/.local/bin" >> $GITHUB_PATH'
-    - shell: sh
-      run: sudo sh -c 'echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH'
-    - shell: sh
       run: mise install --yes
       if: ${{ inputs.install }} == 'true'
