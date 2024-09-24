@@ -1,15 +1,21 @@
 package:
   name: file-lint
-  version: 0.8
+  version: "0.8"
+  epoch: 0
   description: cytopia/file-lint image.
-  target-architecture:
-    - all
+
   copyright:
     - license: MIT
       paths:
         - "*"
   dependencies:
     runtime: []
+  target-architecture:
+    - arm64
+    - amd64
+    - x86_64
+    - aarch64
+
 environment:
   contents:
     repositories:
@@ -17,6 +23,7 @@ environment:
     packages:
       - apk-tools
       - busybox
+
 pipeline:
   - name: Update registries
     runs: apk update

@@ -1,15 +1,19 @@
 package:
   name: checkmake
   version: 0.2.2
+  epoch: 0
   description: mrtazz/checkmake image.
-  target-architecture:
-    - all
   copyright:
     - license: MIT
       paths:
         - "*"
   dependencies:
     runtime: []
+  target-architecture:
+    - arm64
+    - amd64
+    - x86_64
+    - aarch64
 
 environment:
   contents:
