@@ -13,11 +13,11 @@ image-kind: check-variable-IMAGE
 
 .PHONY: validate-name
 validate-name: check-variable-IMAGE
-	@./scripts/validate-name.sh ${IMAGE}
+	@${PROJECT_DIR}/scripts/validate-name.sh ${IMAGE}
 
 .PHONY: validate-arch
 validate-arch: check-variable-ARCH
-	@./scripts/validate-arch.sh ${ARCH}
+	@${PROJECT_DIR}/scripts/validate-arch.sh ${ARCH}
 
 .PHONY: tool-version
 tool-version: check-variable-IMAGE
@@ -69,7 +69,7 @@ docker-push: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 
 .PHONY: docker-manifest
 docker-manifest: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@./scripts/docker-manifest.sh "${REGISTRY}" "${OWNER}" "${IMAGE}" "${VERSION}" "${ARCH}"
+	@${PROJECT_DIR}/scripts/docker-manifest.sh "${REGISTRY}" "${OWNER}" "${IMAGE}" "${VERSION}" "${ARCH}"
 
 .PHONY: clean
 clean: check-variable-IMAGE
