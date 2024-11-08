@@ -24,12 +24,12 @@ jobs:
           #   name: "ubuntu-24.04-arm"
           - arch: "amd64"
             name: "ubuntu-24.04"
-    # services:
-    #   docker:
-    #     image: docker:dind
-    #     options: --privileged --shm-size=2g
-    #     # volumes:
-    #     #   - /var/run/docker.sock:/var/run/docker.sock
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged --shm-size=2g
+        # volumes:
+        #   - /var/run/docker.sock:/var/run/docker.sock
     steps:
       # - name: Harden Runner
       #   uses: step-security/harden-runner@v2
@@ -42,8 +42,8 @@ jobs:
       - name: Dump the signing key
         run: if [ ! -f "melange.rsa" ]; then echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa; fi
 
-      - name: Install os deps
-        run: sudo apt update -y && sudo apt install -y bubblewrap
+      # - name: Install os deps
+      #   run: sudo apt update -y && sudo apt install -y bubblewrap
 
       - name: Install mise
         uses: jdx/mise-action@v2
