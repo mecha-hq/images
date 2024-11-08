@@ -48,7 +48,7 @@ jobs:
       - name: Install mise
         uses: jdx/mise-action@v2
         with:
-          mise-version: 2024.10.2
+          version: 2024.11.4
 
       - name: Setup mise shims
         uses: ./.github/actions/mise-shims
