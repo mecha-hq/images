@@ -43,7 +43,7 @@ jobs:
         run: if [ ! -f "melange.rsa" ]; then echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa; fi
 
       - name: Install os deps
-        run: apt update -y && apt install -y bubblewrap
+        run: sudo apt update -y && sudo apt install -y bubblewrap
 
       - name: Install mise
         uses: jdx/mise-action@v2
