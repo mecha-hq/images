@@ -1,0 +1,18 @@
+name: Mise shims
+description: Setup mise shims
+runs:
+  using: "composite"
+  steps:
+    - name: Setup mise shims for non-sudo users
+      shell: sh
+      run: |
+        echo "${HOME}/.local/share/mise/shims" >> $GITHUB_PATH && \
+        sudo sed -i "/^PATH=/ s|^PATH=|PATH=${HOME}/.local/share/mise/shims:|" /etc/environment && \
+        . /etc/environment
+    - name: Setup mise shims for sudo users
+      shell: sh
+      run: |
+        sudo cp /etc/sudoers /etc/sudoers.bak && \
+        sudo sed -i "/secure_path=/ s|secure_path=\"|secure_path=\"${HOME}/.local/share/mise/shims:|" /etc/sudoers && \
+        sudo visudo -c && \
+        sudo rm /etc/sudoers.bak

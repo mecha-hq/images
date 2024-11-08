@@ -1,0 +1,63 @@
+name: Build, Scan and Publish Tool
+description: Build oci images for a given tool, scan them and publish the results and the artifacts
+inputs:
+  image:
+    description: "The name of the tool to build."
+    required: true
+  arch:
+    description: "The arch to build the tool for. default is amd64,arm64."
+    default: "amd64,arm64"
+    required: false
+  publish:
+    description: "Whether to publish the container images and manifests. default is false."
+    default: "false"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Determine tool version
+      shell: sh
+      run: echo TOOL_VERSION=$(make tool-version IMAGE=${{ inputs.image }}) >> $GITHUB_ENV
+    - name: Build APK package
+      shell: sh
+      run: sudo make melange ARCH=${{ inputs.arch }} IMAGE=${{ inputs.image }}
+    - name: Create OCI Image
+      shell: sh
+      run: make apko ARCH=${{ inputs.arch }} IMAGE=${{ inputs.image }} VERSION="${TOOL_VERSION}"
+    - name: Load OCI images
+      shell: sh
+      run: make docker-load IMAGE=${{ inputs.image }} VERSION="${TOOL_VERSION}"
+      if: ${{ inputs.publish }} == 'false'
+    - name: Upload OCI images
+      shell: sh
+      run: make docker-push ARCH=${{ inputs.arch }} IMAGE=${{ inputs.image }} VERSION="${TOOL_VERSION}"
+      if: ${{ inputs.publish }} == 'true'
+    - name: Produce a multi-arch manifest
+      shell: sh
+      run: make docker-manifest ARCH=${{ inputs.arch }} IMAGE=${{ inputs.image }} VERSION="${TOOL_VERSION}"
+      if: ${{ inputs.publish }} == 'true'
+    - name: Scan OCI images
+      shell: sh
+      run: make scan ARCH=${{ inputs.arch }} IMAGE=${{ inputs.image }} VERSION="${TOOL_VERSION}"
+      if: ${{ inputs.publish }} == 'true'
+    - name: Render the scans
+      shell: sh
+      run: make render ARCH=${{ inputs.arch }} IMAGE=${{ inputs.image }} VERSION="${TOOL_VERSION}"
+      if: ${{ inputs.publish }} == 'true'
+    - name: Upload reports artifact
+      uses: actions/upload-artifact@v4
+      with:
+        path: dist/reports
+      if: ${{ inputs.publish }} == 'true'
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      if: ${{ inputs.publish }} == 'true'
+    - name: Upload pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: dist/renders
+      if: ${{ inputs.publish }} == 'true'
+    - name: Deploy to GitHub Pages
+      uses: actions/deploy-pages@v4
+      if: ${{ inputs.publish }} == 'true'

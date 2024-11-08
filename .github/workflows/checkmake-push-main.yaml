@@ -12,7 +12,7 @@ on:
       - melange.rsa.pub
 
 jobs:
-  checkmake-publish:
+  publish:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
@@ -20,15 +20,15 @@ jobs:
       - name: Dump the signing key
         run: echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa
       - name: Install os deps
-        run: sudo apt-get install -y bubblewrap
+        run: apt install -y bubblewrap
       - name: Install mise
         uses: ./.github/actions/mise
       - name: Publish new tool version
         uses: ./.github/actions/tool
         with:
-          tool: checkmake
+          name: checkmake
           arch: amd64
-          publish: true
+          publish: false
       - name: Remove the signing key
         run: shred -v -z -u -n 5 melange.rsa
         if: always()

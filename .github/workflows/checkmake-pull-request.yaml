@@ -1,0 +1,63 @@
+---
+name: Checkmake Pull Requests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "tools/checkmake/**"
+      - ".github/workflows/checkmake-*.yaml"
+      - Makefile
+      - melange.rsa.pub
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["x86_64", "aarch64"]
+        include:
+          # - arch: "aarch64"
+          #   runner: "ubuntu-24.04-arm"
+          - arch: "x86_64"
+            runner: "ubuntu-24.04"
+    # services:
+    #   docker:
+    #     image: docker:dind
+    #     options: --privileged --shm-size=2g
+    #     # volumes:
+    #     #   - /var/run/docker.sock:/var/run/docker.sock
+    steps:
+      # - name: Harden Runner
+      #   uses: step-security/harden-runner@v2
+      #   with:
+      #     egress-policy: audit
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # - name: Dump the signing key
+      #   run: echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa
+
+      - name: Install os deps
+        run: apt update -y && apt install -y bubblewrap
+
+      - name: Install mise
+        uses: jdx/mise-action@v2
+        with:
+          mise-version: 2024.10.2
+
+      - name: Setup mise shims
+        uses: ./.github/actions/mise-shims
+
+      - name: Test build of new tool version
+        uses: ./.github/actions/tool
+        with:
+          name: checkmake
+          arch: amd64
+          publish: false
+
+      - name: Remove the signing key
+        run: shred -v -z -u -n 5 melange.rsa
+        if: always()
