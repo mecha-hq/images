@@ -12,6 +12,7 @@ runs:
     - name: Setup mise shims for sudo users
       shell: sh
       run: |
+        sudo chmod 0440 /etc/sudoers.d/runner && \
         sudo cp /etc/sudoers /etc/sudoers.bak && \
         sudo sed -i "/secure_path=/ s|secure_path=\"|secure_path=\"${HOME}/.local/share/mise/shims:|" /etc/sudoers && \
         sudo visudo -c && \
