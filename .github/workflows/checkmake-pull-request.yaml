@@ -5,10 +5,13 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "tools/checkmake/**"
+      - ".github/actions/**"
       - ".github/workflows/checkmake-*.yaml"
+      - ".mise.*"
+      - "tools/checkmake/**"
       - Makefile
       - melange.rsa.pub
+      - scripts/**"
 
 jobs:
   build:
@@ -37,8 +40,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Dump the signing key
-      #   run: echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa
+      - name: Dump the signing key
+        run: if [ ! -f "melange.rsa" ]; then echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa; fi
 
       - name: Install os deps
         run: apt update -y && apt install -y bubblewrap

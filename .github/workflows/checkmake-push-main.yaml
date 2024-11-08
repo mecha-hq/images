@@ -6,10 +6,13 @@ on:
     branches:
       - main
     paths:
-      - "tools/checkmake/**"
+      - ".github/actions/**"
       - ".github/workflows/checkmake-*.yaml"
+      - ".mise.*"
+      - "tools/checkmake/**"
       - Makefile
       - melange.rsa.pub
+      - scripts/**"
 
 jobs:
   publish:
@@ -17,18 +20,28 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Dump the signing key
-        run: echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa
+        run: if [ ! -f "melange.rsa" ]; then echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa; fi
+
       - name: Install os deps
-        run: apt install -y bubblewrap
+        run: apt update -y && apt install -y bubblewrap
+
       - name: Install mise
-        uses: ./.github/actions/mise
-      - name: Publish new tool version
+        uses: jdx/mise-action@v2
+        with:
+          mise-version: 2024.10.2
+
+      - name: Setup mise shims
+        uses: ./.github/actions/mise-shims
+
+      - name: Test build of new tool version
         uses: ./.github/actions/tool
         with:
           name: checkmake
           arch: amd64
           publish: false
+
       - name: Remove the signing key
         run: shred -v -z -u -n 5 melange.rsa
         if: always()
