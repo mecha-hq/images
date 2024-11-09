@@ -29,7 +29,7 @@ runs:
 
     - name: Build APK package
       shell: sh
-      run: sudo make melange ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }}
+      run: make melange ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }}
 
     - name: Create OCI Image
       shell: sh
