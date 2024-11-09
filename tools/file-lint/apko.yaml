@@ -2,10 +2,14 @@ contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
-    - '@local tools/file-lint/packages'
+    - "@local tools/file-lint/packages"
   packages:
     - busybox
     - file-lint@local
+
+archs:
+  - arm64
+  - amd64
 
 accounts:
   groups:

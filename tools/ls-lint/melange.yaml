@@ -13,8 +13,6 @@ package:
   target-architecture:
     - arm64
     - amd64
-    - x86_64
-    - aarch64
 
 environment:
   contents:
