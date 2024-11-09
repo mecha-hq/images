@@ -32,8 +32,9 @@ jobs:
         with:
           version: 2024.11.4
 
-      - name: Setup mise shims
-        uses: ./.github/actions/mise-shims
+      - name: Activate mise
+        shell: sh
+        run: echo 'eval "$(~/.local/share/mise/bin/mise activate bash)"' >> ~/.bashrc
 
       - name: Test build of new tool version
         uses: ./.github/actions/tool

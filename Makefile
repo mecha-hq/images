@@ -33,6 +33,7 @@ melange: check-variable-ARCH check-variable-IMAGE
 	melange build --arch=${ARCH} --debug \
 		--signing-key=melange.rsa \
 		--out-dir=$${KIND}/${IMAGE}/packages \
+		--runner=docker \
 		$${KIND}/${IMAGE}/melange.yaml
 
 .PHONY: apko

@@ -24,8 +24,6 @@ jobs:
       docker:
         image: docker:dind
         options: --privileged --shm-size=2g
-        # volumes:
-        #   - /var/run/docker.sock:/var/run/docker.sock
     steps:
       # - name: Harden Runner
       #   uses: step-security/harden-runner@v2
@@ -38,13 +36,11 @@ jobs:
       - name: Dump the signing key
         run: if [ ! -f "melange.rsa" ]; then echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa; fi
 
-      # - name: Install os deps
-      #   run: sudo apt update -y && sudo apt install -y bubblewrap
-
       - name: Install mise
         uses: jdx/mise-action@v2
         with:
           version: 2024.11.4
+
       - name: Activate mise
         shell: sh
         run: echo 'eval "$(~/.local/share/mise/bin/mise activate bash)"' >> ~/.bashrc
