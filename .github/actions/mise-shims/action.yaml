@@ -3,6 +3,9 @@ description: Setup mise shims
 runs:
   using: "composite"
   steps:
+    - name: Activate mise
+      shell: sh
+      run: echo 'eval "$(~/.local/share/mise/bin/mise activate bash)"' >> ~/.bashrc
     - name: Setup mise shims for non-sudo users
       shell: sh
       run: |
