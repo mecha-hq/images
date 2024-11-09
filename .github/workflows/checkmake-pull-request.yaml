@@ -15,15 +15,11 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.runner.name }}
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
-        runner:
-          # - arch: "arm64"
-          #   name: "ubuntu-24.04-arm"
-          - arch: "amd64"
-            name: "self-hosted"
+        arch: ["amd64"]
     services:
       docker:
         image: docker:dind
@@ -57,7 +53,7 @@ jobs:
         uses: ./.github/actions/tool
         with:
           name: checkmake
-          arch: ${{ matrix.runner.arch }}
+          arch: ${{ matrix.arch }}
           publish: false
 
       - name: Remove the signing key
