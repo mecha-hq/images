@@ -50,24 +50,24 @@ runs:
     - name: Upload OCI images
       shell: sh
       run: make docker-push ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
-      if: ${{ inputs.publish == "true" }}
+      if: ${{ inputs.publish == 'true' }}
 
     - name: Upload reports artifact
       uses: actions/upload-artifact@v4
       with:
         path: dist/${{ inputs.name }}/reports
-      if: ${{ inputs.publish == "true" }}
+      if: ${{ inputs.publish == 'true' }}
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
-      if: ${{ inputs.publish == "true" }}
+      if: ${{ inputs.publish == 'true' }}
 
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
         path: dist/${{ inputs.name }}/renders
-      if: ${{ inputs.publish == "true" }}
+      if: ${{ inputs.publish == 'true' }}
 
     - name: Deploy to GitHub Pages
       uses: actions/deploy-pages@v4
-      if: ${{ inputs.publish == "true" }}
+      if: ${{ inputs.publish == 'true' }}
