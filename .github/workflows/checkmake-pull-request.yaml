@@ -15,11 +15,13 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ${{ matrix.runner.name }}
     strategy:
       fail-fast: false
       matrix:
-        arch: ["amd64"]
+        runner:
+          - name: ubuntu-24.04
+            arch: ["amd64"]
     services:
       docker:
         image: docker:dind
@@ -49,7 +51,7 @@ jobs:
         uses: ./.github/actions/tool
         with:
           name: checkmake
-          arch: ${{ matrix.arch }}
+          arch: ${{ matrix.runner.arch }}
           publish: "false"
         env:
           SNYK_ORG: ${{ secrets.SNYK_ORG }}
