@@ -5,23 +5,19 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - ".github/actions/**"
+      # checkmake-specific paths
       - ".github/workflows/checkmake-*.yaml"
-      - ".mise.*"
       - "tools/checkmake/**"
+      # common paths
+      - ".github/actions/**"
+      - ".mise.*"
       - Makefile
       - melange.rsa.pub
       - scripts/**"
 
 jobs:
   build:
-    runs-on: ${{ matrix.runner.name }}
-    strategy:
-      fail-fast: false
-      matrix:
-        runner:
-          - name: ubuntu-24.04
-            arch: ["amd64"]
+    runs-on: ubuntu-24.04
     services:
       docker:
         image: docker:dind
@@ -51,7 +47,7 @@ jobs:
         uses: ./.github/actions/tool
         with:
           name: checkmake
-          arch: ${{ matrix.runner.arch }}
+          arch: amd64 # valid values are "amd64", "arm64" and "amd64,arm64"
           publish: "false"
         env:
           SNYK_ORG: ${{ secrets.SNYK_ORG }}
