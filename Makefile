@@ -9,7 +9,7 @@ check-variable-%:
 
 .PHONY: image-kind
 image-kind: check-variable-IMAGE
-	@find . -name "${IMAGE}" -type d | cut -d '/' -f -2
+	@find . -maxdepth 2 -name "${IMAGE}" -type d | grep -E 'tools|collections' | cut -d '/' -f 2
 
 .PHONY: validate-name
 validate-name: check-variable-IMAGE
@@ -29,7 +29,7 @@ keygen:
 
 .PHONY: melange
 melange: check-variable-ARCH check-variable-IMAGE
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	melange build --arch=${ARCH} --debug \
 		--signing-key=melange.rsa \
 		--out-dir=$${KIND}/${IMAGE}/packages \
@@ -38,7 +38,7 @@ melange: check-variable-ARCH check-variable-IMAGE
 
 .PHONY: apko
 apko: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/sboms" && \
 	apko build --arch=${ARCH} --log-level=debug \
 		--build-date=$$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
@@ -88,7 +88,7 @@ clean-all:
 
 .PHONY: dockle
 dockle: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
 	dockle -f json -o "$${KIND}/${IMAGE}/reports/dockle-${VERSION}-${ARCH}.json" --debug "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"
 
@@ -98,7 +98,7 @@ dockle-all: check-variable-ARCH
 
 .PHONY: grype
 grype: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
 	grype -o json --file "$${KIND}/${IMAGE}/reports/grype-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}" -vv
 
@@ -108,7 +108,7 @@ grype-all: check-variable-ARCH
 
 .PHONY: trivy
 trivy: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
 	trivy image -d -f json -o "$${KIND}/${IMAGE}/reports/trivy-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"
 
@@ -118,7 +118,7 @@ trivy-all: check-variable-ARCH
 
 .PHONY: snyk
 snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
 	snyk container test -d \
 		--org=$${SNYK_ORG} "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}" \
@@ -137,7 +137,7 @@ scan-all: check-variable-ARCH
 
 .PHONY: folders
 folders: check-variable-IMAGE
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p dist/${IMAGE}/renders && \
 	cp -R $${KIND}/${IMAGE}/reports dist/${IMAGE}/reports
 
@@ -146,28 +146,28 @@ render: folders render-dockle render-grype render-trivy render-snyk
 
 .PHONY: render-dockle
 render-dockle: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	ekdo render dockle \
 		--output-dir=dist/${IMAGE}/renders \
 		$${KIND}/${IMAGE}/reports/dockle-${VERSION}-${ARCH}.json
 
 .PHONY: render-grype
 render-grype: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	ekdo render grype \
 		--output-dir=dist/${IMAGE}/renders \
 		$${KIND}/${IMAGE}/reports/grype-${VERSION}-${ARCH}.json
 
 .PHONY: render-trivy
 render-trivy: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	ekdo render trivy \
 		--output-dir=dist/${IMAGE}/renders \
 		$${KIND}/${IMAGE}/reports/trivy-${VERSION}-${ARCH}.json
 
 .PHONY: render-snyk
 render-snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$$(find . -name "${IMAGE}" -type d | cut -d '/' -f -2) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	ekdo render snyk \
 		--output-dir=dist/${IMAGE}/renders \
 		$${KIND}/${IMAGE}/reports/snyk-${VERSION}-${ARCH}.json
