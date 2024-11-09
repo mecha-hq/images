@@ -90,7 +90,9 @@ clean-all:
 dockle: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
-	dockle -f json -o "$${KIND}/${IMAGE}/reports/dockle-${VERSION}-${ARCH}.json" --debug "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"
+	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
+		dockle -f json -o "$${KIND}/${IMAGE}/reports/dockle-${VERSION}-${ARCH}.json" --debug "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"
+	done
 
 .PHONY: dockle-all
 dockle-all: check-variable-ARCH
@@ -100,7 +102,9 @@ dockle-all: check-variable-ARCH
 grype: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
-	grype -o json --file "$${KIND}/${IMAGE}/reports/grype-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}" -vv
+	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
+		grype -o json --file "$${KIND}/${IMAGE}/reports/grype-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}" -vv
+	done
 
 .PHONY: grype-all
 grype-all: check-variable-ARCH
@@ -110,7 +114,9 @@ grype-all: check-variable-ARCH
 trivy: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
-	trivy image -d -f json -o "$${KIND}/${IMAGE}/reports/trivy-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"
+	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
+		trivy image -d -f json -o "$${KIND}/${IMAGE}/reports/trivy-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"
+	done
 
 .PHONY: trivy-all
 trivy-all: check-variable-ARCH
@@ -120,9 +126,11 @@ trivy-all: check-variable-ARCH
 snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
-	snyk container test -d \
-		--org=$${SNYK_ORG} "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}" \
-		--json-file-output="$${KIND}/${IMAGE}/reports/snyk-${VERSION}-${ARCH}.json"
+	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
+		snyk container test -d \
+			--org=$${SNYK_ORG} "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}" \
+			--json-file-output="$${KIND}/${IMAGE}/reports/snyk-${VERSION}-${ARCH}.json"
+	done
 
 .PHONY: snyk-all
 snyk-all: check-variable-ARCH
@@ -133,7 +141,9 @@ scan: dockle grype trivy snyk
 
 .PHONY: scan-all
 scan-all: check-variable-ARCH
-	find ./tools -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | xargs -I {} make scan IMAGE={} ARCH=${ARCH}
+	@for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
+		find ./tools -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | xargs -I {} make scan IMAGE={} ARCH=${ARCH}
+	done
 
 .PHONY: folders
 folders: check-variable-IMAGE
