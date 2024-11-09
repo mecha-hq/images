@@ -23,7 +23,7 @@ jobs:
           # - arch: "arm64"
           #   name: "ubuntu-24.04-arm"
           - arch: "amd64"
-            name: "ubuntu-24.04"
+            name: "self-hosted"
     services:
       docker:
         image: docker:dind
