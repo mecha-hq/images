@@ -41,7 +41,7 @@ jobs:
         with:
           name: checkmake
           arch: amd64
-          publish: false
+          publish: "false"
 
       - name: Remove the signing key
         run: shred -v -z -u -n 5 melange.rsa
