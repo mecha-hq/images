@@ -47,7 +47,7 @@ jobs:
         uses: ./.github/actions/tool
         with:
           name: checkmake
-          arch: amd64 # valid values are "amd64", "arm64" and "amd64,arm64"
+          arch: amd64,arm64 # valid values are "amd64", "arm64" and "amd64,arm64"
           publish: "false"
         env:
           SNYK_ORG: ${{ secrets.SNYK_ORG }}
