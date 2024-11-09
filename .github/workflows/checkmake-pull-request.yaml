@@ -51,6 +51,9 @@ jobs:
           name: checkmake
           arch: ${{ matrix.arch }}
           publish: false
+        env:
+          SNYK_ORG: ${{ secrets.SNYK_ORG }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Remove the signing key
         run: shred -v -z -u -n 5 melange.rsa
