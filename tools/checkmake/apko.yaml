@@ -2,7 +2,7 @@ contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
-    - '@local tools/checkmake/packages'
+    - "@local tools/checkmake/packages/0.2.2"
   packages:
     - checkmake@local
 
@@ -19,3 +19,18 @@ entrypoint:
   command: /usr/bin/checkmake
 
 cmd: --help
+
+annotations:
+  # org.opencontainers.image.created: ""
+  org.opencontainers.image.authors: "Claudio Beatrice"
+  org.opencontainers.image.url: "https://mecha.sh"
+  org.opencontainers.image.documentation: "https://github.com/mecha-hq/images/README.md"
+  org.opencontainers.image.source: "https://github.com/mecha-hq/images"
+  # org.opencontainers.image.version: ""
+  # org.opencontainers.image.revision: ""
+  org.opencontainers.image.vendor: "Mecha HQ"
+  org.opencontainers.image.licenses: "Apache-2.0"
+  # org.opencontainers.image.ref.name: ""
+  org.opencontainers.image.title: "Mecha HQ's Checkmake"
+  org.opencontainers.image.description: "Zero-CVEs Checkmake image."
+  # org.opencontainers.image.base.digest: ""

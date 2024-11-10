@@ -1,9 +1,8 @@
 package:
   name: ls-lint
-  version: 2.2.3
+  version: "2.2.3"
+  epoch: 0
   description: loeffel-io/ls-lint image.
-  target-architecture:
-    - all
   copyright:
     - license: MIT
       paths:
@@ -11,6 +10,7 @@ package:
   dependencies:
     runtime:
       - nodejs-current
+
 environment:
   contents:
     repositories:
@@ -21,6 +21,7 @@ environment:
       - busybox
       - nodejs-current
       - npm
+
 pipeline:
   - name: Update registries
     runs: apk update

@@ -1,9 +1,8 @@
 package:
   name: checkmake
-  version: 0.2.2
+  version: "0.2.2"
+  epoch: 0
   description: mrtazz/checkmake image.
-  target-architecture:
-    - all
   copyright:
     - license: MIT
       paths:

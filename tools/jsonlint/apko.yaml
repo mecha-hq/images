@@ -2,7 +2,7 @@ contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
-    - '@local tools/jsonlint/packages'
+    - "@local tools/jsonlint/packages/1.6.3"
   packages:
     - nodejs-current
     - jsonlint@local

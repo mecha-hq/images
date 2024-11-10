@@ -1,9 +1,8 @@
 package:
   name: yamllint
-  version: 1.35.1
+  version: "1.35.1"
+  epoch: 0
   description: adrienverge/yamllint image.
-  target-architecture:
-    - all
   copyright:
     - license: MIT
       paths:
@@ -11,6 +10,7 @@ package:
   dependencies:
     runtime:
       - python3
+
 environment:
   contents:
     repositories:
@@ -21,6 +21,7 @@ environment:
       - busybox
       - python3
       - py3-pip
+
 pipeline:
   - name: Update registries
     runs: apk update
