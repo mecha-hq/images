@@ -21,7 +21,7 @@ validate-arch: check-variable-ARCH
 
 .PHONY: image-version
 image-version: check-variable-IMAGE
-	@grep 'version' tools/${IMAGE}/melange.yaml | head -n 1 | sed 's/.*version: *//'
+	@grep 'version' tools/${IMAGE}/melange.yaml | head -n 1 | sed 's/.*version: *//' | sed 's/"//g'
 
 .PHONY: keygen
 keygen:
