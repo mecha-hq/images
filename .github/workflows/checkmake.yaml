@@ -48,6 +48,6 @@ jobs:
           mise_version: 2024.11.4
           snyk_org: ${{ secrets.SNYK_ORG }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
-          tool_arch: amd64,arm64
-          tool_name: checkmake
-          tool_publish: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') && 'true' || 'false' }}
+          image_arch: amd64,arm64
+          image_name: checkmake
+          image_publish: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') && 'true' || 'false' }}
