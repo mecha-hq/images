@@ -28,11 +28,6 @@ on:
       - melange.rsa.pub
       - scripts/**"
 
-permissions:
-  packages: write
-  pages: write
-  id-token: write
-
 jobs:
   build:
     runs-on: ubuntu-24.04
