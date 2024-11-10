@@ -10,9 +10,6 @@ package:
   dependencies:
     runtime:
       - python3
-  target-architecture:
-    - arm64
-    - amd64
 
 environment:
   contents:

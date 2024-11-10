@@ -6,10 +6,6 @@ contents:
   packages:
     - checkmake@local
 
-archs:
-  - arm64
-  - amd64
-
 accounts:
   groups:
     - groupname: checkmake

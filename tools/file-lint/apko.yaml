@@ -7,10 +7,6 @@ contents:
     - busybox
     - file-lint@local
 
-archs:
-  - arm64
-  - amd64
-
 accounts:
   groups:
     - groupname: file-lint

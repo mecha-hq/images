@@ -6,10 +6,6 @@ contents:
   packages:
     - yamllint@local
 
-archs:
-  - arm64
-  - amd64
-
 accounts:
   groups:
     - groupname: yamllint

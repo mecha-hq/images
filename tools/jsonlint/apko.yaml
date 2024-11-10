@@ -7,10 +7,6 @@ contents:
     - nodejs-current
     - jsonlint@local
 
-archs:
-  - arm64
-  - amd64
-
 accounts:
   groups:
     - groupname: jsonlint
