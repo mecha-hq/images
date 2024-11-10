@@ -31,10 +31,15 @@ on:
 permissions:
   packages: write
   pages: write
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+      pages: write
+      id-token: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
