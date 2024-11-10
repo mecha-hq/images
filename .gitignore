@@ -1,8 +1,7 @@
-dist/
-oci-image/
+oci-images/
 packages/
+renders/
 reports/
 sboms/
-oci-image.tar
 .mise.local.toml
 .mise.*.local.toml

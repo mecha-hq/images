@@ -23,9 +23,13 @@ runs:
       shell: sh
       run: make validate-arch ARCH=${{ inputs.arch }}
 
-    - name: Determine tool version
+    - name: Determine image version
       shell: sh
-      run: echo TOOL_VERSION=$(make tool-version IMAGE=${{ inputs.name }}) >> ${GITHUB_ENV}
+      run: echo IMAGE_VERSION=$(make image-version IMAGE=${{ inputs.name }}) >> ${GITHUB_ENV}
+
+    - name: Determine image kind
+      shell: sh
+      run: echo IMAGE_KIND=$(make image-kind IMAGE=${{ inputs.name }}) >> ${GITHUB_ENV}
 
     - name: Build APK package
       shell: sh
@@ -33,37 +37,37 @@ runs:
 
     - name: Create OCI Image
       shell: sh
-      run: make apko ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+      run: make apko ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }}
 
     - name: Load OCI images
       shell: sh
-      run: make docker-load IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+      run: make docker-load IMAGE=${{ inputs.name }} VERSION="${IMAGE_VERSION}"
 
     - name: Scan OCI images with Dockle
       shell: sh
-      run: make dockle ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+      run: make dockle ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${IMAGE_VERSION}"
 
     - name: Scan OCI images with Grype
       shell: sh
-      run: make grype ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+      run: make grype ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${IMAGE_VERSION}"
 
     - name: Render the Dockle scans
       shell: sh
-      run: make render-dockle ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+      run: make render-dockle ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${IMAGE_VERSION}"
 
     - name: Render the Grype scans
       shell: sh
-      run: make render-grype ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+      run: make render-grype ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${IMAGE_VERSION}"
 
     - name: Upload OCI images
       shell: sh
-      run: make docker-push ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+      run: make docker-push ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${IMAGE_VERSION}"
       if: ${{ inputs.publish == 'true' }}
 
     - name: Upload reports artifact
       uses: actions/upload-artifact@v4
       with:
-        path: dist/${{ inputs.name }}/reports
+        path: ${IMAGE_KIND}/${{ inputs.name }}/reports/${IMAGE_VERSION}
       if: ${{ inputs.publish == 'true' }}
 
     - name: Setup Pages
@@ -73,7 +77,7 @@ runs:
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: dist/${{ inputs.name }}/renders
+        path: ${IMAGE_KIND}/${{ inputs.name }}/renders/${IMAGE_VERSION}
       if: ${{ inputs.publish == 'true' }}
 
     - name: Deploy to GitHub Pages
