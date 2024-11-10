@@ -91,7 +91,7 @@ dockle: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		dockle -f json -o "$${KIND}/${IMAGE}/reports/dockle-${VERSION}-${ARCH}.json" --debug "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"
+		dockle -f json -o "$${KIND}/${IMAGE}/reports/dockle-${VERSION}-${ARCH}.json" --debug "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"; \
 	done
 
 .PHONY: dockle-all
@@ -103,7 +103,7 @@ grype: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		grype -o json --file "$${KIND}/${IMAGE}/reports/grype-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}" -vv
+		grype -o json --file "$${KIND}/${IMAGE}/reports/grype-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}" -vv; \
 	done
 
 .PHONY: grype-all
@@ -115,7 +115,7 @@ trivy: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	mkdir -p "$${KIND}/${IMAGE}/reports" && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		trivy image -d -f json -o "$${KIND}/${IMAGE}/reports/trivy-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"
+		trivy image -d -f json -o "$${KIND}/${IMAGE}/reports/trivy-${VERSION}-${ARCH}.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}"; \
 	done
 
 .PHONY: trivy-all
@@ -129,7 +129,7 @@ snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		snyk container test -d \
 			--org=$${SNYK_ORG} "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-${ARCH}" \
-			--json-file-output="$${KIND}/${IMAGE}/reports/snyk-${VERSION}-${ARCH}.json"
+			--json-file-output="$${KIND}/${IMAGE}/reports/snyk-${VERSION}-${ARCH}.json"; \
 	done
 
 .PHONY: snyk-all
