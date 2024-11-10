@@ -55,7 +55,7 @@ runs:
       run: if [ ! -f "melange.rsa" ]; then echo "${{ inputs.melange_signing_key }}" > melange.rsa; fi
 
     - name: Build ${{ inputs.tool_name }}
-      uses: ../tool
+      uses: ./.github/actions/tool
       with:
         name: ${{ inputs.tool_name }}
         arch: ${{ inputs.tool_arch }}
