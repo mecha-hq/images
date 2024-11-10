@@ -131,7 +131,7 @@ runs:
     - name: Upload reports artifact
       uses: actions/upload-artifact@v4
       with:
-        path: ${IMAGE_KIND}/${{ inputs.image_name }}/reports/${IMAGE_VERSION}
+        path: ${{ env.IMAGE_KIND }}/${{ inputs.image_name }}/reports/${{ env.IMAGE_VERSION }}
       if: ${{ inputs.image_publish == 'true' }}
 
     - name: Setup Pages
@@ -141,7 +141,7 @@ runs:
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ${IMAGE_KIND}/${{ inputs.image_name }}/renders/${IMAGE_VERSION}
+        path: ${{ env.IMAGE_KIND }}/${{ inputs.image_name }}/renders/${{ env.IMAGE_VERSION }}
       if: ${{ inputs.image_publish == 'true' }}
 
     - name: Deploy to GitHub Pages
