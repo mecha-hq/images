@@ -2,7 +2,7 @@ contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
-    - '@local tools/yamlfmt/packages'
+    - "@local tools/yamlfmt/packages/0.13.0"
   packages:
     - yamlfmt@local
 

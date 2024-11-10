@@ -1,0 +1,50 @@
+---
+name: Checkmake
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      # checkmake-specific paths
+      - ".github/workflows/checkmake.yaml"
+      - "tools/checkmake/**"
+      # common paths
+      - ".github/actions/**"
+      - ".mise.*"
+      - Makefile
+      - melange.rsa.pub
+      - scripts/**"
+  pull_request:
+    paths:
+      # checkmake-specific paths
+      - ".github/workflows/checkmake.yaml"
+      - "tools/checkmake/**"
+      # common paths
+      - ".github/actions/**"
+      - ".mise.*"
+      - Makefile
+      - melange.rsa.pub
+      - scripts/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build tool
+        uses: ./.github/actions/tool-full
+        with:
+          melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
+          mise_version: 2024.11.4
+          snyk_org: ${{ secrets.SNYK_ORG }}
+          snyk_token: ${{ secrets.SNYK_TOKEN }}
+          tool_arch: amd64,arm64
+          tool_name: checkmake
+          tool_publish: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') && 'true' || 'false' }}

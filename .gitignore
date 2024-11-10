@@ -1,7 +1,7 @@
-dist/
-oci-image/
+oci-images/
 packages/
+renders/
 reports/
 sboms/
-oci-image.tar
-.envrc
+.mise.local.toml
+.mise.*.local.toml

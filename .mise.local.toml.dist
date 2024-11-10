@@ -1,0 +1,5 @@
+[env]
+
+MISE_ENV = "dev"
+SNYK_ORG = "your-org-identifier"
+SNYK_TOKEN = "your-token"

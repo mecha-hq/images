@@ -2,7 +2,7 @@ contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
-    - '@local tools/ls-lint/packages'
+    - "@local tools/ls-lint/packages/2.2.3"
   packages:
     - ls-lint@local
 
