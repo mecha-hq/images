@@ -5,8 +5,8 @@ inputs:
     description: "The name of the tool or collection to build."
     required: true
   arch:
-    description: "The arch to build the tool or collection for. default is amd64."
-    default: "amd64"
+    description: "The arch to build the tool or collection for. default is amd64,arm64."
+    default: "amd64,arm64"
     required: false
   publish:
     description: "Whether to publish the container images and manifests. default is false."

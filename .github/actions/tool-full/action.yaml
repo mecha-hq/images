@@ -15,8 +15,8 @@ inputs:
     description: "The Snyk token to use for scanning."
     required: true
   tool_arch:
-    description: "The arch to build the tool or collection for. default is amd64."
-    default: "amd64"
+    description: "The arch to build the tool or collection for. default is amd64,arm64."
+    default: "amd64,arm64"
     required: false
   tool_name:
     description: "The name of the tool or collection to build."
