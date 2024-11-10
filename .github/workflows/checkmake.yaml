@@ -1,8 +1,11 @@
 ---
-name: Checkmake Pull Requests
+name: Checkmake
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
   pull_request:
     paths:
       # checkmake-specific paths
@@ -25,8 +28,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Full Tool Build
+      - name: Build tool
         uses: ./.github/actions/tool-full
         with:
           melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
@@ -35,4 +37,4 @@ jobs:
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           tool_arch: amd64,arm64
           tool_name: checkmake
-          tool_publish: "false"
+          tool_publish: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') && 'true' || 'false' }}
