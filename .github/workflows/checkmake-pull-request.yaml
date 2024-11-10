@@ -23,44 +23,13 @@ jobs:
         image: docker:dind
         options: --privileged --shm-size=2g
     steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
+      - name: Full Tool Build
+        uses: ./.github/actions/tool-full
         with:
-          egress-policy: audit
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Dump the signing key
-        run: if [ ! -f "melange.rsa" ]; then echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa; fi
-
-      - name: Install mise
-        uses: jdx/mise-action@v2
-        with:
-          version: 2024.11.4
-
-      - name: Activate mise
-        shell: sh
-        run: echo 'eval "$(~/.local/share/mise/bin/mise activate bash)"' >> ~/.bashrc
-
-      - name: Test build of new tool version
-        uses: ./.github/actions/tool
-        with:
-          name: checkmake
-          arch: amd64,arm64 # valid values are "amd64", "arm64" and "amd64,arm64"
-          publish: "false"
+          tool_name: checkmake
+          tool_arch: amd64,arm64
+          tool_publish: "false"
+          mise_version: 2024.11.4
         env:
           SNYK_ORG: ${{ secrets.SNYK_ORG }}
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      - name: Remove the signing key
-        run: shred -v -z -u -n 5 melange.rsa
-        if: always()
