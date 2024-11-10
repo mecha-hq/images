@@ -38,6 +38,8 @@ jobs:
           egress-policy: audit
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Build tool
         uses: ./.github/actions/tool-full
         with:
