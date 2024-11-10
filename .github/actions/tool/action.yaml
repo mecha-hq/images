@@ -39,13 +39,21 @@ runs:
       shell: sh
       run: make docker-load IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
 
-    - name: Scan OCI images
+    - name: Scan OCI images with Dockle
       shell: sh
-      run: make scan ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+      run: make dockle ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
 
-    - name: Render the scans
+    - name: Scan OCI images with Grype
       shell: sh
-      run: make render ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+      run: make grype ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+
+    - name: Render the Dockle scans
+      shell: sh
+      run: make render-dockle ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
+
+    - name: Render the Grype scans
+      shell: sh
+      run: make render-grype ARCH=${{ inputs.arch }} IMAGE=${{ inputs.name }} VERSION="${TOOL_VERSION}"
 
     - name: Upload OCI images
       shell: sh
