@@ -31,6 +31,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+      pages: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
@@ -43,7 +46,7 @@ jobs:
       - name: Build image
         uses: ./.github/actions/image
         with:
-          container_registry_password: ${{ secrets.CI_TOKEN }}
+          container_registry_password: ${{ secrets.GITHUB_TOKEN }}
           melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
           mise_version: 2024.11.4
           snyk_org: ${{ secrets.SNYK_ORG }}
