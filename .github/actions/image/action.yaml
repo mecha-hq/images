@@ -119,7 +119,7 @@ runs:
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
-        username: ${{ github.actor }}
+        username: mecha-hq
         password: ${{ inputs.container_registry_password }}
       if: ${{ inputs.image_publish == 'true' }}
 
