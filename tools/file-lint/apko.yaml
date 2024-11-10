@@ -2,7 +2,7 @@ contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
-    - "@local tools/file-lint/packages"
+    - "@local tools/file-lint/packages/0.8"
   packages:
     - busybox
     - file-lint@local
