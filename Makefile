@@ -129,7 +129,7 @@ snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		snyk container test -d \
 			--org=$${SNYK_ORG} "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}" \
-			--json-file-output="$${KIND}/${IMAGE}/reports/snyk-${VERSION}-$${a}.json" \
+			--json-file-output="$${KIND}/${IMAGE}/reports/snyk-${VERSION}-$${a}.json"; \
 	done
 
 .PHONY: snyk-all
