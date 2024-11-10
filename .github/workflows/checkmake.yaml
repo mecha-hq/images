@@ -6,10 +6,20 @@ on:
   push:
     branches:
       - main
+    paths:
+      # checkmake-specific paths
+      - ".github/workflows/checkmake.yaml"
+      - "tools/checkmake/**"
+      # common paths
+      - ".github/actions/**"
+      - ".mise.*"
+      - Makefile
+      - melange.rsa.pub
+      - scripts/**"
   pull_request:
     paths:
       # checkmake-specific paths
-      - ".github/workflows/checkmake-*.yaml"
+      - ".github/workflows/checkmake.yaml"
       - "tools/checkmake/**"
       # common paths
       - ".github/actions/**"
@@ -21,10 +31,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    services:
-      docker:
-        image: docker:dind
-        options: --privileged --shm-size=2g
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
