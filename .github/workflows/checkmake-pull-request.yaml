@@ -29,10 +29,10 @@ jobs:
       - name: Full Tool Build
         uses: ./.github/actions/tool-full
         with:
-          tool_name: checkmake
-          tool_arch: amd64,arm64
-          tool_publish: "false"
+          melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
           mise_version: 2024.11.4
-        env:
-          SNYK_ORG: ${{ secrets.SNYK_ORG }}
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          snyk_org: ${{ secrets.SNYK_ORG }}
+          snyk_token: ${{ secrets.SNYK_TOKEN }}
+          tool_arch: amd64,arm64
+          tool_name: checkmake
+          tool_publish: "false"

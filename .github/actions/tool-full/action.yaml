@@ -1,20 +1,29 @@
 name: Build and Scan Tool
 description: Build an OCI image for a given tool on a given arch and scan it, producing reports. Optionally publish both the image and the reports on GitHub.
 inputs:
-  tool_name:
-    description: "The name of the tool or collection to build."
+  melange_signing_key:
+    description: "The signing key for Melange."
+    required: true
+  mise_version:
+    description: "The version of mise to install."
+    default: "2024.11.4"
+    required: false
+  snyk_org:
+    description: "The Snyk organization to use for scanning."
+    required: true
+  snyk_token:
+    description: "The Snyk token to use for scanning."
     required: true
   tool_arch:
     description: "The arch to build the tool or collection for. default is amd64."
     default: "amd64"
     required: false
+  tool_name:
+    description: "The name of the tool or collection to build."
+    required: true
   tool_publish:
     description: "Whether to publish the container images and manifests. default is false."
     default: "false"
-    required: false
-  mise_version:
-    description: "The version of mise to install."
-    default: "2024.11.4"
     required: false
 runs:
   using: "composite"
@@ -43,7 +52,7 @@ runs:
 
     - name: Dump the signing key
       shell: sh
-      run: if [ ! -f "melange.rsa" ]; then echo "${{ secrets.MELANGE_SIGNING_KEY }}" > melange.rsa; fi
+      run: if [ ! -f "melange.rsa" ]; then echo "${{ inputs.melange_signing_key }}" > melange.rsa; fi
 
     - name: Build ${{ inputs.tool_name }}
       uses: ../tool
@@ -52,8 +61,8 @@ runs:
         arch: ${{ inputs.tool_arch }}
         publish: ${{ inputs.tool_publish }}
       env:
-        SNYK_ORG: ${{ secrets.SNYK_ORG }}
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        SNYK_ORG: ${{ inputs.snyk_org }}
+        SNYK_TOKEN: ${{ inputs.snyk_token }}
 
     - name: Remove the signing key
       shell: sh
