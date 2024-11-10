@@ -12,6 +12,9 @@ inputs:
     description: "Whether to publish the container images and manifests. default is false."
     default: "false"
     required: false
+  container_registry_password:
+    description: "The password for the Container Registry."
+    required: true
 runs:
   using: "composite"
   steps:
@@ -64,7 +67,7 @@ runs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ inputs.container_registry_password }}
       if: ${{ inputs.publish == 'true' }}
 
     - name: Upload OCI images

@@ -43,6 +43,7 @@ jobs:
       - name: Build tool
         uses: ./.github/actions/tool-full
         with:
+          container_registry_password: ${{ secrets.GITHUB_TOKEN }}
           melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
           mise_version: 2024.11.4
           snyk_org: ${{ secrets.SNYK_ORG }}

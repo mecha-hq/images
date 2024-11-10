@@ -1,6 +1,9 @@
 name: Build and Scan Tool
 description: Build an OCI image for a given tool on a given arch and scan it, producing reports. Optionally publish both the image and the reports on GitHub.
 inputs:
+  container_registry_password:
+    description: "The password for the Container registry."
+    required: true
   melange_signing_key:
     description: "The signing key for Melange."
     required: true
@@ -55,6 +58,7 @@ runs:
         name: ${{ inputs.tool_name }}
         arch: ${{ inputs.tool_arch }}
         publish: ${{ inputs.tool_publish }}
+        container_registry_password: ${{ inputs.container_registry_password }}
       env:
         SNYK_ORG: ${{ inputs.snyk_org }}
         SNYK_TOKEN: ${{ inputs.snyk_token }}
