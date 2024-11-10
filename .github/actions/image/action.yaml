@@ -1,0 +1,154 @@
+name: Build and Scan Image
+description: Build an OCI image for a given image on a given arch and scan it, producing reports. Optionally publish both the image and the reports on GitHub.
+inputs:
+  container_registry_password:
+    description: "The password for the Container registry."
+    required: true
+  melange_signing_key:
+    description: "The signing key for Melange."
+    required: true
+  mise_version:
+    description: "The version of mise to install."
+    default: "2024.11.4"
+    required: false
+  snyk_org:
+    description: "The Snyk organization to use for scanning."
+    required: true
+  snyk_token:
+    description: "The Snyk token to use for scanning."
+    required: true
+  image_arch:
+    description: "The arch to build the image for. default is amd64,arm64."
+    default: "amd64,arm64"
+    required: false
+  image_name:
+    description: "The name of the image to build."
+    required: true
+  image_publish:
+    description: "Whether to publish the container images and manifests. default is false."
+    default: "false"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Install mise
+      uses: jdx/mise-action@v2
+      with:
+        version: ${{ inputs.mise_version }}
+
+    - name: Activate mise
+      shell: sh
+      run: echo 'eval "$(~/.local/share/mise/bin/mise activate bash)"' >> ~/.bashrc
+
+    - name: Dump the signing key
+      shell: sh
+      run: if [ ! -f "melange.rsa" ]; then echo "${{ inputs.melange_signing_key }}" > melange.rsa; fi
+
+    - name: validate inputs.name
+      shell: sh
+      run: make validate-name IMAGE=${{ inputs.image_name }}
+
+    - name: validate inputs.arch
+      shell: sh
+      run: make validate-arch ARCH=${{ inputs.image_arch }}
+
+    - name: Determine image version
+      shell: sh
+      run: echo IMAGE_VERSION=$(make image-version IMAGE=${{ inputs.image_name }}) >> ${GITHUB_ENV}
+
+    - name: Determine image kind
+      shell: sh
+      run: echo IMAGE_KIND=$(make image-kind IMAGE=${{ inputs.image_name }}) >> ${GITHUB_ENV}
+
+    - name: Build APK package
+      shell: sh
+      run: make melange ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }}
+
+    - name: Create OCI Image
+      shell: sh
+      run: make apko ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }}
+
+    - name: Load OCI images
+      shell: sh
+      run: make docker-load IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+
+    - name: Scan OCI images with Dockle
+      shell: sh
+      run: make dockle ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+
+    - name: Scan OCI images with Grype
+      shell: sh
+      run: make grype ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+
+    # - name: Scan OCI images with Trivy
+    #   shell: sh
+    #   run: make trivy ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+
+    # - name: Scan OCI images with Snyk
+    #   shell: sh
+    #   run: make snyk ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+    #   env:
+    #     SNYK_ORG: ${{ inputs.snyk_org }}
+    #     SNYK_TOKEN: ${{ inputs.snyk_token }}
+
+    - name: Render the Dockle scans
+      shell: sh
+      run: make render-dockle ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+
+    - name: Render the Grype scans
+      shell: sh
+      run: make render-grype ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+
+    # - name: Render the Trivy scans
+    #   shell: sh
+    #   run: make render-trivy ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+
+    # - name: Render the Snyk scans
+    #   shell: sh
+    #   run: make render-snyk ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+
+    - name: Login to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ inputs.container_registry_password }}
+      if: ${{ inputs.image_publish == 'true' }}
+
+    - name: Upload OCI images
+      shell: sh
+      run: make docker-push ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      if: ${{ inputs.image_publish == 'true' }}
+
+    - name: Upload reports artifact
+      uses: actions/upload-artifact@v4
+      with:
+        path: ${IMAGE_KIND}/${{ inputs.image_name }}/reports/${IMAGE_VERSION}
+      if: ${{ inputs.image_publish == 'true' }}
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      if: ${{ inputs.image_publish == 'true' }}
+
+    - name: Upload pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ${IMAGE_KIND}/${{ inputs.image_name }}/renders/${IMAGE_VERSION}
+      if: ${{ inputs.image_publish == 'true' }}
+
+    - name: Deploy to GitHub Pages
+      uses: actions/deploy-pages@v4
+      if: ${{ inputs.image_publish == 'true' }}
+
+    - name: Remove the signing key
+      shell: sh
+      run: shred -v -z -u -n 5 melange.rsa
+      if: always()
