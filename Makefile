@@ -29,11 +29,11 @@ keygen:
 
 .PHONY: melange
 melange: check-variable-ARCH check-variable-IMAGE
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	export VERSION=$(shell $(MAKE) image-version IMAGE=${IMAGE}) && \
 	melange build --arch=${ARCH} --debug \
 		--signing-key=melange.rsa \
-		--out-dir=$${KIND}/${IMAGE}/packages/$${VERSION} \
+		--out-dir=dist/$${KIND}/${IMAGE}/$${VERSION}/packages \
 		--runner=docker \
 		$${KIND}/${IMAGE}/melange.yaml
 
@@ -41,19 +41,19 @@ melange: check-variable-ARCH check-variable-IMAGE
 apko: check-variable-ARCH check-variable-IMAGE
 	export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	export VERSION=$(shell $(MAKE) image-version IMAGE=${IMAGE}) && \
-	mkdir -p "$${KIND}/${IMAGE}/oci-images/$${VERSION}" && \
-	mkdir -p "$${KIND}/${IMAGE}/sboms/$${VERSION}" && \
+	mkdir -p "dist/$${KIND}/${IMAGE}/$${VERSION}/images" && \
+	mkdir -p "dist/$${KIND}/${IMAGE}/$${VERSION}/sboms" && \
 	apko build --arch=${ARCH} --log-level=debug \
 		--build-date=$$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
 		--keyring-append=melange.rsa.pub \
-		--sbom-path=$${KIND}/${IMAGE}/sboms/$${VERSION} \
+		--sbom-path=dist/$${KIND}/${IMAGE}/$${VERSION}/sboms \
 		$${KIND}/${IMAGE}/apko.yaml "${REGISTRY}/${OWNER}/${IMAGE}:$${VERSION}" \
-		$${KIND}/${IMAGE}/oci-images/$${VERSION}/${IMAGE}-$${VERSION}.tar
+		dist/$${KIND}/${IMAGE}/$${VERSION}/images/${IMAGE}-$${VERSION}.tar
 
 .PHONY: docker-load
 docker-load: check-variable-IMAGE check-variable-VERSION
 	export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
-	docker load -i $${KIND}/${IMAGE}/oci-images/${VERSION}/${IMAGE}-${VERSION}.tar
+	docker load -i dist/$${KIND}/${IMAGE}/${VERSION}/images/${IMAGE}-${VERSION}.tar
 
 .PHONY: build
 build: clean melange apko docker-load
@@ -78,24 +78,18 @@ docker-manifest: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 
 .PHONY: clean
 clean: check-variable-IMAGE
-	@find . -path "*/${IMAGE}/*" -name "oci-images" -type d -delete
-	@find . -path "*/${IMAGE}/*" -name "packages" -type d -exec rm -rf {} +
-	@find . -path "*/${IMAGE}/*" -name "reports" -type d -exec rm -rf {} +
-	@find . -path "*/${IMAGE}/*" -name "sboms" -type d -exec rm -rf {} +
+	@find . -name "dist/*/${IMAGE}" -type d -exec rm -rf {} +
 
 .PHONY: clean-all
 clean-all:
-	@find . -name "oci-images" -type d -delete
-	@find . -name "packages" -type d -exec rm -rf {} +
-	@find . -name "reports" -type d -exec rm -rf {} +
-	@find . -name "sboms" -type d -exec rm -rf {} +
+	@find . -name "dist" -type d -exec rm -rf {} +
 
 .PHONY: dockle
 dockle: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		mkdir -p "$${KIND}/${IMAGE}/reports/${VERSION}/$${a}" && \
-		dockle -f json -o "$${KIND}/${IMAGE}/reports/${VERSION}/$${a}/dockle.json" --debug "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}"; \
+		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
+		dockle -f json -o "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/dockle.json" --debug "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}"; \
 	done
 
 .PHONY: dockle-all
@@ -106,8 +100,8 @@ dockle-all: check-variable-ARCH
 grype: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		mkdir -p "$${KIND}/${IMAGE}/reports/${VERSION}/$${a}" && \
-		grype -o json --file "$${KIND}/${IMAGE}/reports/${VERSION}/$${a}/grype.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}" -vv; \
+		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
+		grype -o json --file "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/grype.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}" -vv; \
 	done
 
 .PHONY: grype-all
@@ -118,8 +112,8 @@ grype-all: check-variable-ARCH
 trivy: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		mkdir -p "$${KIND}/${IMAGE}/reports/${VERSION}/$${a}" && \
-		trivy image -d -f json -o $${KIND}/${IMAGE}/reports/${VERSION}/$${a}/trivy.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}"; \
+		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
+		trivy image -d -f json -o dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/trivy.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}"; \
 	done
 
 .PHONY: trivy-all
@@ -130,10 +124,10 @@ trivy-all: check-variable-ARCH
 snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		mkdir -p "$${KIND}/${IMAGE}/reports/${VERSION}/$${a}" && \
+		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
 		snyk container test -d \
 			--org=$${SNYK_ORG} "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}" \
-			--json-file-output="$${KIND}/${IMAGE}/reports/${VERSION}/$${a}/snyk.json"; \
+			--json-file-output="dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/snyk.json"; \
 	done
 
 .PHONY: snyk-all
@@ -157,8 +151,8 @@ render-dockle: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		ekdo render dockle \
-			--output-dir=$${KIND}/${IMAGE}/renders/${VERSION}/$${a} \
-			$${KIND}/${IMAGE}/reports/${VERSION}/$${a}/dockle.json; \
+			--output-dir=dist/$${KIND}/${IMAGE}/${VERSION}/renders/$${a} \
+			dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/dockle.json; \
 	done
 
 .PHONY: render-grype
@@ -166,8 +160,8 @@ render-grype: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		ekdo render grype \
-			--output-dir=$${KIND}/${IMAGE}/renders/${VERSION}/$${a} \
-			$${KIND}/${IMAGE}/reports/${VERSION}/$${a}/grype.json; \
+			--output-dir=dist/$${KIND}/${IMAGE}/${VERSION}/renders/$${a} \
+			dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/grype.json; \
 	done
 
 .PHONY: render-trivy
@@ -175,8 +169,8 @@ render-trivy: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		ekdo render trivy \
-			--output-dir=$${KIND}/${IMAGE}/renders/${VERSION}/$${a} \
-			$${KIND}/${IMAGE}/reports/${VERSION}/$${a}/trivy.json; \
+			--output-dir=dist/$${KIND}/${IMAGE}/${VERSION}/renders/$${a} \
+			dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/trivy.json; \
 	done
 
 .PHONY: render-snyk
@@ -184,6 +178,11 @@ render-snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		ekdo render snyk \
-			--output-dir=$${KIND}/${IMAGE}/renders/${VERSION}/$${a} \
-			$${KIND}/${IMAGE}/reports/${VERSION}/$${a}/snyk.json; \
+			--output-dir=dist/$${KIND}/${IMAGE}/${VERSION}/renders/$${a} \
+			dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/snyk.json; \
 	done
+
+.PHONY: prepare-gh-pages
+prepare-gh-pages: check-variable-IMAGE check-variable-VERSION
+	export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	${PROJECT_DIR}/scripts/prepare-gh-pages.sh $${KIND} ${IMAGE} ${VERSION}
