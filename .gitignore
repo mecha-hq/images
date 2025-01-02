@@ -1,7 +1,3 @@
-oci-images/
-packages/
-renders/
-reports/
-sboms/
-.mise.local.toml
-.mise.*.local.toml
+dist/
+mise.local.toml
+mise.*.local.toml
