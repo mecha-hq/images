@@ -4,12 +4,12 @@ scms:
   images-ci:
     kind: github
     spec:
-      user: {{ .github.user }}
-      email: {{ .github.email }}
-      owner: {{ .github.owner }}
-      repository: {{ .github.repository }}
-      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: {{ .github.username }}
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      username: "{{ .github.username }}"
       branch: main
 
 actions:
@@ -31,8 +31,8 @@ sources:
     spec:
       owner: "cytopia"
       repository: "docker-file-lint"
-      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: {{ .github.username }} 
+      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      username: "{{ .github.username }} "
       versionfilter:
         kind: latest
     transformers:

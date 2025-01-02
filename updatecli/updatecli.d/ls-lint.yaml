@@ -4,12 +4,12 @@ scms:
   images-ci:
     kind: github
     spec:
-      user: {{ .github.user }}
-      email: {{ .github.email }}
-      owner: {{ .github.owner }}
-      repository: {{ .github.repository }}
-      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: {{ .github.username }}
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      username: "{{ .github.username }}"
       branch: main
 
 actions:
@@ -28,7 +28,7 @@ sources:
   ls-lint:
     name: Get latest version from npm registry
     kind: npm
-    spec: 
+    spec:
       name: "@ls-lint/ls-lint"
 
 targets:
