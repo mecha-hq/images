@@ -2,7 +2,7 @@ contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
     - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
-    - "@local tools/yamllint/packages/1.35.1"
+    - "@local dist/tools/yamllint/1.35.1/packages"
   packages:
     - yamllint@local
 
