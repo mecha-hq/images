@@ -4,19 +4,19 @@ scms:
   images-ci:
     kind: github
     spec:
-      user: {{ .github.user }}
-      email: {{ .github.email }}
-      owner: {{ .github.owner }}
-      repository: {{ .github.repository }}
-      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: {{ .github.username }}
+      user: "{{ .github.user }}"
+      email: "{{ .github.email }}"
+      owner: "{{ .github.owner }}"
+      repository: "{{ .github.repository }}"
+      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      username: "{{ .github.username }}"
       branch: main
   yamllint:
     kind: github
     spec:
       owner: "adrienverge"
       repository: "yamllint"
-      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
       branch: master
 
 actions:
@@ -37,6 +37,7 @@ sources:
     kind: gittag
     scmid: yamllint
     spec:
+      url: https://github.com/adrienverge/yamllint.git
       versionfilter:
         kind: semver
         pattern: "v*"
