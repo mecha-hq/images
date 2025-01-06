@@ -3,14 +3,13 @@
 [tools]
 apko = "0.19.1"
 dockle = "0.4.14"
-ekdo = "0.1.0"
 grype = "0.82.1"
 hugo = "0.140.2"
 melange = "0.12.1"
+node = "23.5.0"
 shellbits = "0.2.0"
 snyk = "1.1293.1"
 trivy = "0.56.2"
 
 [alias]
-ekdo = 'https://github.com/mecha-hq/asdf-ekdo'
-shellbits = 'https://github.com/mecha-hq/asdf-shellbits'
+shellbits = 'asdf:https://github.com/mecha-hq/asdf-shellbits'

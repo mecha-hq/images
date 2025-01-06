@@ -1,5 +1,6 @@
-[env]
+[tools]
+act = "0.2.68"
 
-MISE_ENV = "dev"
+[env]
 SNYK_ORG = "your-org-identifier"
 SNYK_TOKEN = "your-token"
