@@ -50,7 +50,7 @@ jobs:
         with:
           container_registry_password: ${{ secrets.CI_TOKEN }}
           melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
-          mise_version: 2024.11.4
+          mise_version: 2024.11.28
           snyk_org: ${{ secrets.SNYK_ORG }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           image_arch: amd64,arm64
