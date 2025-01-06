@@ -43,6 +43,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          submodules: recursive
           fetch-depth: 0
       - name: Build image
         uses: ./.github/actions/image
@@ -54,4 +55,5 @@ jobs:
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           image_arch: amd64,arm64
           image_name: checkmake
-          image_publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+          # image_publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+          image_publish: false
