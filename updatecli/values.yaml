@@ -4,3 +4,6 @@ github:
   username: "github-actions"
   repository: "images"
   owner: "mecha-hq"
+
+dockerhub:
+  username: "mecha-hq"
