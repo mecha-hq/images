@@ -1,0 +1,21 @@
+{{ $arch := "" }}
+{{ if or (strings.Contains .Resource.Title "amd64") (strings.Contains .Resource.Title "x86_64") }}
+  {{ $arch = "amd64" }}
+{{ else if or (strings.Contains .Resource.Title "arm64") (strings.Contains .Resource.Title "aarch64") }}
+  {{ $arch = "arm64" }}
+{{ end }}
+
+<a href="{{ .Resource.RelPermalink }}" class="min-w-full">
+  <div class="min-h-full border border-neutral-200 dark:border-neutral-700 border-2 rounded overflow-hidden shadow-2xl relative">
+    <div class="w-full thumbnail_card nozoom" style="background-repeat: no-repeat; background-size: 80%; background-image:url({{ .Icon.Permalink }});">
+      {{ if $arch }}
+      <div class="m-2">
+      {{ partial "badge.html" $arch }}
+      </div>
+      {{ end }}
+    </div>
+    <div class="px-6 py-4 font-bold text-xl text-neutral-800 decoration-primary-500 hover:underline hover:underline-offset-2 dark:text-neutral" href="{{ .Resource.RelPermalink }}">
+      {{ path.Base .Resource.Title | emojify }}
+    </div>
+  </div>
+</a>

@@ -1,0 +1,82 @@
+{{ $icon := resources.Get "img/grype-logo.png" }}
+
+<div class="max-w-4xl mx-auto bg-white p-8 rounded shadow">
+  <div class="flex flex-row">
+    <div class="w-12 h-12 mr-2 avatar place-self-center">
+      <img class="m-0" src="{{ $icon.Permalink }}" alt="Grype Logo" />
+    </div>
+    <h3 class="font-bold m-0 place-self-center">
+      <a name="grype">Grype</a>
+    </h3>
+  </div>
+
+  <!-- Docker Image Information -->
+  <div class="mt-8">
+    <div class="overflow-x-clip">
+      <h4 class="text-xl font-bold">Information</h4>
+
+      <table class="min-w-full border rounded mt-4 table-auto">
+        <colgroup>
+          <col span="1" style="width: 20%;">
+          <col span="1" style="width: 80%;">
+        </colgroup>
+        <tbody>
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">Artifact Name</td>
+            <td class="py-2 px-4 border-b">{{ index .content.source.target "userInput" }}</td>
+          </tr>
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">Artifact Type</td>
+            <td class="py-2 px-4 border-b">{{ .content.source.type }}</td>
+          </tr>
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">OS Kind</td>
+            <td class="py-2 px-4 border-b">{{ default "N/A" (strings.Trim (index .content.source.target "os") " ") }}</td>
+          </tr>
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">OS Name</td>
+            <td class="py-2 px-4 border-b">{{ default "N/A" (strings.Trim (print .content.distro.name " " .content.distro.version) " ") }}</td>
+          </tr>
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">Architecture</td>
+            <td class="py-2 px-4 border-b">{{ default "N/A" (strings.Trim (index .content.source.target "architecture") " ") }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Vulnerabilities Table -->
+  <div class="mt-8 mb-4">
+    <h4 class="text-xl font-bold">Vulnerabilities</h4>
+
+    <table class="min-w-full border rounded mt-4 table-auto">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="py-2 px-4 border-b no-wrap">Id</th>
+          <th class="py-2 px-4 border-b">Severity</th>
+          <th class="py-2 px-4 border-b">State</th>
+          <th class="py-2 px-4 border-b">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .content.matches }}
+        <tr>
+          <td class="py-2 px-4 border-b no-wrap">
+            {{ if ne (strings.Trim .vulnerability.dataSource " ") "" }}
+            <a class="link" href="{{ .vulnerability.dataSource }}">
+              {{ .vulnerability.id }}
+            </a>
+            {{ else }}
+            {{ .vulnerability.id }}
+            {{ end }}
+          </td>
+          <td class="py-2 px-4 border-b">{{ strings.Title .vulnerability.severity }}</td>
+          <td class="py-2 px-4 border-b">{{ strings.Title .vulnerability.fix.state }}</td>
+          <td class="py-2 px-4 border-b">{{ .vulnerability.description }}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</div>

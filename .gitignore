@@ -1,3 +1,8 @@
 dist/
 mise.local.toml
 mise.*.local.toml
+pages/content/tools/*
+!pages/content/tools/_index.md
+pages/content/collections/*
+!pages/content/collections/_index.md
+pages/public/

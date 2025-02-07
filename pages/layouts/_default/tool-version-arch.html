@@ -1,0 +1,73 @@
+{{ define "main" }}
+{{ .Scratch.Set "scope" "single" }}
+{{ $matches := .Resources.Match "*.json" }}
+{{ $fullTitle := printf "%s %s (%s)" .Parent.Parent.Title .Parent.Title .Title }}
+
+<article>
+  <header id="single_header" class="mt-5 max-w-prose">
+    {{ partial "breadcrumbs.html" . }}
+  </header>
+
+  <section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row">
+    <div class="min-w-0 min-h-0 max-w-fit">
+      <div class="article-content max-w-prose mb-20">
+        <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+          {{ $fullTitle }}
+        </h1>
+
+        <h2>Contents</h2>
+
+        <ul>
+          <li>
+            <a href="#reports">Reports</a>
+            <ol>
+            {{ range $matches }}
+              {{ $kind := path.BaseName . }}
+              {{ $href := printf "#%s" $kind }}
+              <li>
+                <a href="{{ $href }}">{{ strings.Replace $kind "." " " }}</a>
+              </li>
+            {{ end }}
+            </ol>
+          </li>
+          <li>
+            <a href="#files">Files</a>
+          </li>
+        </ul>
+
+        <hr />
+
+        <h2>
+          <a name="reports">Reports</a>
+        </h2>
+
+        {{ range $matches }}
+        <section class="mt-12">
+          {{ $content := unmarshal .Content }}
+          {{ $kind := path.BaseName . }}
+          {{ $arch := $.Title }}
+
+          {{ partial (printf "%s.html" $kind) (dict "content" $content "arch" $arch) }}
+        </section>
+        {{ end }}
+
+        <h2>
+          <a name="files">Files</a>
+        </h2>
+
+        <section class="w-full grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        {{ range .Resources.Match "*.spdx.json" }}
+        {{ partial "article-card.html" (dict "Resource" . "Icon" (resources.Get "img/spdx-logo.png")) }}
+        {{ end }}
+        {{ range .Resources.Match "dockle.json" }}
+        {{ partial "article-card.html" (dict "Resource" . "Icon" (resources.Get "img/dockle-logo.png")) }}
+        {{ end }}
+        {{ range .Resources.Match "grype.json" }}
+        {{ partial "article-card.html" (dict "Resource" . "Icon" (resources.Get "img/grype-logo.png")) }}
+        {{ end }}
+        </section>
+      </div>
+    </div>
+  </section>
+</article>
+{{ end }}

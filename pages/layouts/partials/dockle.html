@@ -1,0 +1,69 @@
+{{ $icon := resources.Get "img/dockle-logo.png" }}
+
+<div class="max-w-4xl mx-auto bg-white p-8 rounded shadow">
+  <div class="flex flex-row">
+    <div class="w-12 h-12 mr-2 avatar place-self-center">
+      <img class="m-0" src="{{ $icon.Permalink }}" alt="Dockle Logo" />
+    </div>
+    <h3 class="font-bold m-0 place-self-center">
+      <a name="dockle">Dockle</a>
+    </h3>
+  </div>
+
+  <!-- Docker Image Information -->
+  <div class="mt-4">
+    <div class="overflow-x-clip">
+      <h4 class="font-bold m-0">Information</h4>
+
+      <table class="min-w-full border rounded mt-4">
+        <colgroup>
+          <col span="1" style="width: 20%;">
+          <col span="1" style="width: 80%;">
+        </colgroup>
+        <tbody class="divide-none">
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">Artifact Name</td>
+            <td class="py-2 px-4 border-b">{{ .content.image }}</td>
+          </tr>
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">Artifact Type</td>
+            <td class="py-2 px-4 border-b">container image</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Details Table -->
+  <div class="mt-4 mb-4">
+    <h4 class="font-bold">Details</h4>
+
+    <table class="min-w-full border rounded mt-4">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="py-2 px-4 border-b no-wrap">Code</th>
+          <th class="py-2 px-4 border-b">Title</th>
+          <th class="py-2 px-4 border-b">Level</th>
+          <th class="py-2 px-4 border-b">Alerts</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .content.details }}
+        {{ $link := printf "https://github.com/goodwithtech/dockle/blob/master/CHECKPOINT.md#%s" (strings.ToLower .code) }}
+        <tr>
+          <td class="py-2 px-4 border-b no-wrap">
+            <a class="link" href="{{ $link }}">{{ .code }}</a>
+          </td>
+          <td class="py-2 px-4 border-b">{{ .title }}</td>
+          <td class="py-2 px-4 border-b">{{ title (lower .level) }}</td>
+          <td class="py-2 px-4 border-b">
+          {{- range .alerts }}
+            <p>{{ . }}</p>
+          {{- end }}
+          </td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</div>
