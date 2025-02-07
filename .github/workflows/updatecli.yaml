@@ -24,9 +24,9 @@ jobs:
       - name: Run Updatecli in Dry Run mode
         run: "updatecli diff --config ./updatecli/updatecli.d --values updatecli/values.yaml"
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Updatecli in apply mode
         run: "updatecli apply --config ./updatecli/updatecli.d --values updatecli/values.yaml"
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
