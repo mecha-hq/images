@@ -1,0 +1,105 @@
+{{ $icon := resources.Get "img/spdx-logo.png" }}
+
+<div class="max-w-4xl mx-auto bg-white p-8 rounded shadow">
+  <div class="flex flex-row">
+    <div class="w-12 h-12 mr-2 avatar place-self-center">
+      <img class="m-0" src="{{ $icon.Permalink }}" alt="Dockle Logo" />
+    </div>
+    <h3 class="font-bold m-0 place-self-center">
+      <a name="sbom.spdx">SPDX SBOM</a>
+    </h3>
+  </div>
+
+  <!-- Docker Image Information -->
+  <div class="mt-4">
+    <div class="overflow-x-clip">
+      <h4 class="font-bold m-0">Information</h4>
+
+      <table class="min-w-full border rounded mt-4">
+        <colgroup>
+          <col span="1" style="width: 20%;">
+          <col span="1" style="width: 80%;">
+        </colgroup>
+        <tbody class="divide-none">
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">Spdx Version</td>
+            <td class="py-2 px-4 border-b">{{ .content.spdxVersion }}</td>
+          </tr>
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">Data License</td>
+            <td class="py-2 px-4 border-b">{{ .content.dataLicense }}</td>
+          </tr>
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">Document Namespace</td>
+            <td class="py-2 px-4 border-b">{{ .content.documentNamespace }}</td>
+          </tr>
+          <tr>
+            <td class="font-bold py-2 px-4 border-b no-wrap">Document Describes</td>
+            <td class="py-2 px-4 border-b no-wrap">{{ .content.documentDescribes }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Packages Table -->
+  <div class="mt-4 mb-4">
+    <h4 class="font-bold">Packages</h4>
+
+    <table class="min-w-full border rounded mt-4">
+      <colgroup>
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 35%;">
+        <col span="1" style="width: 15%;">
+      </colgroup>
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="py-2 px-4 border-b">Name</th>
+          <th class="py-2 px-4 border-b">Description</th>
+          <th class="py-2 px-4 border-b">Supplier</th>
+          <th class="py-2 px-4 border-b">Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .content.packages }}
+        <tr>
+          <td class="py-2 px-4 border-b ellipsis" style="max-width: 0.2rem;">{{ .name }}</td>
+          <td class="py-2 px-4 border-b">{{ .description }}</td>
+          <td class="py-2 px-4 border-b">{{ .supplier }}</td>
+          <td class="py-2 px-4 border-b">{{ .primaryPackagePurpose }}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Relationships Table -->
+  <div class="mt-4 mb-4">
+    <h4 class="font-bold">Relationships</h4>
+
+    <table class="min-w-full border rounded mt-4">
+      <colgroup>
+        <col span="1" style="width: 45%;">
+        <col span="1" style="width: 10%;">
+        <col span="1" style="width: 45%;">
+      </colgroup>
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="py-2 px-4 border-b">Element ID</th>
+          <th class="py-2 px-4 border-b">Type</th>
+          <th class="py-2 px-4 border-b">Related Element</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .content.relationships }}
+        <tr>
+          <td class="py-2 px-4 border-b ellipsis" style="max-width: 0.45rem;">{{ .spdxElementId }}</td>
+          <td class="py-2 px-4 border-b">{{ .relationshipType }}</td>
+          <td class="py-2 px-4 border-b ellipsis" style="max-width: 0.45rem;">{{ .relatedSpdxElement }}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</div>

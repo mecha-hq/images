@@ -143,46 +143,16 @@ scan-all: check-variable-ARCH
 		find ./tools -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | xargs -I {} make scan IMAGE={} ARCH=${ARCH}
 	done
 
-.PHONY: render
-render: render-dockle render-grype render-trivy render-snyk
+.PHONY: draft-gh-release
+draft-gh-release: check-variable-IMAGE check-variable-VERSION
+	@${PROJECT_DIR}/scripts/draft-gh-release.sh $${KIND} ${IMAGE} ${VERSION}
 
-.PHONY: render-dockle
-render-dockle: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
+.PHONY: publish-gh-release
+publish-gh-pages: check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
-	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		ekdo render dockle \
-			--output-dir=dist/$${KIND}/${IMAGE}/${VERSION}/renders/$${a} \
-			dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/dockle.json; \
-	done
-
-.PHONY: render-grype
-render-grype: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
-	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		ekdo render grype \
-			--output-dir=dist/$${KIND}/${IMAGE}/${VERSION}/renders/$${a} \
-			dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/grype.json; \
-	done
-
-.PHONY: render-trivy
-render-trivy: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
-	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		ekdo render trivy \
-			--output-dir=dist/$${KIND}/${IMAGE}/${VERSION}/renders/$${a} \
-			dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/trivy.json; \
-	done
-
-.PHONY: render-snyk
-render-snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
-	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
-		ekdo render snyk \
-			--output-dir=dist/$${KIND}/${IMAGE}/${VERSION}/renders/$${a} \
-			dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/snyk.json; \
-	done
+	${PROJECT_DIR}/scripts/publish-gh-release.sh ${IMAGE} ${VERSION}
 
 .PHONY: prepare-gh-pages
 prepare-gh-pages: check-variable-IMAGE check-variable-VERSION
-	export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
 	${PROJECT_DIR}/scripts/prepare-gh-pages.sh $${KIND} ${IMAGE} ${VERSION}

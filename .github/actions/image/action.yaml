@@ -9,7 +9,7 @@ inputs:
     required: true
   mise_version:
     description: "The version of mise to install."
-    default: "2024.11.4"
+    default: "2024.11.28"
     required: false
   snyk_org:
     description: "The Snyk organization to use for scanning."
@@ -28,9 +28,25 @@ inputs:
     description: "Whether to publish the built artifacts(images, manifests, gh-pages, etc). default is false."
     default: "false"
     required: false
+  site_base_url:
+    description: "The base URL for the site."
+    default: "https://mecha-hq.github.io/images"
+    required: false
 runs:
   using: "composite"
   steps:
+    # Validate the inputs
+
+    - name: validate inputs.name
+      shell: sh
+      run: make validate-name IMAGE=${{ inputs.image_name }}
+
+    - name: validate inputs.arch
+      shell: sh
+      run: make validate-arch ARCH=${{ inputs.image_arch }}
+
+    # Prepare the environment
+
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
       with:
@@ -52,21 +68,11 @@ runs:
       shell: sh
       run: if [ ! -f "melange.rsa" ]; then echo "${{ inputs.melange_signing_key }}" > melange.rsa; fi
 
-    - name: validate inputs.name
-      shell: sh
-      run: make validate-name IMAGE=${{ inputs.image_name }}
-
-    - name: validate inputs.arch
-      shell: sh
-      run: make validate-arch ARCH=${{ inputs.image_arch }}
-
     - name: Determine image version
       shell: sh
       run: echo IMAGE_VERSION=$(make image-version IMAGE=${{ inputs.image_name }}) >> ${GITHUB_ENV}
 
-    - name: Determine image kind
-      shell: sh
-      run: echo IMAGE_KIND=$(make image-kind IMAGE=${{ inputs.image_name }}) >> ${GITHUB_ENV}
+    # Prepare and publish the Container Image
 
     - name: Build APK package
       shell: sh
@@ -99,29 +105,6 @@ runs:
     #     SNYK_ORG: ${{ inputs.snyk_org }}
     #     SNYK_TOKEN: ${{ inputs.snyk_token }}
 
-    - name: Render the Dockle scans
-      shell: sh
-      run: make render-dockle ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
-
-    - name: Render the Grype scans
-      shell: sh
-      run: make render-grype ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
-
-    # - name: Render the Trivy scans
-    #   shell: sh
-    #   run: make render-trivy ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
-
-    # - name: Render the Snyk scans
-    #   shell: sh
-    #   run: make render-snyk ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
-
-    - name: Setup GitHub Pages
-      uses: actions/configure-pages@v4
-
-    - name: Prepare GitHub Pages
-      shell: sh
-      run: make prepare-gh-pages IMAGE="${{ inputs.image_name }}" VERSION="${{ env.IMAGE_VERSION }}"
-
     - name: Login to Container Registry
       uses: docker/login-action@v3
       with:
@@ -129,20 +112,62 @@ runs:
         username: mecha-hq
         password: ${{ inputs.container_registry_password }}
 
+    - name: Draft GitHub Release
+      shell: sh
+      run: make draft-gh-release IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      if: ${{ inputs.publish == 'true' }}
+
     - name: Upload OCI images
       shell: sh
       run: make docker-push ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
       if: ${{ inputs.publish == 'true' }}
 
+    # Prepare and publish Github Pages
+
+    # TODO: download all the github releases and prepare the pages/content/ folder
+
+    - name: Setup GitHub Pages
+      uses: actions/configure-pages@v5
+
+    - name: Prepare GitHub Pages
+      shell: sh
+      run: make prepare-gh-pages IMAGE="${{ inputs.image_name }}" VERSION="${{ env.IMAGE_VERSION }}"
+
+    - name: Install Node.js dependencies
+      shell: sh
+      run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+
+    - name: Build with Hugo
+      shell: sh
+      env:
+        HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
+        HUGO_ENVIRONMENT: production
+        TZ: Europe/Rome
+      run: |
+        hugo \
+        --gc \
+        --minify \
+        --baseURL "${{ inputs.site_base_url }}/" \
+        --source pages/
+
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ${{ env.IMAGE_KIND }}/${{ inputs.image_name }}/renders/${{ env.IMAGE_VERSION }}
+        path: ./pages/public
       if: ${{ inputs.publish == 'true' }}
 
     - name: Deploy to GitHub Pages
       uses: actions/deploy-pages@v4
       if: ${{ inputs.publish == 'true' }}
+
+    # Publish the release
+
+    - name: Publish GitHub Release
+      shell: sh
+      run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      if: ${{ inputs.publish == 'true' }}
+
+    # Cleanup the environment
 
     - name: Remove the signing key
       shell: sh
