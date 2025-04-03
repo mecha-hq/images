@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      # checkmake-specific paths
+      # tool-specific paths
       - ".github/workflows/checkmake.yaml"
       - "tools/checkmake/**"
       # common paths
@@ -15,10 +15,12 @@ on:
       - ".mise.*"
       - Makefile
       - melange.rsa.pub
-      - scripts/**"
+      - "scripts/**"
+      - "pages/**"
+      - "!pages/content"
   pull_request:
     paths:
-      # checkmake-specific paths
+      # tool-specific paths
       - ".github/workflows/checkmake.yaml"
       - "tools/checkmake/**"
       # common paths
@@ -26,7 +28,9 @@ on:
       - ".mise.*"
       - Makefile
       - melange.rsa.pub
-      - scripts/**"
+      - "scripts/**"
+      - "pages/**"
+      - "!pages/content"
 
 jobs:
   build:
@@ -50,7 +54,7 @@ jobs:
         with:
           container_registry_password: ${{ secrets.CI_TOKEN }}
           melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
-          mise_version: 2024.11.28
+          mise_version: 2025.4.0
           snyk_org: ${{ secrets.SNYK_ORG }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           image_arch: amd64,arm64

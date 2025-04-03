@@ -143,10 +143,6 @@ scan-all: check-variable-ARCH
 		find ./tools -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | xargs -I {} make scan IMAGE={} ARCH=${ARCH}
 	done
 
-.PHONY: draft-gh-release
-draft-gh-release: check-variable-IMAGE check-variable-VERSION
-	@${PROJECT_DIR}/scripts/draft-gh-release.sh $${KIND} ${IMAGE} ${VERSION}
-
 .PHONY: publish-gh-release
 publish-gh-pages: check-variable-IMAGE check-variable-VERSION
 	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
