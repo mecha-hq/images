@@ -2,6 +2,7 @@
 
 [tools]
 apko = "0.19.1"
+cosign = "2.4.3"
 dockle = "0.4.14"
 grype = "0.82.1"
 hugo = "0.140.2"
