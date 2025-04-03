@@ -51,7 +51,7 @@ showDate = false
 EOF
 
 # Create the tool index page
-cat >"dist/pages/${IMAGE_NAME}/_index.md" <<-EOF
+cat >"$(dirname ${GH_PAGES_SRC})/_index.md" <<-EOF
 +++
 title = '${IMAGE_NAME}'
 description = 'All the versions of ${IMAGE_NAME} at your disposal'
