@@ -54,7 +54,6 @@ jobs:
         with:
           container_registry_password: ${{ secrets.CI_TOKEN }}
           melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
-          mise_version: 2025.4.0
           snyk_org: ${{ secrets.SNYK_ORG }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           image_name: checkmake
