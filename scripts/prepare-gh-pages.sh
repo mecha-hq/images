@@ -8,11 +8,11 @@ IMAGE_NAME="${2}"
 IMAGE_VERSION="${3}"
 
 if [ -z "${IMAGE_KIND}" ]; then echo "Argument 1 (IMAGE_KIND) is required"; exit 1; fi
-if [ -z "${IMAGE_NAME}" ]; then echo "Argument 1 (IMAGE_NAME) is required"; exit 1; fi
-if [ -z "${IMAGE_VERSION}" ]; then echo "Argument 1 (IMAGE_VERSION) is required"; exit 1; fi
+if [ -z "${IMAGE_NAME}" ]; then echo "Argument 2 (IMAGE_NAME) is required"; exit 1; fi
+if [ -z "${IMAGE_VERSION}" ]; then echo "Argument 3 (IMAGE_VERSION) is required"; exit 1; fi
 
 GH_PAGES_SRC="dist/${IMAGE_KIND}/${IMAGE_NAME}/${IMAGE_VERSION}"
-GH_PAGES_DST="dist/pages/${IMAGE_NAME}/${IMAGE_VERSION}"
+GH_PAGES_DST="pages/content/${IMAGE_KIND}/${IMAGE_NAME}/${IMAGE_VERSION}"
 
 mkdir -p "${GH_PAGES_DST}"
 

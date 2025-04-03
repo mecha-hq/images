@@ -9,7 +9,7 @@ inputs:
     required: true
   mise_version:
     description: "The version of mise to install."
-    default: "2024.11.28"
+    default: "2025.4.0"
     required: false
   snyk_org:
     description: "The Snyk organization to use for scanning."
@@ -86,6 +86,20 @@ runs:
       shell: sh
       run: make docker-load IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
 
+    - name: Login to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: mecha-hq
+        password: ${{ inputs.container_registry_password }}
+
+    - name: Upload OCI images
+      shell: sh
+      run: make docker-push ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      if: ${{ inputs.publish == 'true' }}
+
+    # Scan the Container Image
+
     - name: Scan OCI images with Dockle
       shell: sh
       run: make dockle ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
@@ -105,26 +119,7 @@ runs:
     #     SNYK_ORG: ${{ inputs.snyk_org }}
     #     SNYK_TOKEN: ${{ inputs.snyk_token }}
 
-    - name: Login to Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: mecha-hq
-        password: ${{ inputs.container_registry_password }}
-
-    - name: Draft GitHub Release
-      shell: sh
-      run: make draft-gh-release IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
-      if: ${{ inputs.publish == 'true' }}
-
-    - name: Upload OCI images
-      shell: sh
-      run: make docker-push ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
-      if: ${{ inputs.publish == 'true' }}
-
     # Prepare and publish Github Pages
-
-    # TODO: download all the github releases and prepare the pages/content/ folder
 
     - name: Setup GitHub Pages
       uses: actions/configure-pages@v5
@@ -133,9 +128,14 @@ runs:
       shell: sh
       run: make prepare-gh-pages IMAGE="${{ inputs.image_name }}" VERSION="${{ env.IMAGE_VERSION }}"
 
-    - name: Install Node.js dependencies
+    - name: Push the generated pages content to the repository
       shell: sh
-      run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "GitHub Actions"
+        git add pages/content
+        git commit -m "Update GitHub Pages content with ${{ inputs.image_name }} ${IMAGE_VERSION} data."
+        git push
 
     - name: Build with Hugo
       shell: sh
