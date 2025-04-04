@@ -22,7 +22,7 @@ keygen:
 .PHONY: melange
 melange: check-variable-ARCH check-variable-IMAGE
 	export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
-	export VERSION=$(shell ${PROJECT_DIR}/scripts/image-version.sh ${IMAGE}) && \
+	export VERSION=$$(${PROJECT_DIR}/scripts/image-version.sh ${IMAGE}) && \
 	melange build --arch=${ARCH} --debug \
 		--signing-key=melange.rsa \
 		--out-dir=dist/$${KIND}/${IMAGE}/$${VERSION}/packages \
@@ -32,7 +32,7 @@ melange: check-variable-ARCH check-variable-IMAGE
 .PHONY: apko
 apko: check-variable-ARCH check-variable-IMAGE
 	export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
-	export VERSION=$(shell ${PROJECT_DIR}/scripts/image-version.sh ${IMAGE}) && \
+	export VERSION=$$(${PROJECT_DIR}/scripts/image-version.sh ${IMAGE}) && \
 	mkdir -p "dist/$${KIND}/${IMAGE}/$${VERSION}/images" && \
 	mkdir -p "dist/$${KIND}/${IMAGE}/$${VERSION}/sboms" && \
 	apko build --arch=${ARCH} --log-level=debug \

@@ -70,7 +70,7 @@ runs:
 
     - name: Determine image version
       shell: sh
-      run: echo IMAGE_VERSION=$(make image-version IMAGE=${{ inputs.image_name }}) >> ${GITHUB_ENV}
+      run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ inputs.image_name }}) >> ${GITHUB_ENV}
 
     # Prepare and publish the Container Image
 
