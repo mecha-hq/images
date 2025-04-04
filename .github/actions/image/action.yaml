@@ -134,21 +134,11 @@ runs:
         HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
         HUGO_ENVIRONMENT: production
         TZ: Europe/Rome
-      run: |
-        hugo \
-        --gc \
-        --minify \
-        --baseURL "${{ inputs.site_base_url }}/" \
-        --source pages/
+      run: make generate-hugo-site BASE_URL="${{ inputs.site_base_url }}/"
 
     - name: Push the generated pages content to the repository
       shell: sh
-      run: |
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "GitHub Actions"
-        git add pages/content
-        git commit -m "Update GitHub Pages content with ${{ inputs.image_name }} ${IMAGE_VERSION} data."
-        git push
+      run: make push-hugo-site BASE_URL="${{ inputs.site_base_url }}/"
       if: ${{ inputs.publish == 'true' }}
 
     - name: Upload GitHub Pages artifact
