@@ -7,10 +7,6 @@ PROJECT_DIR=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 check-variable-%:
 	@[ -n "$(${*})" ] || (echo '*** Please define variable `${*}` ***' && exit 1)
 
-.PHONY: image-kind
-image-kind: check-variable-IMAGE
-	@find . -maxdepth 2 -name "${IMAGE}" -type d | grep -E 'tools|collections' | cut -d '/' -f 2
-
 .PHONY: validate-name
 validate-name: check-variable-IMAGE
 	@${PROJECT_DIR}/scripts/validate-name.sh ${IMAGE}
@@ -19,18 +15,14 @@ validate-name: check-variable-IMAGE
 validate-arch: check-variable-ARCH
 	@${PROJECT_DIR}/scripts/validate-arch.sh ${ARCH}
 
-.PHONY: image-version
-image-version: check-variable-IMAGE
-	@grep 'version' tools/${IMAGE}/melange.yaml | head -n 1 | sed 's/.*version: *//' | sed 's/"//g'
-
 .PHONY: keygen
 keygen:
 	@docker run --rm -v $${PWD}:/work -w /work cgr.dev/chainguard/melange:latest keygen
 
 .PHONY: melange
 melange: check-variable-ARCH check-variable-IMAGE
-	export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
-	export VERSION=$(shell $(MAKE) image-version IMAGE=${IMAGE}) && \
+	export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
+	export VERSION=$(shell ${PROJECT_DIR}/scripts/image-version.sh ${IMAGE}) && \
 	melange build --arch=${ARCH} --debug \
 		--signing-key=melange.rsa \
 		--out-dir=dist/$${KIND}/${IMAGE}/$${VERSION}/packages \
@@ -39,8 +31,8 @@ melange: check-variable-ARCH check-variable-IMAGE
 
 .PHONY: apko
 apko: check-variable-ARCH check-variable-IMAGE
-	export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
-	export VERSION=$(shell $(MAKE) image-version IMAGE=${IMAGE}) && \
+	export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
+	export VERSION=$(shell ${PROJECT_DIR}/scripts/image-version.sh ${IMAGE}) && \
 	mkdir -p "dist/$${KIND}/${IMAGE}/$${VERSION}/images" && \
 	mkdir -p "dist/$${KIND}/${IMAGE}/$${VERSION}/sboms" && \
 	apko build --arch=${ARCH} --log-level=debug \
@@ -52,7 +44,7 @@ apko: check-variable-ARCH check-variable-IMAGE
 
 .PHONY: docker-load
 docker-load: check-variable-IMAGE check-variable-VERSION
-	export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+    export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	docker load -i dist/$${KIND}/${IMAGE}/${VERSION}/images/${IMAGE}-${VERSION}.tar
 
 .PHONY: build
@@ -86,7 +78,7 @@ clean-all:
 
 .PHONY: dockle
 dockle: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
 		dockle -f json -o "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/dockle.json" --debug "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}"; \
@@ -98,7 +90,7 @@ dockle-all: check-variable-ARCH
 
 .PHONY: grype
 grype: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
 		grype -o json --file "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/grype.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}" -vv; \
@@ -110,7 +102,7 @@ grype-all: check-variable-ARCH
 
 .PHONY: trivy
 trivy: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
 		trivy image -d -f json -o dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/trivy.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}"; \
@@ -122,7 +114,7 @@ trivy-all: check-variable-ARCH
 
 .PHONY: snyk
 snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
 		snyk container test -d \
@@ -145,15 +137,23 @@ scan-all: check-variable-ARCH
 
 .PHONY: prepare-gh-pages
 prepare-gh-pages: check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	${PROJECT_DIR}/scripts/prepare-gh-pages.sh $${KIND} ${IMAGE} ${VERSION}
+
+.PHONY: generate-hugo-site
+generate-hugo-site: check-variable-BASE_URL
+	@${PROJECT_DIR}/scripts/generate-hugo-site.sh ${BASE_URL}
+
+.PHONY: push-hugo-site
+push-hugo-site: check-variable-IMAGE check-variable-VERSION
+	@${PROJECT_DIR}/scripts/push-hugo-site.sh ${IMAGE} ${VERSION}
 
 .PHONY: draft-gh-release
 draft-gh-release: check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	${PROJECT_DIR}/scripts/draft-gh-release.sh $${KIND} ${IMAGE} ${VERSION}
 
 .PHONY: publish-gh-release
 publish-gh-pages: check-variable-IMAGE check-variable-VERSION
-	@export KIND=$(shell $(MAKE) image-kind IMAGE=${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	${PROJECT_DIR}/scripts/publish-gh-release.sh ${IMAGE} ${VERSION}

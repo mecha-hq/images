@@ -21,8 +21,8 @@ cp -r ${GH_PAGES_SRC}/reports/* "${GH_PAGES_DST}"
 
 # Copy the SBOMs
 cp ${GH_PAGES_SRC}/sboms/sbom-index.spdx.json "${GH_PAGES_DST}"
-cp ${GH_PAGES_SRC}/sboms/sbom-aarch64.spdx.json "${GH_PAGES_DST}/arm64"
-cp ${GH_PAGES_SRC}/sboms/sbom-x86_64.spdx.json "${GH_PAGES_DST}/amd64"
+cp ${GH_PAGES_SRC}/sboms/sbom-aarch64.spdx.json "${GH_PAGES_DST}/arm64/sbom.spdx.json"
+cp ${GH_PAGES_SRC}/sboms/sbom-x86_64.spdx.json "${GH_PAGES_DST}/amd64/sbom.spdx.json"
 
 # Create the tool-version-arm64 index page
 cat >"${GH_PAGES_DST}/arm64/_index.md" <<-EOF
