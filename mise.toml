@@ -10,6 +10,8 @@ node = "23.5.0"
 shellbits = "0.4.0"
 snyk = "1.1293.1"
 trivy = "0.56.2"
+ytt = "0.51.2"
+yq = "4.45.1"
 
 [alias]
 shellbits = 'asdf:https://github.com/mecha-hq/asdf-shellbits'
