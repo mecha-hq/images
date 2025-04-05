@@ -8,7 +8,7 @@ scms:
       email: "{{ .github.email }}"
       owner: "{{ .github.owner }}"
       repository: "{{ .github.repository }}"
-      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       username: "{{ .github.username }}"
       branch: main
   yamllint:
@@ -16,7 +16,7 @@ scms:
     spec:
       owner: "adrienverge"
       repository: "yamllint"
-      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       branch: master
 
 actions:

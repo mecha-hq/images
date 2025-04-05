@@ -8,7 +8,7 @@ scms:
       email: "{{ .github.email }}"
       owner: "{{ .github.owner }}"
       repository: "{{ .github.repository }}"
-      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       username: "{{ .github.username }}"
       branch: main
 
@@ -31,7 +31,7 @@ sources:
     spec:
       owner: "google"
       repository: "yamlfmt"
-      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       username: "{{ .github.username }}"
       versionfilter:
         kind: latest

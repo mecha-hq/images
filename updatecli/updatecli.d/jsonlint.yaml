@@ -8,7 +8,7 @@ scms:
       email: "{{ .github.email }}"
       owner: "{{ .github.owner }}"
       repository: "{{ .github.repository }}"
-      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       username: "{{ .github.username }}"
       branch: main
 

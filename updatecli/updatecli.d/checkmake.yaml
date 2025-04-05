@@ -8,7 +8,7 @@ scms:
       email: "{{ .github.email }}"
       owner: "{{ .github.owner }}"
       repository: "{{ .github.repository }}"
-      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       username: "{{ .github.username }}"
       branch: main
 
@@ -34,8 +34,8 @@ sources:
         - linux/arm64
       image: alpine
       tagfilter: ^\d+\.\d+$
-      token: "{{ requiredEnv 'DOCKERHUB_TOKEN' }}"
-      username: "{{ .dockerhub.username }} "
+      token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
+      username: "{{ .dockerhub.username }}"
       versionfilter:
         kind: ^\d+\.\d+$
     transformers:
@@ -46,8 +46,8 @@ sources:
     spec:
       owner: "mrtazz"
       repository: "checkmake"
-      token: "{{ requiredEnv 'GITHUB_TOKEN' }}"
-      username: "{{ .github.username }} "
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: "{{ .github.username }}"
       versionfilter:
         kind: latest
     transformers:
