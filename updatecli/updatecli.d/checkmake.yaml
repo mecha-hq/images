@@ -53,7 +53,7 @@ sources:
     transformers:
       - trimprefix: "v"
 
-x-target-alpine: &target-alpine
+x-target-alpine: &target-alpine # yaml-language-server: disable-line
   name: Bump alpine version
   kind: yaml
   scmid: mecha-images
@@ -61,14 +61,11 @@ x-target-alpine: &target-alpine
   transformers:
     - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
 
-x-target-checkmake: &target-checkmake
+x-target-checkmake: &target-checkmake # yaml-language-server: disable-line
   name: Bump checkmake version
   kind: yaml
   scmid: mecha-images
   sourceid: checkmake
-  transformers:
-    - addprefix: "@local dist/tools/checkmake/"
-    - addsuffix: "/packages"
 
 targets:
   apko-yaml-0:
@@ -90,6 +87,9 @@ targets:
     spec:
       key: $.contents.repositories[2]
       file: tools/checkmake/apko.yaml
+    transformers:
+      - addprefix: "@local dist/tools/checkmake/"
+      - addsuffix: "/packages"
   melange-yaml-0:
     <<: *target-alpine
     spec:
@@ -109,3 +109,4 @@ targets:
     spec:
       key: $.package.version
       file: tools/checkmake/melange.yaml
+      value: '{{ printf "%q" .source }}'
