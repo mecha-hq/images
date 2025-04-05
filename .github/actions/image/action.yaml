@@ -84,7 +84,7 @@ runs:
 
     - name: Load OCI images
       shell: sh
-      run: make docker-load IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      run: make docker-load IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
 
     - name: Login to Container Registry
       uses: docker/login-action@v3
@@ -95,26 +95,26 @@ runs:
 
     - name: Upload OCI images
       shell: sh
-      run: make docker-push ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      run: make docker-push ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
       if: ${{ inputs.publish == 'true' }}
 
     # Scan the Container Image
 
     - name: Scan OCI images with Dockle
       shell: sh
-      run: make dockle ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      run: make dockle ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
 
     - name: Scan OCI images with Grype
       shell: sh
-      run: make grype ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      run: make grype ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
 
     # - name: Scan OCI images with Trivy
     #   shell: sh
-    #   run: make trivy ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+    #   run: make trivy ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
 
     # - name: Scan OCI images with Snyk
     #   shell: sh
-    #   run: make snyk ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+    #   run: make snyk ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
     #   env:
     #     SNYK_ORG: ${{ inputs.snyk_org }}
     #     SNYK_TOKEN: ${{ inputs.snyk_token }}
@@ -155,11 +155,11 @@ runs:
 
     - name: Draft GitHub Release
       shell: sh
-      run: make draft-gh-release IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      run: make draft-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
 
     - name: Publish GitHub Release
       shell: sh
-      run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${IMAGE_VERSION}"
+      run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
       if: ${{ inputs.publish == 'true' }}
 
     # Cleanup the environment
