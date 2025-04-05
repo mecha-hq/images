@@ -1,7 +1,7 @@
 name: update file-lint version
 
 scms:
-  images-ci:
+  mecha-images:
     kind: github
     spec:
       user: "{{ .github.user }}"
@@ -15,7 +15,7 @@ scms:
 actions:
   update-deps:
     kind: "github/pullrequest"
-    scmid: "images-ci"
+    scmid: "mecha-images"
     spec:
       automerge: false
       mergemethod: "squash"
@@ -25,6 +25,21 @@ actions:
       title: "deps: Update file-lint version"
 
 sources:
+  alpine:
+    name: Get latest dockerhub release version
+    kind: dockerimage
+    spec:
+      architectures:
+        - linux/amd64
+        - linux/arm64
+      image: alpine
+      tagfilter: ^\d+\.\d+$
+      token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
+      username: "{{ .dockerhub.username }}"
+      versionfilter:
+        kind: ^\d+\.\d+$
+    transformers:
+      - trimprefix: "v"
   file-lint:
     name: Get latest github release version
     kind: githubrelease
@@ -38,12 +53,60 @@ sources:
     transformers:
       - trimprefix: "v"
 
+x-target-alpine: &target-alpine # yaml-language-server: disable-line
+  name: Bump alpine version
+  kind: yaml
+  scmid: mecha-images
+  sourceid: alpine
+  transformers:
+    - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
+
+x-target-file-lint: &target-file-lint # yaml-language-server: disable-line
+  name: Bump file-lint version
+  kind: yaml
+  scmid: mecha-images
+  sourceid: file-lint
+
 targets:
-  melange.yaml:
-    name: Bump file-lint version
-    kind: yaml
-    scmid: images-ci
-    sourceid: file-lint
+  apko-yaml-0:
+    <<: *target-alpine
+    spec:
+      key: $.contents.repositories[0]
+      file: tools/file-lint/apko.yaml
+    transformers:
+      - addsuffix: "/main"
+  apko-yaml-1:
+    <<: *target-alpine
+    spec:
+      key: $.contents.repositories[1]
+      file: tools/file-lint/apko.yaml
+    transformers:
+      - addsuffix: "/community"
+  apko-yaml-2:
+    <<: *target-file-lint
+    spec:
+      key: $.contents.repositories[2]
+      file: tools/file-lint/apko.yaml
+    transformers:
+      - addprefix: "@local dist/tools/file-lint/"
+      - addsuffix: "/packages"
+  melange-yaml-0:
+    <<: *target-alpine
+    spec:
+      key: $.environment.contents.repositories[0]
+      file: tools/file-lint/melange.yaml
+    transformers:
+      - addsuffix: "/main"
+  # melange-yaml-1:
+  #   <<: *target-alpine
+  #   spec:
+  #     key: $.environment.contents.repositories[1]
+  #     file: tools/file-lint/melange.yaml
+  #   transformers:
+  #     - addsuffix: "/community"
+  melange-yaml-2:
+    <<: *target-file-lint
     spec:
       key: $.package.version
       file: tools/file-lint/melange.yaml
+      value: '{{ printf "%q" .source }}'
