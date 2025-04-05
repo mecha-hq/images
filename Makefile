@@ -21,7 +21,7 @@ keygen:
 
 .PHONY: melange
 melange: check-variable-ARCH check-variable-IMAGE
-	export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	export VERSION=$$(${PROJECT_DIR}/scripts/image-version.sh ${IMAGE}) && \
 	melange build --arch=${ARCH} --debug \
 		--signing-key=melange.rsa \
@@ -31,7 +31,7 @@ melange: check-variable-ARCH check-variable-IMAGE
 
 .PHONY: apko
 apko: check-variable-ARCH check-variable-IMAGE
-	export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	export VERSION=$$(${PROJECT_DIR}/scripts/image-version.sh ${IMAGE}) && \
 	mkdir -p "dist/$${KIND}/${IMAGE}/$${VERSION}/images" && \
 	mkdir -p "dist/$${KIND}/${IMAGE}/$${VERSION}/sboms" && \
@@ -44,7 +44,7 @@ apko: check-variable-ARCH check-variable-IMAGE
 
 .PHONY: docker-load
 docker-load: check-variable-IMAGE check-variable-VERSION
-    export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	docker load -i dist/$${KIND}/${IMAGE}/${VERSION}/images/${IMAGE}-${VERSION}.tar
 
 .PHONY: build
@@ -52,7 +52,7 @@ build: clean melange apko docker-load
 
 .PHONY: build-all
 build-all: check-variable-ARCH
-	find ./tools -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | xargs -I {} make build IMAGE={} ARCH=${ARCH}
+	@find ./tools -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | xargs -I {} make build IMAGE={} ARCH=${ARCH}
 
 .PHONY: run
 run: check-variable-ARCH check-variable-IMAGE check-variable-VERSION build
