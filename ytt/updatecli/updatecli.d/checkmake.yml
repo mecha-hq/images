@@ -1,0 +1,21 @@
+#! checkmake.yml
+
+name: update checkmake versions
+
+#@ load("fragments.lib.yml", "scms", "actions", "source_dockerimage", "source_githubrelease", "target_alpine", "target_image_apko", "target_image_melange", "target_image_apko")
+
+scms: #@ scms()
+
+actions: #@ actions("checkmake")
+
+sources:
+  alpine: #@ source_dockerimage("alpine")
+  checkmake: #@ source_githubrelease("mrtazz", "checkmake")
+
+targets:
+  apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/checkmake/apko.yaml", "/main")
+  apko-yaml-1: #@ target_alpine("$.contents.repositories[1]", "tools/checkmake/apko.yaml", "/community")
+  apko-yaml-2: #@ target_image_apko("checkmake", "$.contents.repositories[2]", "tools/checkmake/apko.yaml")
+  melange-yaml-0: #@ target_alpine("$.environment.contents.repositories[0]", "tools/checkmake/melange.yaml", "/main")
+  melange-yaml-1: #@ target_alpine("$.environment.contents.repositories[1]", "tools/checkmake/melange.yaml", "/community")
+  melange-yaml-2: #@ target_image_melange("checkmake", "tools/checkmake/melange.yaml")

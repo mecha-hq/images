@@ -1,0 +1,113 @@
+#! fragments.lib.yml
+
+#@ def scms():
+mecha-images:
+  kind: github
+  spec:
+    user: "{{ .github.user }}"
+    email: "{{ .github.email }}"
+    owner: "{{ .github.owner }}"
+    repository: "{{ .github.repository }}"
+    token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+    username: "{{ .github.username }}"
+    branch: main
+#@ end
+
+#@ def actions(image):
+update-deps:
+  kind: "github/pullrequest"
+  scmid: "mecha-images"
+  spec:
+    automerge: false
+    mergemethod: "squash"
+    description: #@ action_update_deps_description(image)
+    labels:
+      - "dependencies"
+      -  #@ image
+    title: #@ action_update_deps_title(image)
+#@ end
+
+#@ def action_update_deps_title(image):
+#@   return "deps: update {} version".format(image)
+#@ end
+
+#@ def action_update_deps_description(image):
+#@   return "update {} version".format(image)
+#@ end
+
+#@ def source_dockerimage(image):
+name: Get latest dockerhub release version
+kind: dockerimage
+spec:
+  architectures:
+    - linux/amd64
+    - linux/arm64
+  image: #@ image
+  tagfilter: ^\d+\.\d+$
+  token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
+  username: "{{ .dockerhub.username }}"
+  versionfilter:
+    kind: ^\d+\.\d+$
+transformers:
+  - trimprefix: "v"
+#@ end
+
+#@ def source_githubrelease(owner, repository):
+name: Get latest github release version
+kind: githubrelease
+spec:
+  owner: #@ owner
+  repository: #@ repository
+  token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+  username: "{{ .github.username }}"
+  versionfilter:
+    kind: latest
+transformers:
+  - trimprefix: "v"
+#@ end
+
+#@ def target_alpine(key, file, suffix):
+name: Bump alpine version
+kind: yaml
+scmid: mecha-images
+sourceid: alpine
+transformers:
+  - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
+  - addsuffix: #@ suffix
+spec:
+  key: #@ key
+  file: #@ file
+#@ end
+
+#@ def target_image_apko(image, key, file):
+name: #@ target_image_name(image)
+kind: yaml
+scmid: mecha-images
+sourceid: #@ image
+spec:
+  key: #@ key
+  file: #@ file
+transformers:
+  - addprefix: #@ target_image_apko_transformer_prefix(image)
+  - addsuffix: "/packages"
+#@ end
+
+#@ def target_image_apko_transformer_prefix(image):
+#@   return "@local dist/tools/{}/".format(image)
+#@ end
+
+
+#@ def target_image_melange(image, file):
+name: #@ target_image_name(image)
+kind: yaml
+scmid: mecha-images
+sourceid: #@ image
+spec:
+  key: $.package.version
+  file: #@ file
+  value: '{{ printf "%q" .source }}'
+#@ end
+
+#@ def target_image_name(image):
+#@   return "Bump {} version".format(image)
+#@ end
