@@ -7,7 +7,7 @@ grype = "0.82.1"
 hugo = "0.140.2"
 melange = "0.12.1"
 node = "23.5.0"
-shellbits = "0.2.0"
+shellbits = "0.4.0"
 snyk = "1.1293.1"
 trivy = "0.56.2"
 
