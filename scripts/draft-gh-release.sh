@@ -16,6 +16,7 @@ if ! gh release view ${IMAGE_LC}-${VERSION_LC} &>/dev/null; then
         --draft=true \
         --title="${IMAGE} ${VERSION}" \
         "${IMAGE_LC}-${VERSION_LC}" \
-        "dist/${KIND}/${IMAGE_LC}/${VERSION_LC}/reports" \
-        "dist/${KIND}/${IMAGE_LC}/${VERSION_LC}/sboms"
+        "dist/${KIND}/${IMAGE_LC}/${VERSION_LC}/reports/amd64/*.json" \
+        "dist/${KIND}/${IMAGE_LC}/${VERSION_LC}/reports/arm64/*.json" \
+        "dist/${KIND}/${IMAGE_LC}/${VERSION_LC}/sboms/*.spdx.json"
 fi
