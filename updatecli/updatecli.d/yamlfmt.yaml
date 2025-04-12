@@ -1,49 +1,117 @@
-name: update yamlfmt version
-
+name: update yamlfmt versions
 scms:
-  images-ci:
+  mecha-images:
     kind: github
     spec:
-      user: "{{ .github.user }}"
-      email: "{{ .github.email }}"
-      owner: "{{ .github.owner }}"
-      repository: "{{ .github.repository }}"
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: '{{ .github.owner }}'
+      repository: '{{ .github.repository }}'
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: "{{ .github.username }}"
+      username: '{{ .github.username }}'
       branch: main
-
 actions:
   update-deps:
-    kind: "github/pullrequest"
-    scmid: "images-ci"
+    kind: github/pullrequest
+    scmid: mecha-images
     spec:
       automerge: false
-      mergemethod: "squash"
-      description: "Update yamlfmt version"
+      mergemethod: squash
+      description: update yamlfmt version
       labels:
-        - "dependencies"
-      title: "deps: Update yamlfmt version"
-
+        - dependencies
+        - yamlfmt
+      title: 'deps: update yamlfmt version'
 sources:
+  alpine:
+    name: Get latest dockerhub release version
+    kind: dockerimage
+    spec:
+      architectures:
+        - linux/amd64
+        - linux/arm64
+      image: alpine
+      tagfilter: ^\d+\.\d+$
+      token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
+      username: '{{ .dockerhub.username }}'
+      versionfilter:
+        kind: ^\d+\.\d+$
+    transformers:
+      - trimprefix: v
   yamlfmt:
     name: Get latest github release version
     kind: githubrelease
     spec:
-      owner: "google"
-      repository: "yamlfmt"
+      owner: google
+      repository: yamlfmt
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: "{{ .github.username }}"
+      username: '{{ .github.username }}'
       versionfilter:
         kind: latest
     transformers:
-      - trimprefix: "v"
-
+      - trimprefix: v
 targets:
-  melange.yaml:
+  apko-yaml-0:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /main
+    spec:
+      key: $.contents.repositories[0]
+      file: tools/yamlfmt/apko.yaml
+  apko-yaml-1:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /community
+    spec:
+      key: $.contents.repositories[1]
+      file: tools/yamlfmt/apko.yaml
+  apko-yaml-2:
     name: Bump yamlfmt version
     kind: yaml
-    scmid: images-ci
+    scmid: mecha-images
+    sourceid: yamlfmt
+    spec:
+      key: $.contents.repositories[2]
+      file: tools/yamlfmt/apko.yaml
+    transformers:
+      - addprefix: '@local dist/tools/yamlfmt/'
+      - addsuffix: /packages
+  melange-yaml-0:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /main
+    spec:
+      key: $.environment.contents.repositories[0]
+      file: tools/yamlfmt/melange.yaml
+  melange-yaml-1:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /community
+    spec:
+      key: $.environment.contents.repositories[1]
+      file: tools/yamlfmt/melange.yaml
+  melange-yaml-2:
+    name: Bump yamlfmt version
+    kind: yaml
+    scmid: mecha-images
     sourceid: yamlfmt
     spec:
       key: $.package.version
       file: tools/yamlfmt/melange.yaml
+      value: '{{ printf "%q" .source }}'

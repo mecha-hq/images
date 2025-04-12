@@ -1,29 +1,27 @@
 name: update checkmake versions
-
 scms:
   mecha-images:
     kind: github
     spec:
-      user: "{{ .github.user }}"
-      email: "{{ .github.email }}"
-      owner: "{{ .github.owner }}"
-      repository: "{{ .github.repository }}"
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: '{{ .github.owner }}'
+      repository: '{{ .github.repository }}'
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: "{{ .github.username }}"
+      username: '{{ .github.username }}'
       branch: main
-
 actions:
   update-deps:
-    kind: "github/pullrequest"
-    scmid: "mecha-images"
+    kind: github/pullrequest
+    scmid: mecha-images
     spec:
       automerge: false
-      mergemethod: "squash"
-      description: "Update checkmake version"
+      mergemethod: squash
+      description: update checkmake version
       labels:
-        - "dependencies"
-      title: "deps: Update checkmake version"
-
+        - dependencies
+        - checkmake
+      title: 'deps: update checkmake version'
 sources:
   alpine:
     name: Get latest dockerhub release version
@@ -35,77 +33,84 @@ sources:
       image: alpine
       tagfilter: ^\d+\.\d+$
       token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
-      username: "{{ .dockerhub.username }}"
+      username: '{{ .dockerhub.username }}'
       versionfilter:
         kind: ^\d+\.\d+$
     transformers:
-      - trimprefix: "v"
+      - trimprefix: v
   checkmake:
     name: Get latest github release version
     kind: githubrelease
     spec:
-      owner: "mrtazz"
-      repository: "checkmake"
+      owner: mrtazz
+      repository: checkmake
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: "{{ .github.username }}"
+      username: '{{ .github.username }}'
       versionfilter:
         kind: latest
     transformers:
-      - trimprefix: "v"
-
-x-target-alpine: &target-alpine # yaml-language-server: disable-line
-  name: Bump alpine version
-  kind: yaml
-  scmid: mecha-images
-  sourceid: alpine
-  transformers:
-    - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
-
-x-target-checkmake: &target-checkmake # yaml-language-server: disable-line
-  name: Bump checkmake version
-  kind: yaml
-  scmid: mecha-images
-  sourceid: checkmake
-
+      - trimprefix: v
 targets:
   apko-yaml-0:
-    <<: *target-alpine
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /main
     spec:
       key: $.contents.repositories[0]
       file: tools/checkmake/apko.yaml
-    transformers:
-      - addsuffix: "/main"
   apko-yaml-1:
-    <<: *target-alpine
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /community
     spec:
       key: $.contents.repositories[1]
       file: tools/checkmake/apko.yaml
-    transformers:
-      - addsuffix: "/community"
   apko-yaml-2:
-    <<: *target-checkmake
+    name: Bump checkmake version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: checkmake
     spec:
       key: $.contents.repositories[2]
       file: tools/checkmake/apko.yaml
     transformers:
-      - addprefix: "@local dist/tools/checkmake/"
-      - addsuffix: "/packages"
+      - addprefix: '@local dist/tools/checkmake/'
+      - addsuffix: /packages
   melange-yaml-0:
-    <<: *target-alpine
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /main
     spec:
       key: $.environment.contents.repositories[0]
       file: tools/checkmake/melange.yaml
-    transformers:
-      - addsuffix: "/main"
   melange-yaml-1:
-    <<: *target-alpine
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /community
     spec:
       key: $.environment.contents.repositories[1]
       file: tools/checkmake/melange.yaml
-    transformers:
-      - addsuffix: "/community"
   melange-yaml-2:
-    <<: *target-checkmake
+    name: Bump checkmake version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: checkmake
     spec:
       key: $.package.version
       file: tools/checkmake/melange.yaml

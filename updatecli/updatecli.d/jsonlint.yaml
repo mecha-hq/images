@@ -1,42 +1,95 @@
-name: update jsonlint version
-
+name: update jsonlint versions
 scms:
-  images-ci:
+  mecha-images:
     kind: github
     spec:
-      user: "{{ .github.user }}"
-      email: "{{ .github.email }}"
-      owner: "{{ .github.owner }}"
-      repository: "{{ .github.repository }}"
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: '{{ .github.owner }}'
+      repository: '{{ .github.repository }}'
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: "{{ .github.username }}"
+      username: '{{ .github.username }}'
       branch: main
-
 actions:
   update-deps:
-    kind: "github/pullrequest"
-    scmid: "images-ci"
+    kind: github/pullrequest
+    scmid: mecha-images
     spec:
       automerge: false
-      mergemethod: "squash"
-      description: "Update jsonlint version"
+      mergemethod: squash
+      description: update jsonlint version
       labels:
-        - "dependencies"
-      title: "deps: Update jsonlint version"
-
+        - dependencies
+        - jsonlint
+      title: 'deps: update jsonlint version'
 sources:
   jsonlint:
     name: Get latest version from npm registry
     kind: npm
     spec:
       name: jsonlint
-
 targets:
-  melange.yaml:
+  apko-yaml-0:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /main
+    spec:
+      key: $.contents.repositories[0]
+      file: tools/jsonlint/apko.yaml
+  apko-yaml-1:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /community
+    spec:
+      key: $.contents.repositories[1]
+      file: tools/jsonlint/apko.yaml
+  apko-yaml-2:
     name: Bump jsonlint version
     kind: yaml
-    scmid: images-ci
+    scmid: mecha-images
+    sourceid: jsonlint
+    spec:
+      key: $.contents.repositories[2]
+      file: tools/jsonlint/apko.yaml
+    transformers:
+      - addprefix: '@local dist/tools/jsonlint/'
+      - addsuffix: /packages
+  melange-yaml-0:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /main
+    spec:
+      key: $.environment.contents.repositories[0]
+      file: tools/jsonlint/melange.yaml
+  melange-yaml-1:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /community
+    spec:
+      key: $.environment.contents.repositories[1]
+      file: tools/jsonlint/melange.yaml
+  melange-yaml-2:
+    name: Bump jsonlint version
+    kind: yaml
+    scmid: mecha-images
     sourceid: jsonlint
     spec:
       key: $.package.version
       file: tools/jsonlint/melange.yaml
+      value: '{{ printf "%q" .source }}'

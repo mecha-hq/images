@@ -1,0 +1,23 @@
+#! ls-lint.yml
+
+name: update ls-lint versions
+
+#@ load("fragments.lib.yml", "scms", "actions")
+#@ load("fragments.lib.yml", "source_dockerimage", "source_githubrelease", "source_gittag", "source_npm")
+#@ load("fragments.lib.yml", "target_alpine", "target_image_apko", "target_image_melange", "target_image_apko")
+
+scms: #@ scms()
+
+actions: #@ actions("ls-lint")
+
+sources:
+  alpine: #@ source_dockerimage("alpine")
+  ls-lint: #@ source_npm("@ls-lint/ls-lint")
+
+targets:
+  apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/ls-lint/apko.yaml", "/main")
+  apko-yaml-1: #@ target_alpine("$.contents.repositories[1]", "tools/ls-lint/apko.yaml", "/community")
+  apko-yaml-2: #@ target_image_apko("ls-lint", "$.contents.repositories[2]", "tools/ls-lint/apko.yaml")
+  melange-yaml-0: #@ target_alpine("$.environment.contents.repositories[0]", "tools/ls-lint/melange.yaml", "/main")
+  melange-yaml-1: #@ target_alpine("$.environment.contents.repositories[1]", "tools/ls-lint/melange.yaml", "/community")
+  melange-yaml-2: #@ target_image_melange("ls-lint", "tools/ls-lint/melange.yaml")

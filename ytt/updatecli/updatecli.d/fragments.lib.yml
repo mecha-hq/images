@@ -66,6 +66,26 @@ transformers:
   - trimprefix: "v"
 #@ end
 
+#@ def source_npm(name):
+name: Get latest version from npm registry
+kind: npm
+spec:
+  name: #@ name
+#@ end
+
+#@ def source_gittag(scmid, repository):
+name: Get latest tag version from git repository
+kind: gittag
+scmid: #@ scmid
+spec:
+  url: #@ repository
+  versionfilter:
+    kind: semver
+    pattern: "v*"
+transformers:
+  - trimprefix: "v"
+#@ end
+
 #@ def target_alpine(key, file, suffix):
 name: Bump alpine version
 kind: yaml
@@ -95,7 +115,6 @@ transformers:
 #@ def target_image_apko_transformer_prefix(image):
 #@   return "@local dist/tools/{}/".format(image)
 #@ end
-
 
 #@ def target_image_melange(image, file):
 name: #@ target_image_name(image)

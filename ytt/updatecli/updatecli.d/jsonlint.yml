@@ -1,0 +1,22 @@
+#! jsonlint.yml
+
+name: update jsonlint versions
+
+#@ load("fragments.lib.yml", "scms", "actions")
+#@ load("fragments.lib.yml", "source_dockerimage", "source_githubrelease", "source_gittag", "source_npm")
+#@ load("fragments.lib.yml", "target_alpine", "target_image_apko", "target_image_melange", "target_image_apko")
+
+scms: #@ scms()
+
+actions: #@ actions("jsonlint")
+
+sources:
+  jsonlint: #@ source_npm("jsonlint")
+
+targets:
+  apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/jsonlint/apko.yaml", "/main")
+  apko-yaml-1: #@ target_alpine("$.contents.repositories[1]", "tools/jsonlint/apko.yaml", "/community")
+  apko-yaml-2: #@ target_image_apko("jsonlint", "$.contents.repositories[2]", "tools/jsonlint/apko.yaml")
+  melange-yaml-0: #@ target_alpine("$.environment.contents.repositories[0]", "tools/jsonlint/melange.yaml", "/main")
+  melange-yaml-1: #@ target_alpine("$.environment.contents.repositories[1]", "tools/jsonlint/melange.yaml", "/community")
+  melange-yaml-2: #@ target_image_melange("jsonlint", "tools/jsonlint/melange.yaml")

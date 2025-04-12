@@ -1,120 +1,22 @@
-name: update file-lint version
+#! file-lint.yml
 
-scms:
-  mecha-images:
-    kind: github
-    spec:
-      user: "{{ .github.user }}"
-      email: "{{ .github.email }}"
-      owner: "{{ .github.owner }}"
-      repository: "{{ .github.repository }}"
-      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: "{{ .github.username }}"
-      branch: main
+name: update file-lint versions
 
-actions:
-  update-deps:
-    kind: "github/pullrequest"
-    scmid: "mecha-images"
-    spec:
-      automerge: false
-      mergemethod: "squash"
-      description: "Update file-lint version"
-      labels:
-        - "dependencies"
-      title: "deps: Update file-lint version"
+#@ load("fragments.lib.yml", "scms", "actions")
+#@ load("fragments.lib.yml", "source_dockerimage", "source_githubrelease", "source_gittag", "source_npm")
+#@ load("fragments.lib.yml", "target_alpine", "target_image_apko", "target_image_melange", "target_image_apko")
+
+scms: #@ scms()
+
+actions: #@ actions("file-lint")
 
 sources:
-  alpine:
-    name: Get latest dockerhub release version
-    kind: dockerimage
-    spec:
-      architectures:
-        - linux/amd64
-        - linux/arm64
-      image: alpine
-      tagfilter: ^\d+\.\d+$
-      token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
-      username: "{{ .dockerhub.username }}"
-      versionfilter:
-        kind: ^\d+\.\d+$
-    transformers:
-      - trimprefix: "v"
-  file-lint:
-    name: Get latest github release version
-    kind: githubrelease
-    spec:
-      owner: "cytopia"
-      repository: "docker-file-lint"
-      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: "{{ .github.username }}"
-      versionfilter:
-        kind: latest
-    transformers:
-      - trimprefix: "v"
+  alpine: #@ source_dockerimage("alpine")
+  file-lint: #@ source_githubrelease("ctyopia", "docker-file-lint")
 
 targets:
-  apko-yaml-0:
-    name: Bump alpine version
-    kind: yaml
-    scmid: mecha-images
-    sourceid: alpine
-    transformers:
-      - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
-      - addsuffix: "/main"
-    spec:
-      key: $.contents.repositories[0]
-      file: tools/file-lint/apko.yaml
-  apko-yaml-1:
-    name: Bump alpine version
-    kind: yaml
-    scmid: mecha-images
-    sourceid: alpine
-    transformers:
-      - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
-      - addsuffix: "/community"
-    spec:
-      key: $.contents.repositories[1]
-      file: tools/file-lint/apko.yaml
-  apko-yaml-2:
-    name: Bump file-lint version
-    kind: yaml
-    scmid: mecha-images
-    sourceid: file-lint
-    spec:
-      key: $.contents.repositories[2]
-      file: tools/file-lint/apko.yaml
-    transformers:
-      - addprefix: "@local dist/tools/file-lint/"
-      - addsuffix: "/packages"
-  melange-yaml-0:
-    name: Bump alpine version
-    kind: yaml
-    scmid: mecha-images
-    sourceid: alpine
-    transformers:
-      - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
-      - addsuffix: "/main"
-    spec:
-      key: $.environment.contents.repositories[0]
-      file: tools/file-lint/melange.yaml
-  melange-yaml-1:
-    name: Bump alpine version
-    kind: yaml
-    scmid: mecha-images
-    sourceid: alpine
-    transformers:
-      - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
-      - addsuffix: "/community"
-    spec:
-      key: $.environment.contents.repositories[1]
-      file: tools/file-lint/melange.yaml
-  melange-yaml-2:
-    name: Bump file-lint version
-    kind: yaml
-    scmid: mecha-images
-    sourceid: file-lint
-    spec:
-      key: $.package.version
-      file: tools/file-lint/melange.yaml
-      value: '{{ printf "%q" .source }}'
+  apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/file-lint/apko.yaml", "/main")
+  apko-yaml-1: #@ target_alpine("$.contents.repositories[1]", "tools/file-lint/apko.yaml", "/community")
+  apko-yaml-2: #@ target_image_apko("file-lint", "$.contents.repositories[2]", "tools/file-lint/apko.yaml")
+  melange-yaml-0: #@ target_alpine("$.environment.contents.repositories[0]", "tools/file-lint/melange.yaml", "/main")
+  melange-yaml-1: #@ target_image_melange("file-lint", "tools/file-lint/melange.yaml")
