@@ -138,7 +138,7 @@ runs:
 
     - name: Push the generated pages content to the repository
       shell: sh
-      run: make push-hugo-site BASE_URL="${{ inputs.site_base_url }}/"
+      run: make push-hugo-site IMAGE="${{ inputs.image_name }}" VERSION="${{ env.IMAGE_VERSION }}"
       if: ${{ inputs.publish == 'true' }}
 
     - name: Upload GitHub Pages artifact
