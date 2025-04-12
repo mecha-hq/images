@@ -12,8 +12,8 @@ scms:
 actions: #@ actions("checkmake")
 
 sources:
-  alpine: #@ source_dockerimage("alpine")
-  checkmake: #@ source_githubrelease("mrtazz", "checkmake")
+  alpine: #@ source_dockerimage("alpine", "regex", "^\d+\.\d+$")
+  checkmake: #@ source_githubrelease("mrtazz", "checkmake", "latest")
 
 targets:
   apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/checkmake/apko.yaml", "/main")

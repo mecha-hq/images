@@ -23,11 +23,28 @@ actions:
         - jsonlint
       title: 'deps: update jsonlint version'
 sources:
+  alpine:
+    name: Get latest dockerhub release version
+    kind: dockerimage
+    spec:
+      architectures:
+        - linux/amd64
+        - linux/arm64
+      image: alpine
+      token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
+      username: '{{ .dockerhub.username }}'
+      versionfilter:
+        kind: regex
+        pattern: ^\d+\.\d+$
+    transformers:
+      - trimprefix: v
   jsonlint:
     name: Get latest version from npm registry
     kind: npm
     spec:
       name: jsonlint
+      versionfilter:
+        kind: latest
 targets:
   apko-yaml-0:
     name: Bump alpine version

@@ -34,7 +34,7 @@ update-deps:
 #@   return "update {} version".format(image)
 #@ end
 
-#@ def source_dockerimage(image):
+#@ def source_dockerimage(image, versionfilter_kind, versionfilter_pattern=None, tagfilter=None):
 name: Get latest dockerhub release version
 kind: dockerimage
 spec:
@@ -42,16 +42,21 @@ spec:
     - linux/amd64
     - linux/arm64
   image: #@ image
-  tagfilter: ^\d+\.\d+$
+  #@ if tagfilter:
+  tagfilter: #@ tagfilter
+  #@ end
   token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
   username: "{{ .dockerhub.username }}"
   versionfilter:
-    kind: ^\d+\.\d+$
+    kind: #@ versionfilter_kind
+    #@ if versionfilter_pattern:
+    pattern: #@ versionfilter_pattern
+    #@ end
 transformers:
   - trimprefix: "v"
 #@ end
 
-#@ def source_githubrelease(owner, repository):
+#@ def source_githubrelease(owner, repository, versionfilter_kind, versionfilter_pattern=None):
 name: Get latest github release version
 kind: githubrelease
 spec:
@@ -60,26 +65,36 @@ spec:
   token: '{{ requiredEnv "GITHUB_TOKEN" }}'
   username: "{{ .github.username }}"
   versionfilter:
-    kind: latest
+    kind: #@ versionfilter_kind
+    #@ if versionfilter_pattern:
+    pattern: #@ versionfilter_pattern
+    #@ end
 transformers:
   - trimprefix: "v"
 #@ end
 
-#@ def source_npm(name):
+#@ def source_npm(name, versionfilter_kind, versionfilter_pattern=None):
 name: Get latest version from npm registry
 kind: npm
 spec:
   name: #@ name
+  versionfilter:
+    kind: #@ versionfilter_kind
+    #@ if versionfilter_pattern:
+    pattern: #@ versionfilter_pattern
+    #@ end
 #@ end
 
-#@ def source_gittag(scmid):
+#@ def source_gittag(scmid, versionfilter_kind, versionfilter_pattern=None):
 name: Get latest tag version from git repository
 kind: gittag
 scmid: #@ scmid
 spec:
   versionfilter:
-    kind: semver
-    pattern: "v*"
+    kind: #@ versionfilter_kind
+    #@ if versionfilter_pattern:
+    pattern: #@ versionfilter_pattern
+    #@ end
 transformers:
   - trimprefix: "v"
 #@ end

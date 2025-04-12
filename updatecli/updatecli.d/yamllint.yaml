@@ -36,11 +36,11 @@ sources:
         - linux/amd64
         - linux/arm64
       image: alpine
-      tagfilter: ^\d+\.\d+$
       token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
       username: '{{ .dockerhub.username }}'
       versionfilter:
-        kind: ^\d+\.\d+$
+        kind: regex
+        pattern: ^\d+\.\d+$
     transformers:
       - trimprefix: v
   yamllint:
@@ -50,7 +50,6 @@ sources:
     spec:
       versionfilter:
         kind: semver
-        pattern: v*
     transformers:
       - trimprefix: v
 targets:

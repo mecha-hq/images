@@ -12,8 +12,8 @@ scms:
 actions: #@ actions("yamlfmt")
 
 sources:
-  alpine: #@ source_dockerimage("alpine")
-  yamlfmt: #@ source_githubrelease("google", "yamlfmt")
+  alpine: #@ source_dockerimage("alpine", "regex", "^\d+\.\d+$")
+  yamlfmt: #@ source_githubrelease("google", "yamlfmt", "latest")
 
 targets:
   apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/yamlfmt/apko.yaml", "/main")

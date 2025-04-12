@@ -12,8 +12,8 @@ scms:
 actions: #@ actions("ls-lint")
 
 sources:
-  alpine: #@ source_dockerimage("alpine")
-  ls-lint: #@ source_npm("@ls-lint/ls-lint")
+  alpine: #@ source_dockerimage("alpine", "regex", "^\d+\.\d+$")
+  ls-lint: #@ source_npm("@ls-lint/ls-lint", "latest")
 
 targets:
   apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/ls-lint/apko.yaml", "/main")

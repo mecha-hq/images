@@ -31,11 +31,11 @@ sources:
         - linux/amd64
         - linux/arm64
       image: alpine
-      tagfilter: ^\d+\.\d+$
       token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
       username: '{{ .dockerhub.username }}'
       versionfilter:
-        kind: ^\d+\.\d+$
+        kind: regex
+        pattern: ^\d+\.\d+$
     transformers:
       - trimprefix: v
   ls-lint:
@@ -43,6 +43,8 @@ sources:
     kind: npm
     spec:
       name: '@ls-lint/ls-lint'
+      versionfilter:
+        kind: latest
 targets:
   apko-yaml-0:
     name: Bump alpine version

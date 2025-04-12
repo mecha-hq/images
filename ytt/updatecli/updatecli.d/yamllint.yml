@@ -17,8 +17,8 @@ scms:
 actions: #@ actions("yamllint")
 
 sources:
-  alpine: #@ source_dockerimage("alpine")
-  yamllint: #@ source_gittag("yamllint")
+  alpine: #@ source_dockerimage("alpine", "regex", "^\d+\.\d+$")
+  yamllint: #@ source_gittag("yamllint", "semver")
 
 targets:
   apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/yamllint/apko.yaml", "/main")

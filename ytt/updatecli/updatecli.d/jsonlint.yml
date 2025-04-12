@@ -12,7 +12,8 @@ scms:
 actions: #@ actions("jsonlint")
 
 sources:
-  jsonlint: #@ source_npm("jsonlint")
+  alpine: #@ source_dockerimage("alpine", "regex", "^\d+\.\d+$")
+  jsonlint: #@ source_npm("jsonlint", "latest")
 
 targets:
   apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/jsonlint/apko.yaml", "/main")
