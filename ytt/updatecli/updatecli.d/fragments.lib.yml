@@ -1,16 +1,15 @@
 #! fragments.lib.yml
 
-#@ def scms():
-mecha-images:
-  kind: github
-  spec:
-    user: "{{ .github.user }}"
-    email: "{{ .github.email }}"
-    owner: "{{ .github.owner }}"
-    repository: "{{ .github.repository }}"
-    token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-    username: "{{ .github.username }}"
-    branch: main
+#@ def scm_mecha_images():
+kind: github
+spec:
+  user: "{{ .github.user }}"
+  email: "{{ .github.email }}"
+  owner: "{{ .github.owner }}"
+  repository: "{{ .github.repository }}"
+  token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+  username: "{{ .github.username }}"
+  branch: main
 #@ end
 
 #@ def actions(image):
@@ -73,12 +72,11 @@ spec:
   name: #@ name
 #@ end
 
-#@ def source_gittag(scmid, repository):
+#@ def source_gittag(scmid):
 name: Get latest tag version from git repository
 kind: gittag
 scmid: #@ scmid
 spec:
-  url: #@ repository
   versionfilter:
     kind: semver
     pattern: "v*"

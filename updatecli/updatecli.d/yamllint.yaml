@@ -10,6 +10,11 @@ scms:
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       username: '{{ .github.username }}'
       branch: main
+  yamllint:
+    kind: git
+    spec:
+      url: https://github.com/adrienverge/yamllint.git
+      branch: main
 actions:
   update-deps:
     kind: github/pullrequest
@@ -43,7 +48,6 @@ sources:
     kind: gittag
     scmid: yamllint
     spec:
-      url: https://github.com/adrienverge/yamllint.git
       versionfilter:
         kind: semver
         pattern: v*

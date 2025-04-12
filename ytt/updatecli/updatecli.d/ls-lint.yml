@@ -2,11 +2,12 @@
 
 name: update ls-lint versions
 
-#@ load("fragments.lib.yml", "scms", "actions")
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
 #@ load("fragments.lib.yml", "source_dockerimage", "source_githubrelease", "source_gittag", "source_npm")
 #@ load("fragments.lib.yml", "target_alpine", "target_image_apko", "target_image_melange", "target_image_apko")
 
-scms: #@ scms()
+scms:
+  mecha-images: #@ scm_mecha_images()
 
 actions: #@ actions("ls-lint")
 
