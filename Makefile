@@ -161,3 +161,7 @@ publish-gh-pages: check-variable-IMAGE check-variable-VERSION
 .PHONY: generate-updatecli-config
 generate-updatecli-config:
 	@${PROJECT_DIR}/scripts/generate-updatecli-config.sh
+
+.PHONY: updatecli-diff
+updatecli-diff:
+	@updatecli diff --config ./updatecli/updatecli.d --values updatecli/values.yaml

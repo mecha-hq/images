@@ -4,3 +4,5 @@ act = "0.2.68"
 [env]
 SNYK_ORG = "your-org-identifier"
 SNYK_TOKEN = "your-token"
+GITHUB_TOKEN = "your-token"
+DOCKERHUB_TOKEN = "your-token"
