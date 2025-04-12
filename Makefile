@@ -157,3 +157,7 @@ draft-gh-release: check-variable-IMAGE check-variable-VERSION
 publish-gh-pages: check-variable-IMAGE check-variable-VERSION
 	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	${PROJECT_DIR}/scripts/publish-gh-release.sh ${IMAGE} ${VERSION}
+
+.PHONY: generate-updatecli-config
+generate-updatecli-config:
+	@${PROJECT_DIR}/scripts/generate-updatecli-config.sh

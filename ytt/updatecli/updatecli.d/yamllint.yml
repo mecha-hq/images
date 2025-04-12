@@ -1,0 +1,23 @@
+#! yamllint.yml
+
+name: update yamllint versions
+
+#@ load("fragments.lib.yml", "scms", "actions")
+#@ load("fragments.lib.yml", "source_dockerimage", "source_githubrelease", "source_gittag", "source_npm")
+#@ load("fragments.lib.yml", "target_alpine", "target_image_apko", "target_image_melange", "target_image_apko")
+
+scms: #@ scms()
+
+actions: #@ actions("yamllint")
+
+sources:
+  alpine: #@ source_dockerimage("alpine")
+  yamllint: #@ source_gittag("yamllint", "https://github.com/adrienverge/yamllint.git")
+
+targets:
+  apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/yamllint/apko.yaml", "/main")
+  apko-yaml-1: #@ target_alpine("$.contents.repositories[1]", "tools/yamllint/apko.yaml", "/community")
+  apko-yaml-2: #@ target_image_apko("yamllint", "$.contents.repositories[2]", "tools/yamllint/apko.yaml")
+  melange-yaml-0: #@ target_alpine("$.environment.contents.repositories[0]", "tools/yamllint/melange.yaml", "/main")
+  melange-yaml-1: #@ target_alpine("$.environment.contents.repositories[1]", "tools/yamllint/melange.yaml", "/community")
+  melange-yaml-2: #@ target_image_melange("yamllint", "tools/yamllint/melange.yaml")

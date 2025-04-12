@@ -1,55 +1,116 @@
-name: update yamllint version
-
+name: update yamllint versions
 scms:
-  images-ci:
+  mecha-images:
     kind: github
     spec:
-      user: "{{ .github.user }}"
-      email: "{{ .github.email }}"
-      owner: "{{ .github.owner }}"
-      repository: "{{ .github.repository }}"
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: '{{ .github.owner }}'
+      repository: '{{ .github.repository }}'
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      username: "{{ .github.username }}"
+      username: '{{ .github.username }}'
       branch: main
-  yamllint:
-    kind: github
-    spec:
-      owner: "adrienverge"
-      repository: "yamllint"
-      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      branch: master
-
 actions:
   update-deps:
-    kind: "github/pullrequest"
-    scmid: "images-ci"
+    kind: github/pullrequest
+    scmid: mecha-images
     spec:
       automerge: false
-      mergemethod: "squash"
-      description: "Update yamllint version"
+      mergemethod: squash
+      description: update yamllint version
       labels:
-        - "dependencies"
-      title: "deps: Update yamllint version"
-
+        - dependencies
+        - yamllint
+      title: 'deps: update yamllint version'
 sources:
+  alpine:
+    name: Get latest dockerhub release version
+    kind: dockerimage
+    spec:
+      architectures:
+        - linux/amd64
+        - linux/arm64
+      image: alpine
+      tagfilter: ^\d+\.\d+$
+      token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
+      username: '{{ .dockerhub.username }}'
+      versionfilter:
+        kind: ^\d+\.\d+$
+    transformers:
+      - trimprefix: v
   yamllint:
-    name: Get latest github tag version from yamllint repository
+    name: Get latest tag version from git repository
     kind: gittag
     scmid: yamllint
     spec:
       url: https://github.com/adrienverge/yamllint.git
       versionfilter:
         kind: semver
-        pattern: "v*"
+        pattern: v*
     transformers:
-      - trimprefix: "v"
-
+      - trimprefix: v
 targets:
-  melange.yaml:
+  apko-yaml-0:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /main
+    spec:
+      key: $.contents.repositories[0]
+      file: tools/yamllint/apko.yaml
+  apko-yaml-1:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /community
+    spec:
+      key: $.contents.repositories[1]
+      file: tools/yamllint/apko.yaml
+  apko-yaml-2:
     name: Bump yamllint version
     kind: yaml
-    scmid: images-ci
+    scmid: mecha-images
+    sourceid: yamllint
+    spec:
+      key: $.contents.repositories[2]
+      file: tools/yamllint/apko.yaml
+    transformers:
+      - addprefix: '@local dist/tools/yamllint/'
+      - addsuffix: /packages
+  melange-yaml-0:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /main
+    spec:
+      key: $.environment.contents.repositories[0]
+      file: tools/yamllint/melange.yaml
+  melange-yaml-1:
+    name: Bump alpine version
+    kind: yaml
+    scmid: mecha-images
+    sourceid: alpine
+    transformers:
+      - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
+      - addsuffix: /community
+    spec:
+      key: $.environment.contents.repositories[1]
+      file: tools/yamllint/melange.yaml
+  melange-yaml-2:
+    name: Bump yamllint version
+    kind: yaml
+    scmid: mecha-images
     sourceid: yamllint
     spec:
       key: $.package.version
       file: tools/yamllint/melange.yaml
+      value: '{{ printf "%q" .source }}'
