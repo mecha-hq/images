@@ -22,13 +22,13 @@ jobs:
         uses: updatecli/updatecli-action@v2
 
       - name: Run Updatecli in Dry Run mode
-        run: "updatecli diff --config ./updatecli/updatecli.d --values updatecli/values.yaml"
+        run: "updatecli diff --config ./updatecli/updatecli.d --values updatecli/values.yaml --values updatecli/values.ci.yaml"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Run Updatecli in apply mode
-        run: "updatecli apply --config ./updatecli/updatecli.d --values updatecli/values.yaml"
+        run: "updatecli apply --config ./updatecli/updatecli.d --values updatecli/values.yaml --values updatecli/values.ci.yaml"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
