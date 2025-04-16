@@ -17,7 +17,6 @@ sources:
 
 targets:
   apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/file-lint/apko.yaml", "/main")
-  apko-yaml-1: #@ target_alpine("$.contents.repositories[1]", "tools/file-lint/apko.yaml", "/community")
-  apko-yaml-2: #@ target_image_apko("file-lint", "$.contents.repositories[2]", "tools/file-lint/apko.yaml")
+  apko-yaml-1: #@ target_image_apko("file-lint", "$.contents.repositories[1]", "tools/file-lint/apko.yaml")
   melange-yaml-0: #@ target_alpine("$.environment.contents.repositories[0]", "tools/file-lint/melange.yaml", "/main")
   melange-yaml-1: #@ target_image_melange("file-lint", "tools/file-lint/melange.yaml")
