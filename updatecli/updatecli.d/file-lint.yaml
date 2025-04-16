@@ -43,7 +43,7 @@ sources:
     name: Get latest github release version
     kind: githubrelease
     spec:
-      owner: ctyopia
+      owner: cytopia
       repository: docker-file-lint
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       username: '{{ .github.username }}'

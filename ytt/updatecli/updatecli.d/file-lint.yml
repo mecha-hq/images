@@ -13,7 +13,7 @@ actions: #@ actions("file-lint")
 
 sources:
   alpine: #@ source_dockerimage("alpine", "regex", "^\d+\.\d+$")
-  file-lint: #@ source_githubrelease("ctyopia", "docker-file-lint", "latest")
+  file-lint: #@ source_githubrelease("cytopia", "docker-file-lint", "latest")
 
 targets:
   apko-yaml-0: #@ target_alpine("$.contents.repositories[0]", "tools/file-lint/apko.yaml", "/main")
