@@ -104,6 +104,7 @@ transformers:
 name: Bump alpine version
 kind: yaml
 sourceid: alpine
+scmid: mecha-images
 transformers:
   - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
   - addsuffix: #@ suffix
@@ -116,6 +117,7 @@ spec:
 name: #@ target_image_name(image)
 kind: yaml
 sourceid: #@ image
+scmid: mecha-images
 spec:
   key: #@ key
   file: #@ file
@@ -132,6 +134,7 @@ transformers:
 name: #@ target_image_name(image)
 kind: yaml
 sourceid: #@ image
+scmid: mecha-images
 spec:
   key: $.package.version
   file: #@ file

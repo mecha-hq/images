@@ -51,6 +51,7 @@ targets:
     name: Bump alpine version
     kind: yaml
     sourceid: alpine
+    scmid: mecha-images
     transformers:
       - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
       - addsuffix: /main
@@ -61,6 +62,7 @@ targets:
     name: Bump alpine version
     kind: yaml
     sourceid: alpine
+    scmid: mecha-images
     transformers:
       - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
       - addsuffix: /community
@@ -71,6 +73,7 @@ targets:
     name: Bump ls-lint version
     kind: yaml
     sourceid: ls-lint
+    scmid: mecha-images
     spec:
       key: $.contents.repositories[2]
       file: tools/ls-lint/apko.yaml
@@ -81,6 +84,7 @@ targets:
     name: Bump alpine version
     kind: yaml
     sourceid: alpine
+    scmid: mecha-images
     transformers:
       - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
       - addsuffix: /main
@@ -91,6 +95,7 @@ targets:
     name: Bump alpine version
     kind: yaml
     sourceid: alpine
+    scmid: mecha-images
     transformers:
       - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
       - addsuffix: /community
@@ -101,6 +106,7 @@ targets:
     name: Bump ls-lint version
     kind: yaml
     sourceid: ls-lint
+    scmid: mecha-images
     spec:
       key: $.package.version
       file: tools/ls-lint/melange.yaml
