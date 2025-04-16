@@ -164,4 +164,8 @@ generate-updatecli-config:
 
 .PHONY: updatecli-diff
 updatecli-diff:
-	@updatecli diff --config ./updatecli/updatecli.d --values updatecli/values.yaml
+	@updatecli diff --config ./updatecli/updatecli.d --values updatecli/values.yaml --values updatecli/values.local.yaml
+
+.PHONY: updatecli-diff-one
+updatecli-diff-one: check-variable-IMAGE
+	@updatecli diff --config ./updatecli/updatecli.d/${IMAGE}.yaml --values updatecli/values.yaml --values updatecli/values.local.yaml --debug
