@@ -5,11 +5,12 @@ kind: github
 spec:
   user: "{{ .github.user }}"
   email: "{{ .github.email }}"
-  owner: "{{ .github.owner }}"
-  repository: "{{ .github.repository }}"
+  owner: mecha-hq
+  repository: images
   token: '{{ requiredEnv "GITHUB_TOKEN" }}'
   username: "{{ .github.username }}"
   branch: main
+  submodules: false
 #@ end
 
 #@ def actions(image):
@@ -102,7 +103,6 @@ transformers:
 #@ def target_alpine(key, file, suffix):
 name: Bump alpine version
 kind: yaml
-scmid: mecha-images
 sourceid: alpine
 transformers:
   - addprefix: "https://dl-cdn.alpinelinux.org/alpine/v"
@@ -115,7 +115,6 @@ spec:
 #@ def target_image_apko(image, key, file):
 name: #@ target_image_name(image)
 kind: yaml
-scmid: mecha-images
 sourceid: #@ image
 spec:
   key: #@ key
@@ -132,7 +131,6 @@ transformers:
 #@ def target_image_melange(image, file):
 name: #@ target_image_name(image)
 kind: yaml
-scmid: mecha-images
 sourceid: #@ image
 spec:
   key: $.package.version

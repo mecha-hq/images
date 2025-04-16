@@ -5,11 +5,12 @@ scms:
     spec:
       user: '{{ .github.user }}'
       email: '{{ .github.email }}'
-      owner: '{{ .github.owner }}'
-      repository: '{{ .github.repository }}'
+      owner: mecha-hq
+      repository: images
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       username: '{{ .github.username }}'
       branch: main
+      submodules: false
   yamllint:
     kind: git
     spec:
@@ -56,7 +57,6 @@ targets:
   apko-yaml-0:
     name: Bump alpine version
     kind: yaml
-    scmid: mecha-images
     sourceid: alpine
     transformers:
       - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
@@ -67,7 +67,6 @@ targets:
   apko-yaml-1:
     name: Bump alpine version
     kind: yaml
-    scmid: mecha-images
     sourceid: alpine
     transformers:
       - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
@@ -78,7 +77,6 @@ targets:
   apko-yaml-2:
     name: Bump yamllint version
     kind: yaml
-    scmid: mecha-images
     sourceid: yamllint
     spec:
       key: $.contents.repositories[2]
@@ -89,7 +87,6 @@ targets:
   melange-yaml-0:
     name: Bump alpine version
     kind: yaml
-    scmid: mecha-images
     sourceid: alpine
     transformers:
       - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
@@ -100,7 +97,6 @@ targets:
   melange-yaml-1:
     name: Bump alpine version
     kind: yaml
-    scmid: mecha-images
     sourceid: alpine
     transformers:
       - addprefix: https://dl-cdn.alpinelinux.org/alpine/v
@@ -111,7 +107,6 @@ targets:
   melange-yaml-2:
     name: Bump yamllint version
     kind: yaml
-    scmid: mecha-images
     sourceid: yamllint
     spec:
       key: $.package.version

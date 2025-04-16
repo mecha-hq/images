@@ -1,9 +1,2 @@
-github:
-  user: "GitHub Actions Bot"
-  email: "bots@udpatecli.io"
-  username: "github-actions"
-  repository: "images"
-  owner: "mecha-hq"
-
 dockerhub:
   username: "mecha-hq"
