@@ -117,4 +117,3 @@ targets:
     spec:
       key: $.package.version
       file: tools/yamllint/melange.yaml
-      value: '{{ printf "%q" .source }}'

@@ -93,4 +93,3 @@ targets:
     spec:
       key: $.package.version
       file: tools/file-lint/melange.yaml
-      value: '{{ printf "%q" .source }}'

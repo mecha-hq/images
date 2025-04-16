@@ -138,7 +138,6 @@ scmid: mecha-images
 spec:
   key: $.package.version
   file: #@ file
-  value: '{{ printf "%q" .source }}'
 #@ end
 
 #@ def target_image_name(image):
