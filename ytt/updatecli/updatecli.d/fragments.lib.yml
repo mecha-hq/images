@@ -119,11 +119,11 @@ spec:
   file: #@ file
 transformers:
   - addprefix: #@ target_image_apko_transformer_prefix(image)
-  - addsuffix: "/packages"
+  - addsuffix: '/packages"'
 #@ end
 
 #@ def target_image_apko_transformer_prefix(image):
-#@   return "@local dist/tools/{}/".format(image)
+#@   return '"@local dist/tools/{}/'.format(image)
 #@ end
 
 #@ def target_image_melange(image, file):

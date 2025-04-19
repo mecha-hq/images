@@ -86,8 +86,8 @@ targets:
       key: $.contents.repositories[2]
       file: tools/yamllint/apko.yaml
     transformers:
-      - addprefix: '@local dist/tools/yamllint/'
-      - addsuffix: /packages
+      - addprefix: '"@local dist/tools/yamllint/'
+      - addsuffix: /packages"
   melange-yaml-0:
     name: Bump alpine version
     kind: yaml
