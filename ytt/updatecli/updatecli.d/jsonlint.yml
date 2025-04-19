@@ -3,7 +3,7 @@
 name: update jsonlint versions
 
 #@ load("fragments.lib.yml", "scm_mecha_images", "actions")
-#@ load("fragments.lib.yml", "source_dockerimage", "source_githubrelease", "source_gittag", "source_npm")
+#@ load("fragments.lib.yml", "source_alpine", "source_githubrelease", "source_gittag", "source_npm")
 #@ load("fragments.lib.yml", "target_alpine", "target_image_apko", "target_image_melange", "target_image_apko")
 
 scms:
@@ -12,7 +12,7 @@ scms:
 actions: #@ actions("jsonlint")
 
 sources:
-  alpine: #@ source_dockerimage("alpine", "regex", "^\d+\.\d+$")
+  alpine: #@ source_alpine()
   jsonlint: #@ source_npm("jsonlint", "latest")
 
 targets:

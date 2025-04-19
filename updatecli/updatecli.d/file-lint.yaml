@@ -32,13 +32,14 @@ sources:
         - linux/amd64
         - linux/arm64
       image: alpine
-      token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
-      username: '{{ .dockerhub.username }}'
       versionfilter:
-        kind: regex
-        pattern: ^\d+\.\d+$
+        kind: regex/semver
+        pattern: '>=3'
+        regex: (\d*\.\d*\.\d*)
     transformers:
-      - trimprefix: v
+      - findsubmatch:
+          pattern: (\d*\.\d*)(\.\d*)
+          captureindex: 1
   file-lint:
     name: Get latest github release version
     kind: githubrelease

@@ -35,26 +35,22 @@ update-deps:
 #@   return "update {} version".format(image)
 #@ end
 
-#@ def source_dockerimage(image, versionfilter_kind, versionfilter_pattern=None, tagfilter=None):
+#@ def source_alpine():
 name: Get latest dockerhub release version
 kind: dockerimage
 spec:
   architectures:
     - linux/amd64
     - linux/arm64
-  image: #@ image
-  #@ if tagfilter:
-  tagfilter: #@ tagfilter
-  #@ end
-  token: '{{ requiredEnv "DOCKERHUB_TOKEN" }}'
-  username: "{{ .dockerhub.username }}"
+  image: alpine
   versionfilter:
-    kind: #@ versionfilter_kind
-    #@ if versionfilter_pattern:
-    pattern: #@ versionfilter_pattern
-    #@ end
+    kind: regex/semver
+    pattern: ">=3"
+    regex: "(\\d*\\.\\d*\\.\\d*)"
 transformers:
-  - trimprefix: "v"
+  - findsubmatch:
+      pattern: "(\\d*\\.\\d*)(\\.\\d*)"
+      captureindex: 1
 #@ end
 
 #@ def source_githubrelease(owner, repository, versionfilter_kind, versionfilter_pattern=None):
