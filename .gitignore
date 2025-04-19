@@ -7,3 +7,4 @@ pages/content/collections/*
 !pages/content/collections/_index.md
 pages/public/
 values.local.yaml
+*.rsa
