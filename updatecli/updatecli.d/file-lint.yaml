@@ -94,3 +94,6 @@ targets:
     spec:
       key: $.package.version
       file: tools/file-lint/melange.yaml
+    transformers:
+      - addprefix: '"'
+      - addsuffix: '"'

@@ -134,6 +134,9 @@ scmid: mecha-images
 spec:
   key: $.package.version
   file: #@ file
+transformers:
+  - addprefix: '"'
+  - addsuffix: '"'
 #@ end
 
 #@ def target_image_name(image):

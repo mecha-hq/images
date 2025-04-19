@@ -116,3 +116,6 @@ targets:
     spec:
       key: $.package.version
       file: tools/checkmake/melange.yaml
+    transformers:
+      - addprefix: '"'
+      - addsuffix: '"'

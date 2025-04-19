@@ -118,3 +118,6 @@ targets:
     spec:
       key: $.package.version
       file: tools/yamllint/melange.yaml
+    transformers:
+      - addprefix: '"'
+      - addsuffix: '"'
