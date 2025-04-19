@@ -1,0 +1,71 @@
+#! fragments.lib.yml
+
+#@ def jobs_build(image, runs_on):
+runs-on: #@ runs_on
+permissions:
+  contents: write
+  id-token: write
+  packages: write
+  pages: write
+steps:
+  - name: Harden Runner
+    uses: step-security/harden-runner@v2
+    with:
+      egress-policy: audit
+  - name: Checkout code
+    uses: actions/checkout@v4
+    with:
+      submodules: recursive
+      fetch-depth: 0
+  - name: Build image
+    uses: ./.github/actions/image
+    with:
+      container_registry_password: ${{ secrets.CI_TOKEN }}
+      melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
+      snyk_org: ${{ secrets.SNYK_ORG }}
+      snyk_token: ${{ secrets.SNYK_TOKEN }}
+      image_name: #@ image
+      publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#@ end
+
+#@ def on(image):
+workflow_dispatch:
+push:
+  branches:
+    - main
+  paths:
+    #! tool-specific paths
+    #@ tool_gh_workflow_path(image)
+    #@ tool_folder_path(image)
+    #! common paths
+    - ".github/actions/**"
+    - ".mise.*"
+    - Makefile
+    - melange.rsa.pub
+    - "scripts/**"
+    - "pages/**"
+    - "!pages/content"
+pull_request:
+  paths:
+    #! tool-specific paths
+    #@ tool_gh_workflow_path(image)
+    #@ tool_folder_path(image)
+    #! common paths
+    - ".github/actions/**"
+    - ".mise.*"
+    - Makefile
+    - melange.rsa.pub
+    - "scripts/**"
+    - "pages/**"
+    - "!pages/content"
+#@ end
+
+#@ def tool_gh_workflow_path(image):
+#@   return '- ".github/workflows/{}.yaml"'.format(image)
+#@ end
+
+#@ def tool_folder_path(image):
+#@   return '- "tools/{}/**"'.format(image)
+#@ end

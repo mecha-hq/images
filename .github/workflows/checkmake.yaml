@@ -1,37 +1,26 @@
----
 name: Checkmake
-
 on:
   workflow_dispatch:
   push:
     branches:
       - main
     paths:
-      # tool-specific paths
-      - ".github/workflows/checkmake.yaml"
-      - "tools/checkmake/**"
-      # common paths
-      - ".github/actions/**"
-      - ".mise.*"
+      - .github/actions/**
+      - .mise.*
       - Makefile
       - melange.rsa.pub
-      - "scripts/**"
-      - "pages/**"
-      - "!pages/content"
+      - scripts/**
+      - pages/**
+      - '!pages/content'
   pull_request:
     paths:
-      # tool-specific paths
-      - ".github/workflows/checkmake.yaml"
-      - "tools/checkmake/**"
-      # common paths
-      - ".github/actions/**"
-      - ".mise.*"
+      - .github/actions/**
+      - .mise.*
       - Makefile
       - melange.rsa.pub
-      - "scripts/**"
-      - "pages/**"
-      - "!pages/content"
-
+      - scripts/**
+      - pages/**
+      - '!pages/content'
 jobs:
   build:
     runs-on: ubuntu-24.04
