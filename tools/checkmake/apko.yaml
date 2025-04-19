@@ -1,7 +1,7 @@
 contents:
   repositories:
     - https://dl-cdn.alpinelinux.org/alpine/v3.21/main
-    - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
+    - https://dl-cdn.alpinelinux.org/alpine/v3.21/community
     - "@local dist/tools/checkmake/0.2.2/packages"
   packages:
     - checkmake@local
