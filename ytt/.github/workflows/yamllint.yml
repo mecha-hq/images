@@ -1,6 +1,6 @@
 #! yamllint.yml
 
-name: yamllint
+name: Yamllint
 
 #@ load("fragments.lib.yml", "on", "jobs_build")
 

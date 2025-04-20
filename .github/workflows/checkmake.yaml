@@ -1,4 +1,4 @@
-name: checkmake
+name: Checkmake
 on:
   workflow_dispatch:
   push:
