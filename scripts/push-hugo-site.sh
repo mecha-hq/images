@@ -12,5 +12,11 @@ if [ -z "${IMAGE_VERSION}" ]; then echo "Argument 2 (IMAGE_VERSION) is required"
 git config --global user.email "github-actions[bot]@users.noreply.github.com"
 git config --global user.name "GitHub Actions"
 git add pages/content
-git commit -m "Update GitHub Pages content with ${IMAGE_NAME}:${IMAGE_VERSION} data."
-git push
+
+# Only commit and push if there are staged changes
+if ! git diff --cached --quiet; then
+  git commit -m "Update GitHub Pages content with ${IMAGE_NAME}:${IMAGE_VERSION} data."
+  git push
+else
+  echo "No changes to commit."
+fi
