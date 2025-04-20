@@ -15,7 +15,7 @@ environment:
   contents:
     repositories:
       - https://dl-cdn.alpinelinux.org/alpine/v3.19/main
-      - https://dl-cdn.alpinelinux.org/alpine/v3.19/community
+      - https://dl-cdn.alpinelinux.org/alpine/v3.21/community
     packages:
       - apk-tools
       - busybox
