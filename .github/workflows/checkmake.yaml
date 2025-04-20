@@ -5,6 +5,8 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/checkmake.yaml
+      - tools/checkmake/**
       - .github/actions/**
       - .mise.*
       - Makefile
@@ -14,6 +16,8 @@ on:
       - '!pages/content'
   pull_request:
     paths:
+      - .github/workflows/checkmake.yaml
+      - tools/checkmake/**
       - .github/actions/**
       - .mise.*
       - Makefile

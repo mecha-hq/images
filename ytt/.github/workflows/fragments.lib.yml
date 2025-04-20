@@ -37,8 +37,8 @@ push:
     - main
   paths:
     #! tool-specific paths
-    #@ tool_gh_workflow_path(image)
-    #@ tool_folder_path(image)
+    -  #@ ".github/workflows/" + image + ".yaml"
+    -  #@ "tools/"+ image + "/**"
     #! common paths
     - ".github/actions/**"
     - ".mise.*"
@@ -50,8 +50,8 @@ push:
 pull_request:
   paths:
     #! tool-specific paths
-    #@ tool_gh_workflow_path(image)
-    #@ tool_folder_path(image)
+    -  #@ ".github/workflows/" + image + ".yaml"
+    -  #@ "tools/"+ image + "/**"
     #! common paths
     - ".github/actions/**"
     - ".mise.*"
@@ -60,12 +60,4 @@ pull_request:
     - "scripts/**"
     - "pages/**"
     - "!pages/content"
-#@ end
-
-#@ def tool_gh_workflow_path(image):
-#@   return '- ".github/workflows/{}.yaml"'.format(image)
-#@ end
-
-#@ def tool_folder_path(image):
-#@   return '- "tools/{}/**"'.format(image)
 #@ end
