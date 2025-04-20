@@ -1,6 +1,6 @@
 package:
   name: ls-lint
-  version: "2.2.3"
+  version: 2.3.0
   epoch: 0
   description: loeffel-io/ls-lint image.
   copyright:
