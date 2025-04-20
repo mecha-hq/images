@@ -84,8 +84,8 @@ targets:
       key: $.contents.repositories[2]
       file: tools/checkmake/apko.yaml
     transformers:
-      - addprefix: '"@local dist/tools/checkmake/'
-      - addsuffix: /packages"
+      - addprefix: '@local dist/tools/checkmake/'
+      - addsuffix: /packages
   melange-yaml-0:
     name: Bump alpine version
     kind: yaml
@@ -116,6 +116,3 @@ targets:
     spec:
       key: $.package.version
       file: tools/checkmake/melange.yaml
-    transformers:
-      - addprefix: '"'
-      - addsuffix: '"'

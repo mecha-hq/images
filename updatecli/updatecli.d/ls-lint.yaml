@@ -79,8 +79,8 @@ targets:
       key: $.contents.repositories[2]
       file: tools/ls-lint/apko.yaml
     transformers:
-      - addprefix: '"@local dist/tools/ls-lint/'
-      - addsuffix: /packages"
+      - addprefix: '@local dist/tools/ls-lint/'
+      - addsuffix: /packages
   melange-yaml-0:
     name: Bump alpine version
     kind: yaml
@@ -111,6 +111,3 @@ targets:
     spec:
       key: $.package.version
       file: tools/ls-lint/melange.yaml
-    transformers:
-      - addprefix: '"'
-      - addsuffix: '"'
