@@ -1,6 +1,6 @@
 #! checkmake.yml
 
-name: Checkmake
+name: checkmake
 
 #@ load("fragments.lib.yml", "on", "jobs_build")
 

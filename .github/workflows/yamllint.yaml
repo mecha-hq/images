@@ -1,4 +1,4 @@
-name: checkmake
+name: yamllint
 on:
   workflow_dispatch:
   push:
@@ -46,7 +46,7 @@ jobs:
           melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
           snyk_org: ${{ secrets.SNYK_ORG }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
-          image_name: checkmake
+          image_name: yamllint
           publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

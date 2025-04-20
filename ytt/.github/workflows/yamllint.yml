@@ -1,0 +1,11 @@
+#! yamllint.yml
+
+name: yamllint
+
+#@ load("fragments.lib.yml", "on", "jobs_build")
+
+#@yaml/text-templated-strings
+"on": #@ on("yamllint")
+
+jobs:
+  build: #@ jobs_build("yamllint", "ubuntu-24.04")
