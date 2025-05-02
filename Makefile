@@ -162,6 +162,13 @@ publish-gh-pages: check-variable-IMAGE check-variable-VERSION
 generate-updatecli-config:
 	@${PROJECT_DIR}/scripts/generate-updatecli-config.sh
 
+.PHONY: generate-gha-config
+generate-gha-config:
+	@${PROJECT_DIR}/scripts/generate-gha-config.sh
+
+.PHONY: generate-config
+generate-config: generate-updatecli-config generate-gha-config
+
 .PHONY: updatecli-diff
 updatecli-diff:
 	@updatecli diff --config ./updatecli/updatecli.d --values updatecli/values.yaml --values updatecli/values.local.yaml
