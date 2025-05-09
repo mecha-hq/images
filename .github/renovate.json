@@ -1,0 +1,10 @@
+{
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "matchManagers": ["gomod"],
+      "matchPackageNames": ["golang"],
+      "allowedVersions": "1.23.x"
+    }
+  ]
+}
