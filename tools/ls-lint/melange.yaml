@@ -1,6 +1,6 @@
 package:
   name: ls-lint
-  version: 2.3.0
+  version: 2.3.1
   epoch: 0
   description: loeffel-io/ls-lint image.
   copyright:
@@ -14,8 +14,8 @@ package:
 environment:
   contents:
     repositories:
-      - https://dl-cdn.alpinelinux.org/alpine/v3.21/main
-      - https://dl-cdn.alpinelinux.org/alpine/v3.21/community
+      - https://dl-cdn.alpinelinux.org/alpine/v3.22/main
+      - https://dl-cdn.alpinelinux.org/alpine/v3.22/community
     packages:
       - apk-tools
       - busybox
