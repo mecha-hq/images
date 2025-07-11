@@ -1,0 +1,55 @@
+name: update mise versions
+scms:
+  mecha-images:
+    kind: github
+    spec:
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: mecha-hq
+      repository: images
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      branch: main
+      submodules: false
+actions:
+  update-deps:
+    kind: github/pullrequest
+    scmid: mecha-images
+    spec:
+      automerge: false
+      mergemethod: squash
+      description: update mise version
+      labels:
+        - dependencies
+        - mise
+      title: 'deps: update mise version'
+sources:
+  mise:
+    name: Get latest github release version
+    kind: githubrelease
+    spec:
+      owner: jdx
+      repository: mise
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: v
+targets:
+  gha-actions-image-0:
+    name: Bump mise version
+    kind: yaml
+    sourceid: mise
+    scmid: mecha-images
+    spec:
+      key: $.inputs.mise_version.default
+      file: .github/actions/image/action.yaml
+  gha-workflows-diff-0:
+    name: Bump mise version
+    kind: yaml
+    sourceid: mise
+    scmid: mecha-images
+    spec:
+      key: $.jobs.build.steps[2].with.version
+      file: .github/workflows/diff.yaml

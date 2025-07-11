@@ -1,0 +1,55 @@
+name: update updatecli versions
+scms:
+  mecha-images:
+    kind: github
+    spec:
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: mecha-hq
+      repository: images
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      branch: main
+      submodules: false
+actions:
+  update-deps:
+    kind: github/pullrequest
+    scmid: mecha-images
+    spec:
+      automerge: false
+      mergemethod: squash
+      description: update updatecli version
+      labels:
+        - dependencies
+        - updatecli
+      title: 'deps: update updatecli version'
+sources:
+  updatecli:
+    name: Get latest github release version
+    kind: githubrelease
+    spec:
+      owner: updatecli
+      repository: updatecli
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: v
+targets:
+  gha-actions-image-0:
+    name: Bump updatecli version
+    kind: yaml
+    sourceid: updatecli
+    scmid: mecha-images
+    spec:
+      key: $.jobs.updatecli.steps[1].with.version
+      file: .github/workflows/updatecli.yaml
+  gha-workflows-diff-0:
+    name: Bump updatecli version
+    kind: toml
+    sourceid: updatecli
+    scmid: mecha-images
+    spec:
+      key: .tools.updatecli
+      file: mise.toml

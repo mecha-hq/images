@@ -1,0 +1,32 @@
+#! mise.yml
+
+name: update mise versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("mise")
+
+sources:
+  mise: #@ source_githubrelease("jdx", "mise", "latest")
+
+targets:
+  gha-actions-image-0:
+    name: Bump mise version
+    kind: yaml
+    sourceid: mise
+    scmid: mecha-images
+    spec:
+      key: $.inputs.mise_version.default
+      file: .github/actions/image/action.yaml
+  gha-workflows-diff-0:
+    name: Bump mise version
+    kind: yaml
+    sourceid: mise
+    scmid: mecha-images
+    spec:
+      key: $.jobs.build.steps[2].with.version
+      file: .github/workflows/diff.yaml
