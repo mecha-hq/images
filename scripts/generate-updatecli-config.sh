@@ -9,7 +9,7 @@ find ytt/updatecli/updatecli.d/**/*.yml -type f -name "*.yml" ! -name "*.lib.yml
     mkdir -p "$(dirname ${dst})"
 
     ytt \
-        -f "ytt/updatecli/updatecli.d/fragments.lib.yml" \
-        -f "${src}" | \
+        --file "ytt/updatecli/updatecli.d/fragments.lib.yml" \
+        --file "${src}" | \
         yq --indent=2 > "${dst}"
 done
