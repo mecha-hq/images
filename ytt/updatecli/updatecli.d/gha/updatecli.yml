@@ -1,0 +1,24 @@
+#! updatecli.yml
+
+name: update updatecli versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("updatecli")
+
+sources:
+  updatecli: #@ source_githubrelease("updatecli", "updatecli", "latest")
+
+targets:
+  gha-workflows-updatecli-0:
+    name: Bump updatecli version
+    kind: yaml
+    sourceid: updatecli
+    scmid: mecha-images
+    spec:
+      key: $.jobs.updatecli.steps[1].with.version
+      file: .github/workflows/updatecli.yaml

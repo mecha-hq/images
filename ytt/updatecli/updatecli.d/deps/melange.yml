@@ -1,0 +1,24 @@
+#! melange.yml
+
+name: update melange versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("melange")
+
+sources:
+  melange: #@ source_githubrelease("chainguard-dev", "melange", "latest")
+
+targets:
+  mise-toml-0:
+    name: Bump melange version
+    kind: toml
+    sourceid: melange
+    scmid: mecha-images
+    spec:
+      key: .tools.melange
+      file: mise.toml

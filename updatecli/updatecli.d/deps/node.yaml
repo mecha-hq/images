@@ -1,0 +1,47 @@
+name: update node versions
+scms:
+  mecha-images:
+    kind: github
+    spec:
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: mecha-hq
+      repository: images
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      branch: main
+      submodules: false
+actions:
+  update-deps:
+    kind: github/pullrequest
+    scmid: mecha-images
+    spec:
+      automerge: false
+      mergemethod: squash
+      description: update node version
+      labels:
+        - dependencies
+        - node
+      title: 'deps: update node version'
+sources:
+  node:
+    name: Get latest github release version
+    kind: githubrelease
+    spec:
+      owner: nodejs
+      repository: node
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: v
+targets:
+  mise-toml-0:
+    name: Bump node version
+    kind: toml
+    sourceid: node
+    scmid: mecha-images
+    spec:
+      key: .tools.node
+      file: mise.toml

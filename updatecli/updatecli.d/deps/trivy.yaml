@@ -1,0 +1,47 @@
+name: update trivy versions
+scms:
+  mecha-images:
+    kind: github
+    spec:
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: mecha-hq
+      repository: images
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      branch: main
+      submodules: false
+actions:
+  update-deps:
+    kind: github/pullrequest
+    scmid: mecha-images
+    spec:
+      automerge: false
+      mergemethod: squash
+      description: update trivy version
+      labels:
+        - dependencies
+        - trivy
+      title: 'deps: update trivy version'
+sources:
+  trivy:
+    name: Get latest github release version
+    kind: githubrelease
+    spec:
+      owner: aquasecurity
+      repository: trivy
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: v
+targets:
+  mise-toml-0:
+    name: Bump trivy version
+    kind: toml
+    sourceid: trivy
+    scmid: mecha-images
+    spec:
+      key: .tools.trivy
+      file: mise.toml

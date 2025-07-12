@@ -14,15 +14,7 @@ sources:
   updatecli: #@ source_githubrelease("updatecli", "updatecli", "latest")
 
 targets:
-  gha-actions-image-0:
-    name: Bump updatecli version
-    kind: yaml
-    sourceid: updatecli
-    scmid: mecha-images
-    spec:
-      key: $.jobs.updatecli.steps[1].with.version
-      file: .github/workflows/updatecli.yaml
-  gha-workflows-diff-0:
+  mise-toml-0:
     name: Bump updatecli version
     kind: toml
     sourceid: updatecli

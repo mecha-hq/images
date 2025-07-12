@@ -1,0 +1,47 @@
+name: update snyk versions
+scms:
+  mecha-images:
+    kind: github
+    spec:
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: mecha-hq
+      repository: images
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      branch: main
+      submodules: false
+actions:
+  update-deps:
+    kind: github/pullrequest
+    scmid: mecha-images
+    spec:
+      automerge: false
+      mergemethod: squash
+      description: update snyk version
+      labels:
+        - dependencies
+        - snyk
+      title: 'deps: update snyk version'
+sources:
+  snyk:
+    name: Get latest github release version
+    kind: githubrelease
+    spec:
+      owner: snyk
+      repository: cli
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: v
+targets:
+  mise-toml-0:
+    name: Bump snyk version
+    kind: toml
+    sourceid: snyk
+    scmid: mecha-images
+    spec:
+      key: .tools.snyk
+      file: mise.toml

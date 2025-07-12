@@ -1,0 +1,24 @@
+#! yq.yml
+
+name: update yq versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("yq")
+
+sources:
+  yq: #@ source_githubrelease("mikefarah", "yq", "latest")
+
+targets:
+  mise-toml-0:
+    name: Bump yq version
+    kind: toml
+    sourceid: yq
+    scmid: mecha-images
+    spec:
+      key: .tools.yq
+      file: mise.toml

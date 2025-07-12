@@ -1,0 +1,24 @@
+#! dockle.yml
+
+name: update dockle versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("dockle")
+
+sources:
+  dockle: #@ source_githubrelease("goodwithtech", "dockle", "latest")
+
+targets:
+  mise-toml-0:
+    name: Bump dockle version
+    kind: toml
+    sourceid: dockle
+    scmid: mecha-images
+    spec:
+      key: .tools.dockle
+      file: mise.toml

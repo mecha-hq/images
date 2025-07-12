@@ -1,0 +1,24 @@
+#! apko.yml
+
+name: update apko versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("apko")
+
+sources:
+  apko: #@ source_githubrelease("chainguard-dev", "apko", "latest")
+
+targets:
+  mise-toml-0:
+    name: Bump apko version
+    kind: toml
+    sourceid: apko
+    scmid: mecha-images
+    spec:
+      key: .tools.apko
+      file: mise.toml

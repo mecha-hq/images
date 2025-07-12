@@ -1,0 +1,24 @@
+#! grype.yml
+
+name: update grype versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("grype")
+
+sources:
+  grype: #@ source_githubrelease("anchore", "grype", "latest")
+
+targets:
+  mise-toml-0:
+    name: Bump grype version
+    kind: toml
+    sourceid: grype
+    scmid: mecha-images
+    spec:
+      key: .tools.grype
+      file: mise.toml

@@ -1,0 +1,47 @@
+name: update yq versions
+scms:
+  mecha-images:
+    kind: github
+    spec:
+      user: '{{ .github.user }}'
+      email: '{{ .github.email }}'
+      owner: mecha-hq
+      repository: images
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      branch: main
+      submodules: false
+actions:
+  update-deps:
+    kind: github/pullrequest
+    scmid: mecha-images
+    spec:
+      automerge: false
+      mergemethod: squash
+      description: update yq version
+      labels:
+        - dependencies
+        - yq
+      title: 'deps: update yq version'
+sources:
+  yq:
+    name: Get latest github release version
+    kind: githubrelease
+    spec:
+      owner: mikefarah
+      repository: yq
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      username: '{{ .github.username }}'
+      versionfilter:
+        kind: latest
+    transformers:
+      - trimprefix: v
+targets:
+  mise-toml-0:
+    name: Bump yq version
+    kind: toml
+    sourceid: yq
+    scmid: mecha-images
+    spec:
+      key: .tools.yq
+      file: mise.toml

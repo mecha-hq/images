@@ -1,0 +1,24 @@
+#! hugo.yml
+
+name: update hugo versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("hugo")
+
+sources:
+  hugo: #@ source_githubrelease("gohugoio", "hugo", "latest")
+
+targets:
+  mise-toml-0:
+    name: Bump hugo version
+    kind: toml
+    sourceid: hugo
+    scmid: mecha-images
+    spec:
+      key: .tools.hugo
+      file: mise.toml

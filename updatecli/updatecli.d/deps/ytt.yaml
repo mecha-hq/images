@@ -1,4 +1,4 @@
-name: update updatecli versions
+name: update ytt versions
 scms:
   mecha-images:
     kind: github
@@ -18,18 +18,18 @@ actions:
     spec:
       automerge: false
       mergemethod: squash
-      description: update updatecli version
+      description: update ytt version
       labels:
         - dependencies
-        - updatecli
-      title: 'deps: update updatecli version'
+        - ytt
+      title: 'deps: update ytt version'
 sources:
-  updatecli:
+  ytt:
     name: Get latest github release version
     kind: githubrelease
     spec:
-      owner: updatecli
-      repository: updatecli
+      owner: carvel-dev
+      repository: ytt
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       username: '{{ .github.username }}'
       versionfilter:
@@ -37,19 +37,11 @@ sources:
     transformers:
       - trimprefix: v
 targets:
-  gha-actions-image-0:
-    name: Bump updatecli version
-    kind: yaml
-    sourceid: updatecli
-    scmid: mecha-images
-    spec:
-      key: $.jobs.updatecli.steps[1].with.version
-      file: .github/workflows/updatecli.yaml
-  gha-workflows-diff-0:
-    name: Bump updatecli version
+  mise-toml-0:
+    name: Bump ytt version
     kind: toml
-    sourceid: updatecli
+    sourceid: ytt
     scmid: mecha-images
     spec:
-      key: .tools.updatecli
+      key: .tools.ytt
       file: mise.toml

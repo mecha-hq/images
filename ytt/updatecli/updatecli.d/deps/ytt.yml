@@ -1,0 +1,24 @@
+#! ytt.yml
+
+name: update ytt versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("ytt")
+
+sources:
+  ytt: #@ source_githubrelease("carvel-dev", "ytt", "latest")
+
+targets:
+  mise-toml-0:
+    name: Bump ytt version
+    kind: toml
+    sourceid: ytt
+    scmid: mecha-images
+    spec:
+      key: .tools.ytt
+      file: mise.toml

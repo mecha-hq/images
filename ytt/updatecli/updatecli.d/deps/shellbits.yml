@@ -1,0 +1,24 @@
+#! shellbits.yml
+
+name: update shellbits versions
+
+#@ load("fragments.lib.yml", "scm_mecha_images", "actions")
+#@ load("fragments.lib.yml", "source_githubrelease")
+
+scms:
+  mecha-images: #@ scm_mecha_images()
+
+actions: #@ actions("shellbits")
+
+sources:
+  shellbits: #@ source_githubrelease("mecha-hq", "shellbits", "latest")
+
+targets:
+  mise-toml-0:
+    name: Bump shellbits version
+    kind: toml
+    sourceid: shellbits
+    scmid: mecha-images
+    spec:
+      key: .tools.shellbits
+      file: mise.toml
