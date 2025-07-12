@@ -105,7 +105,7 @@ trivy: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
-		trivy image -d -f json -o dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/trivy.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}"; \
+		trivy image -d -f json -o "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/trivy.json" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}"; \
 	done
 
 .PHONY: trivy-all
@@ -118,7 +118,7 @@ snyk: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
 		mkdir -p "dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}" && \
 		snyk container test -d \
-			--org=$${SNYK_ORG} "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}" \
+			--org="$${SNYK_ORG}" "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$${a}" \
 			--json-file-output="dist/$${KIND}/${IMAGE}/${VERSION}/reports/$${a}/snyk.json"; \
 	done
 
