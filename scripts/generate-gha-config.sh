@@ -7,9 +7,11 @@ find ytt/.github/workflows/*.yml -maxdepth 1 -type f -name "*.yml" ! -name "*.li
     dst=$(echo "${src}" | sed 's/ytt\///g' | sed 's/.yml/.yaml/g')
 
     ytt \
-        -f "ytt/.github/workflows/fragments.lib.yml" \
-        -f "${src}" | \
+        --file "ytt/.github/workflows/fragments.lib.yml" \
+        --file "${src}" | \
         yq --indent=2 | \
         sed 's/^\"on\"\:$/on:/' | \
-        sed 's/^  workflow_dispatch: null$/  workflow_dispatch:/' > "${dst}"
+        sed 's/^  workflow_dispatch: null$/  workflow_dispatch:/' | \
+        sed '1i # yaml-language-server: $schema=https://json.schemastore.org/github-workflow\n' \
+        > "${dst}"
 done

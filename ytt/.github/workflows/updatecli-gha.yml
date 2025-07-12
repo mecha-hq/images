@@ -1,0 +1,11 @@
+#! updatecli-gha.yml
+
+name: Updatecli Github Actions
+
+#@ load("fragments.lib.yml", "updatecli_on", "updatecli_permissions", "updatecli_jobs")
+
+"on": #@ updatecli_on(4)
+
+permissions: #@ updatecli_permissions()
+
+jobs: #@ updatecli_jobs("gha")
