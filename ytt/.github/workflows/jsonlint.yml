@@ -1,0 +1,11 @@
+#! jsonlint.yml
+
+name: Jsonlint
+
+#@ load("fragments.lib.yml", "on", "jobs_build")
+
+#@yaml/text-templated-strings
+"on": #@ on("jsonlint")
+
+jobs:
+  build: #@ jobs_build("jsonlint", "ubuntu-24.04")
