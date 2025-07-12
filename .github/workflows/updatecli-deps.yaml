@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+---
+name: Updatecli Dependencies
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 */4 * * *"
+
+permissions:
+  contents: "write"
+  pull-requests: "write"
+
+jobs:
+  updatecli:
+    runs-on: "ubuntu-24.04"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Updatecli in the runner
+        uses: updatecli/updatecli-action@v2
+        with:
+          version: v0.103.1
+
+      - name: Run Updatecli for dependencies in Dry Run mode
+        run: "updatecli diff --config ./updatecli/updatecli.d/deps --values updatecli/values.yaml --values updatecli/values.ci.yaml"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Run Updatecli for dependencies
+        run: "updatecli apply --config ./updatecli/updatecli.d/deps --values updatecli/values.yaml --values updatecli/values.ci.yaml"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
