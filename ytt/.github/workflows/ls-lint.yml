@@ -1,0 +1,11 @@
+#! ls-lint.yml
+
+name: Ls-lint
+
+#@ load("fragments.lib.yml", "on", "jobs_build")
+
+#@yaml/text-templated-strings
+"on": #@ on("ls-lint")
+
+jobs:
+  build: #@ jobs_build("ls-lint", "ubuntu-24.04")
