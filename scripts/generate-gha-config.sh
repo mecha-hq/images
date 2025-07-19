@@ -12,6 +12,7 @@ find ytt/.github/workflows/*.yml -maxdepth 1 -type f -name "*.yml" ! -name "*.li
         yq --indent=2 | \
         sed 's/^\"on\"\:$/on:/' | \
         sed 's/^  workflow_dispatch: null$/  workflow_dispatch:/' | \
+        sed 's/^  pull_request: null$/  pull_request:/' | \
         sed '1i # yaml-language-server: $schema=https://json.schemastore.org/github-workflow\n' \
         > "${dst}"
 done

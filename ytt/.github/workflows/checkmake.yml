@@ -2,10 +2,10 @@
 
 name: Checkmake
 
-#@ load("fragments.lib.yml", "on", "jobs_build")
+#@ load("fragments.lib.yml", "jobs_build", "tool_on")
 
 #@yaml/text-templated-strings
-"on": #@ on("checkmake")
+"on": #@ tool_on("checkmake")
 
 jobs:
   build: #@ jobs_build("checkmake", "ubuntu-24.04")
