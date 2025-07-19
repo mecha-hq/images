@@ -1,5 +1,5 @@
-name: Build and Scan Image
-description: Build an OCI image for a given image on a given arch and scan it, producing reports. Optionally publish both the image and the reports on GitHub.
+name: Scan Image
+description: Produce reports on the image. Optionally publish both the image and the reports on GitHub.
 inputs:
   container_registry_password:
     description: "The password for the Container registry."
