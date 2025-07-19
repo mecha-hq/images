@@ -50,6 +50,7 @@ jobs:
         uses: ./.github/actions/scans
         with:
           container_registry_password: ${{ secrets.CI_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           snyk_org: ${{ secrets.SNYK_ORG }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           image_name: checkmake

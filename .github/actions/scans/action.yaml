@@ -4,6 +4,9 @@ inputs:
   container_registry_password:
     description: "The password for the Container registry."
     required: true
+  github_token:
+    description: "The GitHub token to use for publishing."
+    required: false
   snyk_org:
     description: "The Snyk organization to use for scanning."
     required: true
@@ -89,4 +92,4 @@ runs:
       run: make upload-gh-release-files IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
       if: ${{ inputs.publish == 'true' }}
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ inputs.github_token }}
