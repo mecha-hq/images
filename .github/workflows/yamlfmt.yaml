@@ -7,26 +7,10 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/yamlfmt.yaml
       - tools/yamlfmt/**
-      - .github/actions/**
-      - .mise.*
-      - Makefile
-      - melange.rsa.pub
-      - scripts/**
-      - pages/**
-      - '!pages/content'
   pull_request:
     paths:
-      - .github/workflows/yamlfmt.yaml
       - tools/yamlfmt/**
-      - .github/actions/**
-      - .mise.*
-      - Makefile
-      - melange.rsa.pub
-      - scripts/**
-      - pages/**
-      - '!pages/content'
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -45,14 +29,37 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+      - name: Draft GitHub Release
+        shell: sh
+        run: make draft-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
       - name: Build image
         uses: ./.github/actions/image
         with:
           container_registry_password: ${{ secrets.CI_TOKEN }}
           melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
-          snyk_org: ${{ secrets.SNYK_ORG }}
-          snyk_token: ${{ secrets.SNYK_TOKEN }}
           image_name: yamlfmt
           publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Scan image
+        uses: ./.github/actions/scans
+        with:
+          container_registry_password: ${{ secrets.CI_TOKEN }}
+          snyk_org: ${{ secrets.SNYK_ORG }}
+          snyk_token: ${{ secrets.SNYK_TOKEN }}
+          image_name: yamlfmt
+          publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+          pull_images: "false"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate pages
+        uses: ./.github/actions/pages
+        with:
+          publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+          content_subject: yamlfmt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish GitHub Release
+        shell: sh
+        run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+        if: ${{ inputs.publish == 'true' }}

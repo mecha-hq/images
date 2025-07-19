@@ -1,0 +1,31 @@
+#! pages.yml
+
+name: Pages
+
+#@ load("fragments.lib.yml", "step_harden_runner", "step_checkout", "step_generate_pages", "step_publish_gh_release")
+
+"on":
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "pages/**"
+      - "!pages/content"
+  pull_request:
+    paths:
+      - "pages/**"
+      - "!pages/content"
+
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      pages: write
+    steps:
+      -  #@ step_harden_runner()
+      -  #@ step_checkout()
+      -  #@ step_generate_pages("the static site")
+      -  #@ step_publish_gh_release()

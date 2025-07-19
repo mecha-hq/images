@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+
+name: Pages
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - pages/**
+      - '!pages/content'
+  pull_request:
+    paths:
+      - pages/**
+      - '!pages/content'
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      pages: write
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - name: Generate pages
+        uses: ./.github/actions/pages
+        with:
+          publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+          content_subject: the static site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish GitHub Release
+        shell: sh
+        run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+        if: ${{ inputs.publish == 'true' }}

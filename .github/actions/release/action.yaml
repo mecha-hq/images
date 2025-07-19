@@ -1,0 +1,27 @@
+name: Create GitHub Release
+description: Draft and/or Publish a github release for the given image
+inputs:
+  image_name:
+    description: "The name of the image to build."
+    required: true
+  publish:
+    description: "Whether to publish the built artifacts(images, manifests, gh-pages, etc). default is false."
+    default: "false"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Determine image version
+      shell: sh
+      run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ inputs.image_name }}) >> ${GITHUB_ENV}
+
+    # Draft and Publish the release
+
+    - name: Draft GitHub Release
+      shell: sh
+      run: make draft-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+
+    - name: Publish GitHub Release
+      shell: sh
+      run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+      if: ${{ inputs.publish == 'true' }}
