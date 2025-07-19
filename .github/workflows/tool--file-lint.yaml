@@ -35,6 +35,8 @@ jobs:
       - name: Draft GitHub Release
         shell: sh
         run: make draft-gh-release IMAGE=file-lint VERSION=${{ env.IMAGE_VERSION }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build image
         uses: ./.github/actions/image
         with:
@@ -66,3 +68,5 @@ jobs:
         shell: sh
         run: make publish-gh-release IMAGE=file-lint VERSION=${{ env.IMAGE_VERSION }}
         if: ${{ inputs.publish == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

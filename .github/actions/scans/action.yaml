@@ -88,3 +88,5 @@ runs:
       shell: sh
       run: make upload-gh-release-files IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
       if: ${{ inputs.publish == 'true' }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

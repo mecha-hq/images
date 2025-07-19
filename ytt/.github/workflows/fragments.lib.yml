@@ -109,6 +109,8 @@ run: #@ "echo IMAGE_VERSION=$(scripts/image-version.sh %s) >> ${GITHUB_ENV}" % i
 name: Draft GitHub Release
 shell: sh
 run: #@ "make draft-gh-release IMAGE=%s VERSION=${{ env.IMAGE_VERSION }}" % image
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #@ end
 
 #@ def step_publish_gh_release(image):
@@ -116,6 +118,8 @@ name: Publish GitHub Release
 shell: sh
 run: #@ "make publish-gh-release IMAGE=%s VERSION=${{ env.IMAGE_VERSION }}" % image
 if: ${{ inputs.publish == 'true' }}
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #@ end
 
 #@ def step_build_image(image):
