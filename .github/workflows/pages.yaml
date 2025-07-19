@@ -37,7 +37,3 @@ jobs:
           content_subject: the static site
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish GitHub Release
-        shell: sh
-        run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
-        if: ${{ inputs.publish == 'true' }}

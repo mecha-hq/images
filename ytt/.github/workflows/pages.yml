@@ -28,4 +28,3 @@ jobs:
       -  #@ step_harden_runner()
       -  #@ step_checkout()
       -  #@ step_generate_pages("the static site")
-      -  #@ step_publish_gh_release()

@@ -29,9 +29,12 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+      - name: Determine image version
+        shell: sh
+        run: echo IMAGE_VERSION=$(scripts/image-version.sh file-lint >> ${GITHUB_ENV}
       - name: Draft GitHub Release
         shell: sh
-        run: make draft-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+        run: make draft-gh-release IMAGE=file-lint VERSION=${{ env.IMAGE_VERSION }}
       - name: Build image
         uses: ./.github/actions/image
         with:
@@ -61,5 +64,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish GitHub Release
         shell: sh
-        run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+        run: make publish-gh-release IMAGE=file-lint VERSION=${{ env.IMAGE_VERSION }}
         if: ${{ inputs.publish == 'true' }}

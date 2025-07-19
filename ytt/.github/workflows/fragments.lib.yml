@@ -10,11 +10,12 @@ permissions:
 steps:
   - #@ step_harden_runner()
   - #@ step_checkout()
-  - #@ step_draft_gh_release()
+  - #@ step_compute_image_version(image)
+  - #@ step_draft_gh_release(image)
   - #@ step_build_image(image)
   - #@ step_scan_image(image)
   - #@ step_generate_pages(image)
-  - #@ step_publish_gh_release()
+  - #@ step_publish_gh_release(image)
 #@ end
 
 #@ def tool_on(image):
@@ -98,16 +99,22 @@ shell: sh
 run: #@ "make %s" % target
 #@ end
 
-#@ def step_draft_gh_release():
-name: Draft GitHub Release
+#@ def step_compute_image_version(image):
+name: Determine image version
 shell: sh
-run: make draft-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+run: #@ "echo IMAGE_VERSION=$(scripts/image-version.sh %s >> ${GITHUB_ENV}" % image
 #@ end
 
-#@ def step_publish_gh_release():
+#@ def step_draft_gh_release(image):
+name: Draft GitHub Release
+shell: sh
+run: #@ "make draft-gh-release IMAGE=%s VERSION=${{ env.IMAGE_VERSION }}" % image
+#@ end
+
+#@ def step_publish_gh_release(image):
 name: Publish GitHub Release
 shell: sh
-run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+run: #@ "make publish-gh-release IMAGE=%s VERSION=${{ env.IMAGE_VERSION }}" % image
 if: ${{ inputs.publish == 'true' }}
 #@ end
 
