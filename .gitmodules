@@ -2,3 +2,7 @@
 	path = pages/themes/blowfish
 	url = git@github.com:nunocoracao/blowfish.git
 	branch = main
+[submodule "pages/content"]
+	path = pages/content
+	url = git@github.com:mecha-hq/images-pages-content.git
+	branch = main
