@@ -8,15 +8,8 @@ permissions:
   packages: write
   pages: write
 steps:
-  - name: Harden Runner
-    uses: step-security/harden-runner@v2
-    with:
-      egress-policy: audit
-  - name: Checkout code
-    uses: actions/checkout@v4
-    with:
-      submodules: recursive
-      fetch-depth: 0
+  - #@ step_harden_runner()
+  - #@ step_checkout()
   - name: Build image
     uses: ./.github/actions/image
     with:
@@ -30,7 +23,7 @@ steps:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #@ end
 
-#@ def on(image):
+#@ def tool_on(image):
 workflow_dispatch:
 push:
   branches:
@@ -77,23 +70,54 @@ pull-requests: "write"
 updatecli:
   runs-on: "ubuntu-24.04"
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
+    - #@ step_harden_runner()
+    - #@ step_checkout()
     - name: Install Updatecli in the runner
       uses: updatecli/updatecli-action@v2
       with:
         version: v0.103.1
-
     - name: Run Updatecli for dependencies in Dry Run mode
       run: #@ "updatecli diff --config ./updatecli/updatecli.d/%s --values updatecli/values.yaml --values updatecli/values.ci.yaml" % scope
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
     - name: Run Updatecli for dependencies
       run: #@ "updatecli apply --config ./updatecli/updatecli.d/%s --values updatecli/values.yaml --values updatecli/values.ci.yaml" % scope
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+#@ end
+
+#@ def step_harden_runner():
+name: Harden Runner
+uses: step-security/harden-runner@v2
+with:
+  egress-policy: audit
+#@ end
+
+#@ def step_checkout():
+name: Checkout code
+uses: actions/checkout@v4
+with:
+  submodules: recursive
+  fetch-depth: 0
+#@ end
+
+#@ def step_install_mise():
+name: Install mise
+uses: jdx/mise-action@v2
+with:
+  version: 2025.4.0
+#@ end
+
+#@ def step_activate_mise():
+name: Activate mise
+shell: sh
+run: echo 'eval "$(~/.local/share/mise/bin/mise activate bash)"' >> ~/.bashrc
+#@ end
+
+#@ def step_make(target):
+name: #@ "Make %s" % target
+shell: sh
+run: #@ "make %s" % target
 #@ end

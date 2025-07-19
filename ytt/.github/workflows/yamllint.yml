@@ -2,10 +2,10 @@
 
 name: Yamllint
 
-#@ load("fragments.lib.yml", "on", "jobs_build")
+#@ load("fragments.lib.yml", "jobs_build", "tool_on")
 
 #@yaml/text-templated-strings
-"on": #@ on("yamllint")
+"on": #@ tool_on("yamllint")
 
 jobs:
   build: #@ jobs_build("yamllint", "ubuntu-24.04")
