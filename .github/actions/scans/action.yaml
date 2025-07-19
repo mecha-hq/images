@@ -17,13 +17,13 @@ inputs:
   image_name:
     description: "The name of the image to build."
     required: true
-  pull_images:
-    description: "Whether to pull the image(s) before scanning."
-    default: "true"
-    required: false
   publish:
     description: "Whether to updload the scan reports on the github release. default is false."
     default: "false"
+    required: false
+  pull_images:
+    description: "Whether to pull the image(s) before scanning."
+    default: "true"
     required: false
 runs:
   using: "composite"
