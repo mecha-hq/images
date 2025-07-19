@@ -20,11 +20,20 @@ mkdir -p "${GH_PAGES_DST}"
 cp -r ${GH_PAGES_SRC}/reports/* "${GH_PAGES_DST}"
 
 # Copy the SBOMs
-cp ${GH_PAGES_SRC}/sboms/sbom-index.spdx.json "${GH_PAGES_DST}"
-cp ${GH_PAGES_SRC}/sboms/sbom-aarch64.spdx.json "${GH_PAGES_DST}/arm64/sbom.spdx.json"
-cp ${GH_PAGES_SRC}/sboms/sbom-x86_64.spdx.json "${GH_PAGES_DST}/amd64/sbom.spdx.json"
+if [ -f ${GH_PAGES_SRC}/sboms/sbom-index.spdx.json ]; then
+    cp ${GH_PAGES_SRC}/sboms/sbom-index.spdx.json "${GH_PAGES_DST}"
+fi
+
+if [ -f ${GH_PAGES_SRC}/sboms/sbom-aarch64.spdx.json ]; then
+    cp ${GH_PAGES_SRC}/sboms/sbom-aarch64.spdx.json "${GH_PAGES_DST}/arm64/sbom.spdx.json"
+fi
+
+if [ -f ${GH_PAGES_SRC}/sboms/sbom-x86_64.spdx.json ]; then
+    cp ${GH_PAGES_SRC}/sboms/sbom-x86_64.spdx.json "${GH_PAGES_DST}/amd64/sbom.spdx.json"
+fi
 
 # Create the tool-version-arm64 index page
+if [ -d "${GH_PAGES_DST}/arm64" ]; then
 cat >"${GH_PAGES_DST}/arm64/_index.md" <<-EOF
 +++
 title = 'arm64'
@@ -32,8 +41,10 @@ layout = 'tool-version-arch'
 showDate = false
 +++
 EOF
+fi
 
 # Create the tool-version-amd64 index page
+if [ -d "${GH_PAGES_DST}/amd64" ]; then
 cat >"${GH_PAGES_DST}/amd64/_index.md" <<-EOF
 +++
 title = 'amd64'
@@ -41,6 +52,7 @@ layout = 'tool-version-arch'
 showDate = false
 +++
 EOF
+fi
 
 # Create the tool-version index page
 cat >"${GH_PAGES_DST}/_index.md" <<-EOF
@@ -51,7 +63,7 @@ showDate = false
 EOF
 
 # Create the tool index page
-cat >"$(dirname ${GH_PAGES_SRC})/_index.md" <<-EOF
+cat >"$(dirname ${GH_PAGES_DST})/_index.md" <<-EOF
 +++
 title = '${IMAGE_NAME}'
 description = 'All the versions of ${IMAGE_NAME} at your disposal'
