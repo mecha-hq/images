@@ -10,17 +10,11 @@ permissions:
 steps:
   - #@ step_harden_runner()
   - #@ step_checkout()
-  - name: Build image
-    uses: ./.github/actions/image
-    with:
-      container_registry_password: ${{ secrets.CI_TOKEN }}
-      melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
-      snyk_org: ${{ secrets.SNYK_ORG }}
-      snyk_token: ${{ secrets.SNYK_TOKEN }}
-      image_name: #@ image
-      publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  - #@ step_draft_gh_release()
+  - #@ step_build_image(image)
+  - #@ step_scan_image(image)
+  - #@ step_generate_pages(image)
+  - #@ step_publish_gh_release()
 #@ end
 
 #@ def tool_on(image):
@@ -30,29 +24,11 @@ push:
     - main
   paths:
     #! tool-specific paths
-    -  #@ ".github/workflows/" + image + ".yaml"
     -  #@ "tools/"+ image + "/**"
-    #! common paths
-    - ".github/actions/**"
-    - ".mise.*"
-    - Makefile
-    - melange.rsa.pub
-    - "scripts/**"
-    - "pages/**"
-    - "!pages/content"
 pull_request:
   paths:
     #! tool-specific paths
-    -  #@ ".github/workflows/" + image + ".yaml"
     -  #@ "tools/"+ image + "/**"
-    #! common paths
-    - ".github/actions/**"
-    - ".mise.*"
-    - Makefile
-    - melange.rsa.pub
-    - "scripts/**"
-    - "pages/**"
-    - "!pages/content"
 #@ end
 
 #@ def updatecli_on(freq):
@@ -120,4 +96,53 @@ run: echo 'eval "$(~/.local/share/mise/bin/mise activate bash)"' >> ~/.bashrc
 name: #@ "Make %s" % target
 shell: sh
 run: #@ "make %s" % target
+#@ end
+
+#@ def step_draft_gh_release():
+name: Draft GitHub Release
+shell: sh
+run: make draft-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+#@ end
+
+#@ def step_publish_gh_release():
+name: Publish GitHub Release
+shell: sh
+run: make publish-gh-release IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+if: ${{ inputs.publish == 'true' }}
+#@ end
+
+#@ def step_build_image(image):
+name: Build image
+uses: ./.github/actions/image
+with:
+  container_registry_password: ${{ secrets.CI_TOKEN }}
+  melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
+  image_name: #@ image
+  publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#@ end
+
+#@ def step_scan_image(image):
+name: Scan image
+uses: ./.github/actions/scans
+with:
+  container_registry_password: ${{ secrets.CI_TOKEN }}
+  snyk_org: ${{ secrets.SNYK_ORG }}
+  snyk_token: ${{ secrets.SNYK_TOKEN }}
+  image_name: #@ image
+  publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+  pull_images: "false"
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#@ end
+
+#@ def step_generate_pages(subject):
+name: Generate pages
+uses: ./.github/actions/pages
+with:
+  publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+  content_subject: #@ subject
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #@ end

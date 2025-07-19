@@ -1,0 +1,90 @@
+name: Build and Scan Image
+description: Build an OCI image for a given image on a given arch and scan it, producing reports. Optionally publish both the image and the reports on GitHub.
+inputs:
+  container_registry_password:
+    description: "The password for the Container registry."
+    required: true
+  snyk_org:
+    description: "The Snyk organization to use for scanning."
+    required: true
+  snyk_token:
+    description: "The Snyk token to use for scanning."
+    required: true
+  image_arch:
+    description: "The arch to build the image for. default is amd64,arm64."
+    default: "amd64,arm64"
+    required: false
+  image_name:
+    description: "The name of the image to build."
+    required: true
+  pull_images:
+    description: "Whether to pull the image(s) before scanning."
+    default: "true"
+    required: false
+  publish:
+    description: "Whether to updload the scan reports on the github release. default is false."
+    default: "false"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    # Validate the inputs
+
+    - name: validate inputs.image_name
+      shell: sh
+      run: make validate-name IMAGE=${{ inputs.image_name }}
+
+    - name: validate inputs.image_arch
+      shell: sh
+      run: make validate-arch ARCH=${{ inputs.image_arch }}
+
+    # Prepare the environment
+
+    - name: Determine image version
+      shell: sh
+      run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ inputs.image_name }}) >> ${GITHUB_ENV}
+
+    - name: Login to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: mecha-hq
+        password: ${{ inputs.container_registry_password }}
+      if: ${{ inputs.pull_images == 'true' }}
+
+    - name: Pull the image(s)
+      shell: sh
+      run: make docker-pull ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+      if: ${{ inputs.pull_images == 'true' }}
+
+    # Scan the Container Image
+
+    - name: Scan OCI images with Dockle
+      shell: sh
+      run: make dockle ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+
+    - name: Scan OCI images with Grype
+      shell: sh
+      run: make grype ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+
+    # - name: Scan OCI images with Trivy
+    #   shell: sh
+    #   run: make trivy ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+
+    # - name: Scan OCI images with Snyk
+    #   shell: sh
+    #   run: make snyk ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+    #   env:
+    #     SNYK_ORG: ${{ inputs.snyk_org }}
+    #     SNYK_TOKEN: ${{ inputs.snyk_token }}
+
+    # Finalize
+
+    - name: Prepare GitHub Pages Content
+      shell: sh
+      run: make prepare-site-content IMAGE="${{ inputs.image_name }}" VERSION="${{ env.IMAGE_VERSION }}"
+
+    - name: Upload the scan results to GitHub
+      shell: sh
+      run: make upload-gh-release-files IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+      if: ${{ inputs.publish == 'true' }}

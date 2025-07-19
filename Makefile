@@ -141,10 +141,10 @@ scan-all: check-variable-ARCH
 		find ./tools -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | xargs -I {} make scan IMAGE={} ARCH=${ARCH}
 	done
 
-.PHONY: prepare-gh-pages
-prepare-gh-pages: check-variable-IMAGE check-variable-VERSION
+.PHONY: prepare-site-content
+prepare-site-content: check-variable-IMAGE check-variable-VERSION
 	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
-	${PROJECT_DIR}/scripts/prepare-gh-pages.sh $${KIND} ${IMAGE} ${VERSION}
+	${PROJECT_DIR}/scripts/prepare-site-content.sh $${KIND} ${IMAGE} ${VERSION}
 
 .PHONY: serve-hugo-site
 serve-hugo-site:
@@ -159,8 +159,8 @@ generate-hugo-site: check-variable-BASE_URL
 	@${PROJECT_DIR}/scripts/generate-hugo-site.sh ${BASE_URL}
 
 .PHONY: push-hugo-site
-push-hugo-site: check-variable-IMAGE check-variable-VERSION
-	@${PROJECT_DIR}/scripts/push-hugo-site.sh ${IMAGE} ${VERSION}
+push-hugo-site: check-variable-SUBJECT
+	@${PROJECT_DIR}/scripts/push-hugo-site.sh ${SUBJECT}
 
 .PHONY: draft-gh-release
 draft-gh-release: check-variable-IMAGE check-variable-VERSION

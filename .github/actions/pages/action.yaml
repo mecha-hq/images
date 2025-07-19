@@ -1,0 +1,60 @@
+name: Build and Publish GitHub Pages
+description: Build and publish the static website for the images, and optionally publish it on GitHub Pages.
+inputs:
+  mise_version:
+    description: "The version of mise to install."
+    default: "2025.4.0"
+    required: false
+  publish:
+    description: "Whether to publish the built artifacts(images, manifests, gh-pages, etc). default is false."
+    default: "false"
+    required: false
+  site_base_url:
+    description: "The base URL for the site."
+    default: "https://mecha-hq.github.io/images"
+    required: false
+  content_subject:
+    description: "The subject of the content to be published."
+    default: "the static site"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    # Prepare the environment
+
+    - name: Install mise
+      uses: jdx/mise-action@v2
+      with:
+        version: ${{ inputs.mise_version }}
+
+    - name: Activate mise
+      shell: sh
+      run: echo 'eval "$(~/.local/share/mise/bin/mise activate bash)"' >> ~/.bashrc
+
+    # Prepare and publish Github Pages
+
+    - name: Setup GitHub Pages
+      uses: actions/configure-pages@v5
+
+    - name: Build with Hugo
+      shell: sh
+      env:
+        HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
+        HUGO_ENVIRONMENT: production
+        TZ: Europe/Rome
+      run: make generate-hugo-site BASE_URL="${{ inputs.site_base_url }}/"
+
+    - name: Push the generated pages content to the repository
+      shell: sh
+      run: make push-hugo-site SUBJECT="${{ inputs.content_subject }}"
+      if: ${{ inputs.publish == 'true' }}
+
+    - name: Upload GitHub Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./pages/public
+      if: ${{ inputs.publish == 'true' }}
+
+    - name: Deploy to GitHub Pages
+      uses: actions/deploy-pages@v4
+      if: ${{ inputs.publish == 'true' }}
