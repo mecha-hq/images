@@ -64,6 +64,12 @@ docker-push: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 		docker push "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$$a"; \
 	done
 
+.PHONY: docker-pull
+docker-pull: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
+	@for a in $$(echo "${ARCH}" | sed "s/,/ /g"); do \
+		docker pull "${REGISTRY}/${OWNER}/${IMAGE}:${VERSION}-$$a"; \
+	done
+
 .PHONY: docker-manifest
 docker-manifest: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 	@${PROJECT_DIR}/scripts/docker-manifest.sh "${REGISTRY}" "${OWNER}" "${IMAGE}" "${VERSION}" "${ARCH}"
@@ -140,6 +146,14 @@ prepare-gh-pages: check-variable-IMAGE check-variable-VERSION
 	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
 	${PROJECT_DIR}/scripts/prepare-gh-pages.sh $${KIND} ${IMAGE} ${VERSION}
 
+.PHONY: serve-hugo-site
+serve-hugo-site:
+	hugo server \
+        --gc \
+        --baseURL "localhost" \
+        --source pages/ \
+        --watch
+
 .PHONY: generate-hugo-site
 generate-hugo-site: check-variable-BASE_URL
 	@${PROJECT_DIR}/scripts/generate-hugo-site.sh ${BASE_URL}
@@ -154,9 +168,14 @@ draft-gh-release: check-variable-IMAGE check-variable-VERSION
 	${PROJECT_DIR}/scripts/draft-gh-release.sh $${KIND} ${IMAGE} ${VERSION}
 
 .PHONY: publish-gh-release
-publish-gh-pages: check-variable-IMAGE check-variable-VERSION
+publish-gh-release: check-variable-IMAGE check-variable-VERSION
 	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
-	${PROJECT_DIR}/scripts/publish-gh-release.sh ${IMAGE} ${VERSION}
+	${PROJECT_DIR}/scripts/publish-gh-release.sh $${KIND} ${IMAGE} ${VERSION}
+
+.PHONY: upload-gh-release-files
+upload-gh-release-files: check-variable-IMAGE check-variable-VERSION
+	@export KIND=$$(${PROJECT_DIR}/scripts/image-kind.sh ${IMAGE}) && \
+	${PROJECT_DIR}/scripts/upload-gh-release-files.sh $${KIND} ${IMAGE} ${VERSION}
 
 .PHONY: generate-updatecli-config
 generate-updatecli-config:
