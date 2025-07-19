@@ -102,7 +102,7 @@ run: #@ "make %s" % target
 #@ def step_compute_image_version(image):
 name: Determine image version
 shell: sh
-run: #@ "echo IMAGE_VERSION=$(scripts/image-version.sh %s >> ${GITHUB_ENV}" % image
+run: #@ "echo IMAGE_VERSION=$(scripts/image-version.sh %s) >> ${GITHUB_ENV}" % image
 #@ end
 
 #@ def step_draft_gh_release(image):

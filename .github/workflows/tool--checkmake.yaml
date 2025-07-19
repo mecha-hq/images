@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 0
       - name: Determine image version
         shell: sh
-        run: echo IMAGE_VERSION=$(scripts/image-version.sh checkmake >> ${GITHUB_ENV}
+        run: echo IMAGE_VERSION=$(scripts/image-version.sh checkmake) >> ${GITHUB_ENV}
       - name: Draft GitHub Release
         shell: sh
         run: make draft-gh-release IMAGE=checkmake VERSION=${{ env.IMAGE_VERSION }}
