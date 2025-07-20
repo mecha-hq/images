@@ -1,0 +1,13 @@
+[formatting]
+  align_comments = false
+  align_entries = false
+
+  indent_entries = true
+  indent_string = "  "
+  indent_tables = true
+
+  reorder_arrays = true
+  reorder_keys = true
+
+  include = ["**/*.toml", "*.toml"] # adjust as needed
+  # exclude = ["vendor/**/*.toml"]
