@@ -1,3 +1,4 @@
+
 [alias]
   shellbits = "asdf:https://github.com/mecha-hq/asdf-shellbits"
 
@@ -15,5 +16,5 @@
   snyk = "1.1298.0"
   trivy = "0.64.1"
   updatecli = "0.104.0"
-  yq = "4.45.1"
+  yq = "4.46.1"
   ytt = "0.52.0"
