@@ -4,6 +4,7 @@ set -e
 set -o errexit -o nounset
 
 SUBJECT=${1:-"the static site"}
+BRANCH=${2:-"main"}
 
 git config --global user.email "github-actions[bot]@users.noreply.github.com"
 git config --global user.name "GitHub Actions"
@@ -13,10 +14,12 @@ cd pages/content
 
 git add .
 
+git pull --rebase origin "${BRANCH}"
+
 # Only commit and push if there are staged changes
 if ! git diff --cached --quiet; then
     git commit -m "Update content for ${SUBJECT}"
-    git push
+    git push origin "HEAD:${BRANCH}"
 else
     echo "No content changes to commit."
 fi
@@ -26,10 +29,12 @@ cd ../..
 
 git add pages/content
 
+git pull --rebase origin "${BRANCH}"
+
 # Only commit and push if there are staged changes
 if ! git diff --cached --quiet; then
   git commit -m "Update submodule reference for ${SUBJECT}"
-  git push
+  git push origin "HEAD:${BRANCH}"
 else
   echo "No submodule reference change to commit."
 fi
