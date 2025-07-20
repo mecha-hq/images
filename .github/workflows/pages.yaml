@@ -37,3 +37,4 @@ jobs:
           content_subject: the static site
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI_TOKEN: ${{ secrets.CI_TOKEN }}

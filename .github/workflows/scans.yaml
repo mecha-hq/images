@@ -63,3 +63,4 @@ jobs:
           content_subject: ${{ matrix.tool }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI_TOKEN: ${{ secrets.CI_TOKEN }}
