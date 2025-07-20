@@ -24,7 +24,7 @@ jobs:
       - name: Install Updatecli in the runner
         uses: updatecli/updatecli-action@v2
         with:
-          version: v0.103.1
+          version: v0.104.0
       - name: Run Updatecli for dependencies in Dry Run mode
         run: updatecli diff --config ./updatecli/updatecli.d/gha --values updatecli/values.yaml --values updatecli/values.ci.yaml
         env:
