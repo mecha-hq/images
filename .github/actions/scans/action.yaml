@@ -43,6 +43,15 @@ runs:
 
     # Prepare the environment
 
+    - name: Install mise
+      uses: jdx/mise-action@v2
+      with:
+        version: ${{ inputs.mise_version }}
+
+    - name: Activate mise
+      shell: sh
+      run: echo 'eval "$(~/.local/share/mise/bin/mise activate bash)"' >> ~/.bashrc
+
     - name: Determine image version
       shell: sh
       run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ inputs.image_name }}) >> ${GITHUB_ENV}
