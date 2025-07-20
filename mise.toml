@@ -8,7 +8,7 @@
   dockle = "0.4.15"
   gh = "2.75.0"
   grype = "0.96.0"
-  hugo = "0.148.1"
+  hugo = "0.144.2"
   melange = "0.29.7"
   node = "23.5.0"
   shellbits = "0.4.1"
