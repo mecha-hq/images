@@ -1,18 +1,19 @@
+
+[alias]
+  shellbits = "asdf:https://github.com/mecha-hq/asdf-shellbits"
+
 [env]
 
 [tools]
-apko = "0.19.1"
-dockle = "0.4.14"
-grype = "0.82.1"
-hugo = "0.140.2"
-melange = "0.12.1"
-node = "23.5.0"
-shellbits = "0.4.0"
-snyk = "1.1293.1"
-trivy = "0.56.2"
-updatecli = "0.103.1"
-ytt = "0.52.0"
-yq = "4.45.1"
-
-[alias]
-shellbits = 'asdf:https://github.com/mecha-hq/asdf-shellbits'
+  apko = "0.19.1"
+  dockle = "0.4.14"
+  grype = "0.82.1"
+  hugo = "0.140.2"
+  melange = "0.12.1"
+  node = "23.5.0"
+  shellbits = "0.4.0"
+  snyk = "1.1293.1"
+  trivy = "0.56.2"
+  updatecli = "0.104.0"
+  yq = "4.45.1"
+  ytt = "0.52.0"
