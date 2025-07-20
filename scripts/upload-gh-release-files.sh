@@ -23,7 +23,7 @@ RELEASE_ID=$(curl -sSL \
   -H "Authorization: token ${GITHUB_TOKEN}" \
   -H "Accept: application/vnd.github+json" \
   "https://api.github.com/repos/mecha-hq/images/releases/tags/${TAG}" | \
-   | jq -r '.id')
+   jq -r '.id')
 
 for FILE in $(find "${REPORTS_DIR}" -type f); do
     FILENAME=$(basename "${FILE}")
