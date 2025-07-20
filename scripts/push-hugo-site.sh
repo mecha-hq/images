@@ -5,9 +5,8 @@ set -o errexit -o nounset
 
 SUBJECT=${1:-"the static site"}
 BRANCH=${2:-"main"}
-GITHUB_ACTOR="github-actions[bot]@users.noreply.github.com"
 
-git config --global user.email "${GITHUB_ACTOR}"
+git config --global user.email "github-actions[bot]@users.noreply.github.com"
 git config --global user.name "GitHub Actions"
 
 # Push the contents to the images-pages-content repository
@@ -17,7 +16,7 @@ git add .
 
 # Only commit and push if there are staged changes
 if ! git diff --cached --quiet; then
-    git remote set-url origin https://${GITHUB_ACTOR}:${CI_TOKEN}@github.com/mecha-hq/images-pages-content.git
+    git remote set-url origin https://mecha-bot:${CI_TOKEN}@github.com/mecha-hq/images-pages-content.git
 
     git commit -m "Update content for ${SUBJECT}"
     git push origin "HEAD:${BRANCH}"
