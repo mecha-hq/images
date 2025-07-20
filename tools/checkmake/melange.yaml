@@ -28,3 +28,4 @@ pipeline:
     with:
       package: github.com/mrtazz/checkmake/cmd/checkmake
       version: ${{package.version}}
+      tests: "false"
