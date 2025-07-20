@@ -14,8 +14,6 @@ cd pages/content
 
 git add .
 
-git pull --rebase origin "${BRANCH}"
-
 # Only commit and push if there are staged changes
 if ! git diff --cached --quiet; then
     git commit -m "Update content for ${SUBJECT}"
@@ -28,8 +26,6 @@ fi
 cd ../..
 
 git add pages/content
-
-git pull --rebase origin "${BRANCH}"
 
 # Only commit and push if there are staged changes
 if ! git diff --cached --quiet; then
