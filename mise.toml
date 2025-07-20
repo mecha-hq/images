@@ -9,7 +9,7 @@
   gh = "2.75.0"
   grype = "0.82.1"
   hugo = "0.140.2"
-  melange = "0.12.1"
+  melange = "0.29.7"
   node = "23.5.0"
   shellbits = "0.4.1"
   snyk = "1.1298.0"
