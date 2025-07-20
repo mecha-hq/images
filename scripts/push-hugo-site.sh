@@ -16,7 +16,7 @@ git add .
 
 # Only commit and push if there are staged changes
 if ! git diff --cached --quiet; then
-    git remote set-url origin https://github-actions[bot]:${CI_TOKEN}@github.com/mecha-hq/images-pages-content.git
+    git remote set-url origin https://x-access-token:${CI_TOKEN}@github.com/mecha-hq/images-pages-content.git
 
     git commit -m "Update content for ${SUBJECT}"
     git push origin "HEAD:${BRANCH}"
