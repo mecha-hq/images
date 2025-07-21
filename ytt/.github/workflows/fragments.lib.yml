@@ -76,6 +76,7 @@ with:
 name: Checkout code
 uses: actions/checkout@v4
 with:
+  token: "${{ secrets.CI_TOKEN }}"
   submodules: recursive
   fetch-depth: 0
 #@ end
