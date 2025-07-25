@@ -19,20 +19,20 @@ jobs:
       -  #@ step_harden_runner()
       -  #@ step_checkout()
       -  #@ step_get_tools_list()
-    scan:
-      runs-on: ubuntu-24.04
-      permissions:
-        contents: write
-        id-token: write
-        pages: write
-      strategy:
-        matrix:
-          tool: ${{ fromJson(needs.setup.outputs.tools) }}
-        fail-fast: false
-      steps:
-        -  #@ step_harden_runner()
-        -  #@ step_checkout()
-        -  #@ step_compute_image_version("${{ matrix.tool }}")
-        -  #@ step_build_image("${{ matrix.tool }}", "false")
-        -  #@ step_scan_image("${{ matrix.tool }}", "false")
-        -  #@ step_generate_pages("${{ matrix.tool }}", "false")
+  scan:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      pages: write
+    strategy:
+      matrix:
+        tool: ${{ fromJson(needs.setup.outputs.tools) }}
+      fail-fast: false
+    steps:
+      -  #@ step_harden_runner()
+      -  #@ step_checkout()
+      -  #@ step_compute_image_version("${{ matrix.tool }}")
+      -  #@ step_build_image("${{ matrix.tool }}", "false")
+      -  #@ step_scan_image("${{ matrix.tool }}", "false")
+      -  #@ step_generate_pages("${{ matrix.tool }}", "false")
