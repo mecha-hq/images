@@ -10,7 +10,7 @@ name: Updatecli Rebuild
       - main
 
 jobs:
-  tests:
+  setup:
     if: startsWith(github.head_ref, 'updatecli_main_')
     runs-on: ubuntu-24.04
     outputs:
