@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+
+name: Updatecli Rebuild
+on:
+  pull_request:
+    branches:
+      - updatecli_main_**
+jobs:
+  tests:
+    if: startsWith(github.head_ref, 'updatecli_main_')
+    runs-on: ubuntu-24.04
+    outputs:
+      tools: ${{ steps.get-tools.outputs.tools }}
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.CI_TOKEN }}
+          submodules: recursive
+          fetch-depth: 0
+      - name: Get tools list
+        id: get-tools
+        run: |
+          tools=$(ls -1 tools/ | jq -R -s -c 'split("\n")[:-1]')
+          echo "tools=$tools" >> "${GITHUB_OUTPUT}"
+    scan:
+      runs-on: ubuntu-24.04
+      permissions:
+        contents: write
+        id-token: write
+        pages: write
+      strategy:
+        matrix:
+          tool: ${{ fromJson(needs.setup.outputs.tools) }}
+        fail-fast: false
+      steps:
+        - name: Harden Runner
+          uses: step-security/harden-runner@v2
+          with:
+            egress-policy: audit
+        - name: Checkout code
+          uses: actions/checkout@v4
+          with:
+            token: ${{ secrets.CI_TOKEN }}
+            submodules: recursive
+            fetch-depth: 0
+        - name: Determine image version
+          shell: sh
+          run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ matrix.tool }}) >> ${GITHUB_ENV}
+        - name: Build image
+          uses: ./.github/actions/image
+          with:
+            container_registry_password: ${{ secrets.CI_TOKEN }}
+            melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
+            image_name: ${{ matrix.tool }}
+            publish: "false"
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: Scan image
+          uses: ./.github/actions/scans
+          with:
+            container_registry_password: ${{ secrets.CI_TOKEN }}
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            snyk_org: ${{ secrets.SNYK_ORG }}
+            snyk_token: ${{ secrets.SNYK_TOKEN }}
+            image_name: ${{ matrix.tool }}
+            publish: "false"
+            pull_images: "false"
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: Generate pages
+          uses: ./.github/actions/pages
+          with:
+            publish: "false"
+            content_subject: ${{ matrix.tool }}
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            CI_TOKEN: ${{ secrets.CI_TOKEN }}

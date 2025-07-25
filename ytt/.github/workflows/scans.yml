@@ -1,8 +1,8 @@
 #! scans.yml
 
-name: Scans
+#@ load("fragments.lib.yml", "step_harden_runner", "step_checkout", "step_get_tools_list", "step_scan_image", "step_generate_pages", "step_publish_gh_release")
 
-#@ load("fragments.lib.yml", "step_harden_runner", "step_checkout", "step_scan_image", "step_generate_pages", "step_publish_gh_release")
+name: Scans
 
 "on":
   schedule:
@@ -16,11 +16,7 @@ jobs:
     steps:
       -  #@ step_harden_runner()
       -  #@ step_checkout()
-      - name: Get tools list
-        id: get-tools
-        run: |
-          tools=$(ls -1 tools/ | jq -R -s -c 'split("\n")[:-1]')
-          echo "tools=$tools" >> $GITHUB_OUTPUT
+      -  #@ step_get_tools_list()
   scan:
     runs-on: ubuntu-24.04
     permissions:

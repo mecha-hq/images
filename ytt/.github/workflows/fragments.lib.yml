@@ -81,6 +81,14 @@ with:
   fetch-depth: 0
 #@ end
 
+#@ def step_get_tools_list():
+name: Get tools list
+id: get-tools
+run: |
+  tools=$(ls -1 tools/ | jq -R -s -c 'split("\n")[:-1]')
+  echo "tools=$tools" >> "${GITHUB_OUTPUT}"
+#@ end
+
 #@ def step_install_mise():
 name: Install mise
 uses: jdx/mise-action@v2
@@ -123,19 +131,19 @@ env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #@ end
 
-#@ def step_build_image(image):
+#@ def step_build_image(image, publish="${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}"):
 name: Build image
 uses: ./.github/actions/image
 with:
   container_registry_password: ${{ secrets.CI_TOKEN }}
   melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
   image_name: #@ image
-  publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+  publish: #@ publish
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #@ end
 
-#@ def step_scan_image(image):
+#@ def step_scan_image(image, publish="${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}"):
 name: Scan image
 uses: ./.github/actions/scans
 with:
@@ -144,17 +152,17 @@ with:
   snyk_org: ${{ secrets.SNYK_ORG }}
   snyk_token: ${{ secrets.SNYK_TOKEN }}
   image_name: #@ image
-  publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+  publish: #@ publish
   pull_images: "false"
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #@ end
 
-#@ def step_generate_pages(subject):
+#@ def step_generate_pages(subject, publish="${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}"):
 name: Generate pages
 uses: ./.github/actions/pages
 with:
-  publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+  publish: #@ publish
   content_subject: #@ subject
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

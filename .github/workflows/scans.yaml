@@ -24,7 +24,7 @@ jobs:
         id: get-tools
         run: |
           tools=$(ls -1 tools/ | jq -R -s -c 'split("\n")[:-1]')
-          echo "tools=$tools" >> $GITHUB_OUTPUT
+          echo "tools=$tools" >> "${GITHUB_OUTPUT}"
   scan:
     runs-on: ubuntu-24.04
     permissions:
