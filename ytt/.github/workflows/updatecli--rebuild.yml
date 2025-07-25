@@ -20,6 +20,7 @@ jobs:
       -  #@ step_checkout()
       -  #@ step_get_tools_list()
   scan:
+    needs: setup
     if: startsWith(github.head_ref, 'updatecli_main_')
     runs-on: ubuntu-24.04
     permissions:
