@@ -4,13 +4,13 @@
 
 name: Updatecli Rebuild
 "on":
+  workflow_dispatch:
   pull_request:
     branches:
-      - "updatecli_main_**"
+      - main
 
 jobs:
   tests:
-    #! run only for PRs coming from an Updatecli branch
     if: startsWith(github.head_ref, 'updatecli_main_')
     runs-on: ubuntu-24.04
     outputs:
@@ -20,6 +20,7 @@ jobs:
       -  #@ step_checkout()
       -  #@ step_get_tools_list()
   scan:
+    if: startsWith(github.head_ref, 'updatecli_main_')
     runs-on: ubuntu-24.04
     permissions:
       contents: write
