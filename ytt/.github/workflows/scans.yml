@@ -31,5 +31,5 @@ jobs:
     steps:
       -  #@ step_harden_runner()
       -  #@ step_checkout()
-      -  #@ step_scan_image("${{ matrix.tool }}")
+      -  #@ step_scan_image("${{ matrix.tool }}", "true")
       -  #@ step_generate_pages("${{ matrix.tool }}")

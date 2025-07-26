@@ -56,7 +56,7 @@ jobs:
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           image_name: ${{ matrix.tool }}
           publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
-          pull_images: "false"
+          pull_images: "true"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate pages
