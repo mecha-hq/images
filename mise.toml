@@ -13,7 +13,7 @@
   melange = "0.29.7"
   node = "23.5.0"
   shellbits = "0.4.1"
-  snyk = "1.1298.0"
+  snyk = "1.1298.1"
   trivy = "0.64.1"
   updatecli = "0.104.0"
   yq = "4.46.1"
