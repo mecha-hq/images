@@ -11,7 +11,7 @@
   grype = "0.96.0"
   hugo = "0.144.2"
   melange = "0.29.7"
-  node = "23.5.0"
+  node = "20.19.4"
   shellbits = "0.4.1"
   snyk = "1.1298.0"
   trivy = "0.64.1"
