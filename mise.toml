@@ -11,7 +11,7 @@
 
   # build
   apko = "0.29.9"
-  melange = "0.29.7"
+  melange = "0.30.0"
 
   # scan
   dockle = "0.4.15"
