@@ -32,10 +32,10 @@ pull_request:
     -  #@ "tools/"+ image + "/**"
 #@ end
 
-#@ def updatecli_on(freq):
+#@ def updatecli_on(cron):
 workflow_dispatch: {}
 schedule:
-  - cron: #@ "0 */%s * * *" % freq
+  - cron: #@ cron
 #@ end
 
 #@ def updatecli_permissions():

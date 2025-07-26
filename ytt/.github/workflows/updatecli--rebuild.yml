@@ -21,7 +21,13 @@ jobs:
       -  #@ step_get_tools_list()
   rebuild:
     needs: setup
-    if: startsWith(github.head_ref, 'updatecli_main_')
+    if: ${{
+      startsWith(github.head_ref, 'updatecli_main_') &&
+      (
+      contains(github.event.pull_request.title, 'melange') ||
+      contains(github.event.pull_request.title, 'apko')
+      )
+      }}
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -37,4 +43,52 @@ jobs:
       -  #@ step_compute_image_version("${{ matrix.tool }}")
       -  #@ step_build_image("${{ matrix.tool }}", "false")
       -  #@ step_scan_image("${{ matrix.tool }}", "false")
+      -  #@ step_generate_pages("${{ matrix.tool }}", "false")
+  rescan:
+    needs: setup
+    if: ${{
+      startsWith(github.head_ref, 'updatecli_main_') &&
+      (
+      contains(github.event.pull_request.title, 'dockle') ||
+      contains(github.event.pull_request.title, 'grype') ||
+      contains(github.event.pull_request.title, 'snyk') ||
+      contains(github.event.pull_request.title, 'trivy')
+      )
+      }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      pages: write
+    strategy:
+      matrix:
+        tool: ${{ fromJson(needs.setup.outputs.tools) }}
+      fail-fast: false
+    steps:
+      -  #@ step_harden_runner()
+      -  #@ step_checkout()
+      -  #@ step_compute_image_version("${{ matrix.tool }}")
+      -  #@ step_scan_image("${{ matrix.tool }}", "false")
+      -  #@ step_generate_pages("${{ matrix.tool }}", "false")
+  regen_pages:
+    needs: setup
+    if: ${{
+      startsWith(github.head_ref, 'updatecli_main_') &&
+      (
+      contains(github.event.pull_request.title, 'hugo')
+      )
+      }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      pages: write
+    strategy:
+      matrix:
+        tool: ${{ fromJson(needs.setup.outputs.tools) }}
+      fail-fast: false
+    steps:
+      -  #@ step_harden_runner()
+      -  #@ step_checkout()
+      -  #@ step_compute_image_version("${{ matrix.tool }}")
       -  #@ step_generate_pages("${{ matrix.tool }}", "false")

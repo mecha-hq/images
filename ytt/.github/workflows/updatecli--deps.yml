@@ -4,7 +4,7 @@ name: Updatecli Dependencies
 
 #@ load("fragments.lib.yml", "updatecli_on", "updatecli_permissions", "updatecli_jobs")
 
-"on": #@ updatecli_on(4)
+"on": #@ updatecli_on("* * * * 0")
 
 permissions: #@ updatecli_permissions()
 
