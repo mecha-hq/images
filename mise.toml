@@ -1,7 +1,3 @@
-
-[alias]
-  shellbits = "asdf:https://github.com/mecha-hq/asdf-shellbits"
-
 [env]
 
 [tools]
@@ -28,4 +24,3 @@
 
   # unused
   node = "23.5.0"
-  shellbits = "0.4.1"
