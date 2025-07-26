@@ -21,6 +21,3 @@
 
   # pages
   hugo = "0.144.2"
-
-  # unused
-  node = "23.5.0"
