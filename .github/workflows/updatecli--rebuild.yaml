@@ -6,40 +6,14 @@ on:
   pull_request:
     branches:
       - main
+env:
+  REBUILD_TOOL: checkmake
 jobs:
-  setup:
-    if: startsWith(github.head_ref, 'updatecli_main_')
-    runs-on: ubuntu-24.04
-    outputs:
-      tools: ${{ steps.get-tools.outputs.tools }}
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.CI_TOKEN }}
-          submodules: recursive
-          fetch-depth: 0
-      - name: Get tools list
-        id: get-tools
-        run: |
-          tools=$(ls -1 tools/ | jq -R -s -c 'split("\n")[:-1]')
-          echo "tools=$tools" >> "${GITHUB_OUTPUT}"
   rebuild:
-    needs: setup
     if: ${{ startsWith(github.head_ref, 'updatecli_main_') && ( contains(github.event.pull_request.title, 'melange') || contains(github.event.pull_request.title, 'apko') ) }}
     runs-on: ubuntu-24.04
     permissions:
-      contents: write
-      id-token: write
-      pages: write
-    strategy:
-      matrix:
-        tool: ${{ fromJson(needs.setup.outputs.tools) }}
-      fail-fast: false
+      contents: read
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
@@ -53,13 +27,13 @@ jobs:
           fetch-depth: 0
       - name: Determine image version
         shell: sh
-        run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ matrix.tool }}) >> ${GITHUB_ENV}
+        run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ env.REBUILD_TOOL }}) >> ${GITHUB_ENV}
       - name: Build image
         uses: ./.github/actions/image
         with:
           container_registry_password: ${{ secrets.CI_TOKEN }}
           melange_signing_key: ${{ secrets.MELANGE_SIGNING_KEY }}
-          image_name: ${{ matrix.tool }}
+          image_name: ${{ env.REBUILD_TOOL }}
           publish: "false"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -70,7 +44,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           snyk_org: ${{ secrets.SNYK_ORG }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
-          image_name: ${{ matrix.tool }}
+          image_name: ${{ env.REBUILD_TOOL }}
           publish: "false"
           pull_images: "false"
         env:
@@ -79,22 +53,15 @@ jobs:
         uses: ./.github/actions/pages
         with:
           publish: "false"
-          content_subject: ${{ matrix.tool }}
+          content_subject: ${{ env.REBUILD_TOOL }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_TOKEN: ${{ secrets.CI_TOKEN }}
   rescan:
-    needs: setup
     if: ${{ startsWith(github.head_ref, 'updatecli_main_') && ( contains(github.event.pull_request.title, 'dockle') || contains(github.event.pull_request.title, 'grype') || contains(github.event.pull_request.title, 'snyk') || contains(github.event.pull_request.title, 'trivy') ) }}
     runs-on: ubuntu-24.04
     permissions:
-      contents: write
-      id-token: write
-      pages: write
-    strategy:
-      matrix:
-        tool: ${{ fromJson(needs.setup.outputs.tools) }}
-      fail-fast: false
+      contents: read
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
@@ -108,7 +75,7 @@ jobs:
           fetch-depth: 0
       - name: Determine image version
         shell: sh
-        run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ matrix.tool }}) >> ${GITHUB_ENV}
+        run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ env.REBUILD_TOOL }}) >> ${GITHUB_ENV}
       - name: Scan image
         uses: ./.github/actions/scans
         with:
@@ -116,31 +83,24 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           snyk_org: ${{ secrets.SNYK_ORG }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
-          image_name: ${{ matrix.tool }}
+          image_name: ${{ env.REBUILD_TOOL }}
           publish: "false"
-          pull_images: "false"
+          pull_images: "true"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate pages
         uses: ./.github/actions/pages
         with:
           publish: "false"
-          content_subject: ${{ matrix.tool }}
+          content_subject: ${{ env.REBUILD_TOOL }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_TOKEN: ${{ secrets.CI_TOKEN }}
   regen_pages:
-    needs: setup
     if: ${{ startsWith(github.head_ref, 'updatecli_main_') && ( contains(github.event.pull_request.title, 'hugo') ) }}
     runs-on: ubuntu-24.04
     permissions:
-      contents: write
-      id-token: write
-      pages: write
-    strategy:
-      matrix:
-        tool: ${{ fromJson(needs.setup.outputs.tools) }}
-      fail-fast: false
+      contents: read
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
@@ -152,14 +112,11 @@ jobs:
           token: ${{ secrets.CI_TOKEN }}
           submodules: recursive
           fetch-depth: 0
-      - name: Determine image version
-        shell: sh
-        run: echo IMAGE_VERSION=$(scripts/image-version.sh ${{ matrix.tool }}) >> ${GITHUB_ENV}
       - name: Generate pages
         uses: ./.github/actions/pages
         with:
-          publish: "false"
-          content_subject: ${{ matrix.tool }}
+          publish: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+          content_subject: the static site
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_TOKEN: ${{ secrets.CI_TOKEN }}

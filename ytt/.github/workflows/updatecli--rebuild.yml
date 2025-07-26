@@ -8,19 +8,10 @@ name: Updatecli Rebuild
   pull_request:
     branches:
       - main
-
+env:
+  REBUILD_TOOL: checkmake #! the tool used to test all the steps work
 jobs:
-  setup:
-    if: startsWith(github.head_ref, 'updatecli_main_')
-    runs-on: ubuntu-24.04
-    outputs:
-      tools: ${{ steps.get-tools.outputs.tools }}
-    steps:
-      -  #@ step_harden_runner()
-      -  #@ step_checkout()
-      -  #@ step_get_tools_list()
   rebuild:
-    needs: setup
     if: ${{
       startsWith(github.head_ref, 'updatecli_main_') &&
       (
@@ -30,22 +21,15 @@ jobs:
       }}
     runs-on: ubuntu-24.04
     permissions:
-      contents: write
-      id-token: write
-      pages: write
-    strategy:
-      matrix:
-        tool: ${{ fromJson(needs.setup.outputs.tools) }}
-      fail-fast: false
+      contents: read
     steps:
       -  #@ step_harden_runner()
       -  #@ step_checkout()
-      -  #@ step_compute_image_version("${{ matrix.tool }}")
-      -  #@ step_build_image("${{ matrix.tool }}", "false")
-      -  #@ step_scan_image("${{ matrix.tool }}", "false")
-      -  #@ step_generate_pages("${{ matrix.tool }}", "false")
+      -  #@ step_compute_image_version("${{ env.REBUILD_TOOL }}")
+      -  #@ step_build_image("${{ env.REBUILD_TOOL }}", "false")
+      -  #@ step_scan_image("${{ env.REBUILD_TOOL }}", "false", "false")
+      -  #@ step_generate_pages("${{ env.REBUILD_TOOL }}", "false")
   rescan:
-    needs: setup
     if: ${{
       startsWith(github.head_ref, 'updatecli_main_') &&
       (
@@ -57,21 +41,14 @@ jobs:
       }}
     runs-on: ubuntu-24.04
     permissions:
-      contents: write
-      id-token: write
-      pages: write
-    strategy:
-      matrix:
-        tool: ${{ fromJson(needs.setup.outputs.tools) }}
-      fail-fast: false
+      contents: read
     steps:
       -  #@ step_harden_runner()
       -  #@ step_checkout()
-      -  #@ step_compute_image_version("${{ matrix.tool }}")
-      -  #@ step_scan_image("${{ matrix.tool }}", "false")
-      -  #@ step_generate_pages("${{ matrix.tool }}", "false")
+      -  #@ step_compute_image_version("${{ env.REBUILD_TOOL }}")
+      -  #@ step_scan_image("${{ env.REBUILD_TOOL }}", "true", "false")
+      -  #@ step_generate_pages("${{ env.REBUILD_TOOL }}", "false")
   regen_pages:
-    needs: setup
     if: ${{
       startsWith(github.head_ref, 'updatecli_main_') &&
       (
@@ -80,15 +57,8 @@ jobs:
       }}
     runs-on: ubuntu-24.04
     permissions:
-      contents: write
-      id-token: write
-      pages: write
-    strategy:
-      matrix:
-        tool: ${{ fromJson(needs.setup.outputs.tools) }}
-      fail-fast: false
+      contents: read
     steps:
       -  #@ step_harden_runner()
       -  #@ step_checkout()
-      -  #@ step_compute_image_version("${{ matrix.tool }}")
-      -  #@ step_generate_pages("${{ matrix.tool }}", "false")
+      -  #@ step_generate_pages("the static site")
