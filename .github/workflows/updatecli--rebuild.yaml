@@ -3,6 +3,9 @@
 name: Updatecli Rebuild
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - updatecli_main_**
   pull_request:
     branches:
       - main
@@ -10,7 +13,7 @@ env:
   REBUILD_TOOL: checkmake
 jobs:
   rebuild:
-    if: ${{ startsWith(github.head_ref, 'updatecli_main_') && ( contains(github.event.pull_request.title, 'melange') || contains(github.event.pull_request.title, 'apko') ) }}
+    if: ${{ startsWith(github.head_ref || github.ref_name, 'updatecli_main_') && ( contains(github.event.pull_request.title, 'melange') || contains(github.event.pull_request.title, 'apko') ) }}
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -58,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_TOKEN: ${{ secrets.CI_TOKEN }}
   rescan:
-    if: ${{ startsWith(github.head_ref, 'updatecli_main_') && ( contains(github.event.pull_request.title, 'dockle') || contains(github.event.pull_request.title, 'grype') || contains(github.event.pull_request.title, 'snyk') || contains(github.event.pull_request.title, 'trivy') ) }}
+    if: ${{ startsWith(github.head_ref || github.ref_name, 'updatecli_main_') && ( contains(github.event.pull_request.title, 'dockle') || contains(github.event.pull_request.title, 'grype') || contains(github.event.pull_request.title, 'snyk') || contains(github.event.pull_request.title, 'trivy') ) }}
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -97,7 +100,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_TOKEN: ${{ secrets.CI_TOKEN }}
   regen_pages:
-    if: ${{ startsWith(github.head_ref, 'updatecli_main_') && ( contains(github.event.pull_request.title, 'hugo') ) }}
+    if: ${{ startsWith(github.head_ref || github.ref_name, 'updatecli_main_') && ( contains(github.event.pull_request.title, 'hugo') ) }}
     runs-on: ubuntu-24.04
     permissions:
       contents: read

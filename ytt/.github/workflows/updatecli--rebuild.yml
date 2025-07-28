@@ -5,6 +5,9 @@
 name: Updatecli Rebuild
 "on":
   workflow_dispatch:
+  push:
+    branches:
+      - "updatecli_main_**"
   pull_request:
     branches:
       - main
@@ -13,7 +16,7 @@ env:
 jobs:
   rebuild:
     if: ${{
-      startsWith(github.head_ref, 'updatecli_main_') &&
+      startsWith(github.head_ref || github.ref_name, 'updatecli_main_') &&
       (
       contains(github.event.pull_request.title, 'melange') ||
       contains(github.event.pull_request.title, 'apko')
@@ -31,7 +34,7 @@ jobs:
       -  #@ step_generate_pages("${{ env.REBUILD_TOOL }}", "false")
   rescan:
     if: ${{
-      startsWith(github.head_ref, 'updatecli_main_') &&
+      startsWith(github.head_ref || github.ref_name, 'updatecli_main_') &&
       (
       contains(github.event.pull_request.title, 'dockle') ||
       contains(github.event.pull_request.title, 'grype') ||
@@ -50,7 +53,7 @@ jobs:
       -  #@ step_generate_pages("${{ env.REBUILD_TOOL }}", "false")
   regen_pages:
     if: ${{
-      startsWith(github.head_ref, 'updatecli_main_') &&
+      startsWith(github.head_ref || github.ref_name, 'updatecli_main_') &&
       (
       contains(github.event.pull_request.title, 'hugo')
       )
