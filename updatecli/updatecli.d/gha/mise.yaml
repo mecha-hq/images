@@ -51,5 +51,5 @@ targets:
     sourceid: mise
     scmid: mecha-images
     spec:
-      key: $.jobs.build.steps[2].with.version
+      key: $.jobs.diff.steps[2].with.version
       file: .github/workflows/diff.yaml
