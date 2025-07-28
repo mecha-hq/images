@@ -4,6 +4,10 @@
 
 name: Scans
 
+permissions:
+  contents: read
+  packages: read
+
 "on":
   schedule:
     - cron: "0 0 * * *" #! Runs every day at 00:00 UTC

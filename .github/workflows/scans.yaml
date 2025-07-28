@@ -1,6 +1,9 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow
 
 name: Scans
+permissions:
+  contents: read
+  packages: read
 on:
   schedule:
     - cron: 0 0 * * *
