@@ -37,6 +37,15 @@ sources:
     transformers:
       - trimprefix: v
 targets:
+  ytt-gha-workflows-fragments-0:
+    name: Bump updatecli version
+    kind: file
+    sourceid: updatecli
+    scmid: mecha-images
+    spec:
+      file: ytt/.github/workflows/fragments.lib.yml
+      matchpattern: '^        version: \d+\.\d+\.\d+ \#\! updatecli version$'
+      content: '        version: {{ source `updatecli` }}'
   gha-workflows-updatecli-0:
     name: Bump updatecli version
     kind: yaml

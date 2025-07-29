@@ -52,7 +52,7 @@ updatecli:
     - name: Install Updatecli in the runner
       uses: updatecli/updatecli-action@v2
       with:
-        version: v0.104.0
+        version: v0.104.0 #! updatecli version
     - name: Run Updatecli for dependencies in Dry Run mode
       run: #@ "updatecli diff --config ./updatecli/updatecli.d/%s --values updatecli/values.yaml --values updatecli/values.ci.yaml" % scope
       env:
@@ -93,7 +93,7 @@ run: |
 name: Install mise
 uses: jdx/mise-action@v2
 with:
-  version: 2025.4.0
+  version: 2025.4.0 #! mise version
 #@ end
 
 #@ def step_activate_mise():
