@@ -2,7 +2,7 @@
 [env]
 
 [tools]
-  apko = "0.29.10"
+  apko = "0.30.2"
   dockle = "0.4.15"
   gh = "2.75.0"
   grype = "0.96.1"
