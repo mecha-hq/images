@@ -7,7 +7,7 @@
   gh = "2.75.0"
   grype = "0.96.1"
   hugo = "0.144.2"
-  melange = "0.29.7"
+  melange = "0.30.4"
   snyk = "1.1298.1"
   trivy = "0.64.1"
   updatecli = "0.104.0"
