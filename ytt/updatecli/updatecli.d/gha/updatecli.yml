@@ -30,4 +30,4 @@ targets:
     scmid: mecha-images
     spec:
       key: $.jobs.updatecli.steps[1].with.version
-      file: .github/workflows/updatecli.yaml
+      file: .github/workflows/updatecli--gha.yaml

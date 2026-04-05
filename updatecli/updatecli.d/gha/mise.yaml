@@ -44,8 +44,8 @@ targets:
     scmid: mecha-images
     spec:
       file: ytt/.github/workflows/fragments.lib.yml
-      matchpattern: '^  version: \d{4}\.\d+\.\d+ \#\! mise version$'
-      content: '  version: {{ source `mise` }}'
+      matchpattern: '^version: \d{4}\.\d+\.\d+ \#\! mise version$'
+      content: 'version: {{ source `mise` }}'
   gha-actions-image-0:
     name: Bump mise version
     kind: yaml
