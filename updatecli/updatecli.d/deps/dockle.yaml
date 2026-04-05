@@ -27,6 +27,7 @@ sources:
   dockle:
     name: Get latest github release version
     kind: githubrelease
+    changelog: false
     spec:
       owner: goodwithtech
       repository: dockle

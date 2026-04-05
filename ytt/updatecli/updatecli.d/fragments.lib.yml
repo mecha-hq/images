@@ -56,6 +56,7 @@ transformers:
 #@ def source_githubrelease(owner, repository, versionfilter_kind, versionfilter_pattern=None):
 name: Get latest github release version
 kind: githubrelease
+changelog: false
 spec:
   owner: #@ owner
   repository: #@ repository

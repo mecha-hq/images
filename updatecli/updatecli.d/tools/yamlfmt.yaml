@@ -43,6 +43,7 @@ sources:
   yamlfmt:
     name: Get latest github release version
     kind: githubrelease
+    changelog: false
     spec:
       owner: google
       repository: yamlfmt

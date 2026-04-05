@@ -27,6 +27,7 @@ sources:
   grype:
     name: Get latest github release version
     kind: githubrelease
+    changelog: false
     spec:
       owner: anchore
       repository: grype
