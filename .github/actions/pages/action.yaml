@@ -28,7 +28,7 @@ runs:
         cosign-release: v3.0.6
 
     - name: Install mise
-      uses: jdx/mise-action@v2
+      uses: jdx/mise-action@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         version: ${{ inputs.mise_version }}
