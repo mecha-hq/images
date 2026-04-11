@@ -100,6 +100,7 @@ with:
 name: Install mise
 uses: jdx/mise-action@v2
 with:
+  github_token: ${{ secrets.GITHUB_TOKEN }}
   version: 2025.4.0 #! mise version
 #@ end
 

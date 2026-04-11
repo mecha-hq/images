@@ -30,6 +30,7 @@ runs:
     - name: Install mise
       uses: jdx/mise-action@v2
       with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         version: ${{ inputs.mise_version }}
 
     - name: Activate mise
