@@ -43,6 +43,11 @@ runs:
 
     # Prepare the environment
 
+    - name: Install cosign
+      uses: sigstore/cosign-installer@v4.1.1
+      with:
+        cosign-release: v3.0.6
+
     - name: Install mise
       uses: jdx/mise-action@v2
       with:

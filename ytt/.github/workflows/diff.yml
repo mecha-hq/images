@@ -1,6 +1,6 @@
 #! diff.yml
 
-#@ load("fragments.lib.yml","updatecli_jobs", "step_harden_runner", "step_checkout", "step_install_mise", "step_activate_mise", "step_make")
+#@ load("fragments.lib.yml","updatecli_jobs", "step_harden_runner", "step_checkout", "step_install_cosign", "step_install_mise", "step_activate_mise", "step_make")
 
 name: Diff
 
@@ -20,6 +20,7 @@ jobs:
     steps:
       -  #@ step_harden_runner()
       -  #@ step_checkout()
+      -  #@ step_install_cosign()
       -  #@ step_install_mise()
       -  #@ step_activate_mise()
       -  #@ step_make("generate-config")

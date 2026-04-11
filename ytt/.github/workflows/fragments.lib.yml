@@ -89,6 +89,13 @@ run: |
   echo "tools=$tools" >> "${GITHUB_OUTPUT}"
 #@ end
 
+#@ def step_install_cosign():
+name: Install cosign
+uses: sigstore/cosign-installer@v4.1.1
+with:
+  cosign-release: 'v3.0.6' #! cosign version
+#@ end
+
 #@ def step_install_mise():
 name: Install mise
 uses: jdx/mise-action@v2
