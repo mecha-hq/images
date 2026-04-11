@@ -20,7 +20,7 @@ jobs:
     steps:
       -  #@ step_harden_runner()
       -  #@ step_checkout()
-      -  #@ step_install_cosign()
+      #! -  #@ step_install_cosign()
       -  #@ step_install_mise()
       -  #@ step_activate_mise()
       -  #@ step_make("generate-config")

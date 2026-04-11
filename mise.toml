@@ -1,6 +1,3 @@
-[env]
-  AQUA_COSIGN_DISABLED = "true"
-
 [tools]
   act = "0.2.87"
   apko = "1.2.2"
