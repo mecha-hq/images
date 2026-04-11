@@ -76,7 +76,7 @@ docker-manifest: check-variable-ARCH check-variable-IMAGE check-variable-VERSION
 
 .PHONY: clean
 clean: check-variable-IMAGE
-	@find . -name "dist/*/${IMAGE}" -type d -exec rm -rf {} +
+	@find dist/ -name "${IMAGE}" -type d -exec rm -rf {} +
 
 .PHONY: clean-all
 clean-all:
