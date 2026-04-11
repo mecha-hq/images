@@ -101,7 +101,6 @@ name: Install mise
 uses: jdx/mise-action@v4
 with:
   cache: true
-  install_args: "--locked"
   version: 2026.3.3 #! mise version
 #@ end
 
