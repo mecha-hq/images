@@ -3,7 +3,7 @@ description: Build and publish the static website for the images, and optionally
 inputs:
   mise_version:
     description: "The version of mise to install."
-    default: "2025.4.0"
+    default: "2026.3.3"
     required: false
   publish:
     description: "Whether to publish the built artifacts(images, manifests, gh-pages, etc). default is false."
