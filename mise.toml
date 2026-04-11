@@ -1,15 +1,14 @@
 
-[env]
-
 [tools]
-  apko = "0.29.10"
+  act = "0.2.87"
+  apko = "1.2.2"
   dockle = "0.4.15"
-  gh = "2.75.0"
-  grype = "0.96.1"
+  gh = "2.89.0"
+  grype = "0.111.0"
   hugo = "0.144.2"
-  melange = "0.29.7"
-  snyk = "1.1298.1"
-  trivy = "0.64.1"
-  updatecli = "0.115.0"
-  yq = "4.47.1"
-  ytt = "0.52.0"
+  melange = "0.48.2"
+  snyk = "1.1304.0"
+  trivy = "0.69.3"
+  updatecli = "0.116.0"
+  yq = "4.52.5"
+  ytt = "0.53.2"

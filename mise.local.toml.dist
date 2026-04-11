@@ -1,6 +1,3 @@
-[tools]
-act = "0.2.68"
-
 [env]
 SNYK_ORG = "your-org-identifier"
 SNYK_TOKEN = "your-token"
