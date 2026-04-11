@@ -37,4 +37,4 @@ pipeline:
   - name: Update registries
     runs: apk update
   - name: Build NPM Base Image
-    runs: npm install jsonlint@${{package.version}} -g --prefix "${{targets.destdir}}"
+    runs: npm install jsonlint@${{package.version}} -g --prefix "${{targets.destdir}}/usr"
