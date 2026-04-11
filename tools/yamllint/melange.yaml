@@ -41,7 +41,7 @@ pipeline:
       python3 -m venv /opt/yamllint
       . /opt/yamllint/bin/activate
       pip install yamllint==${{package.version}}
-      mkdir -p ${{targets.destdir}}/usr/lib/python3.11
-      cp -R /usr/lib/python3.11/site-packages/ ${{targets.destdir}}/usr/lib/python3.11/
+      mkdir -p ${{targets.destdir}}/usr/lib/python3.12
+      cp -R /usr/lib/python3.12/site-packages/ ${{targets.destdir}}/usr/lib/python3.12/
       mkdir -p ${{targets.destdir}}/usr/bin
       cp /opt/yamllint/bin/yamllint ${{targets.destdir}}/usr/bin/yamllint
