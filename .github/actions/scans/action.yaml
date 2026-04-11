@@ -50,8 +50,10 @@ runs:
 
     - name: Install mise
       uses: jdx/mise-action@v4
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        cache: true
         version: ${{ inputs.mise_version }}
 
     - name: Activate mise
