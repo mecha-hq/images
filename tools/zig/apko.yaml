@@ -1,0 +1,19 @@
+contents:
+  repositories:
+    - "@local dist/tools/zig/0.15.2/packages"
+  packages:
+    - zig@local
+
+accounts:
+  groups:
+    - groupname: zig
+      gid: 65532
+  users:
+    - username: zig
+      uid: 65532
+  run-as: zig
+
+entrypoint:
+  command: /usr/bin/zig
+
+cmd: --help

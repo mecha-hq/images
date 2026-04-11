@@ -1,0 +1,42 @@
+package:
+  name: zig
+  version: "0.15.2"
+  epoch: 0
+  cpe:
+    vendor: "ziglang"
+    product: "zig"
+  description: ziglang/zig.
+  copyright:
+    - license: MIT
+      paths:
+        - "*"
+  dependencies: {}
+  checks: {}
+
+capabilities:
+  add: []
+  drop: []
+
+update:
+  enabled: false
+
+environment:
+  contents:
+    repositories:
+      - https://dl-cdn.alpinelinux.org/alpine/v3.23/main
+      - https://dl-cdn.alpinelinux.org/alpine/v3.23/community
+    packages:
+      - apk-tools
+      - busybox
+      - ca-certificates
+      - wget
+
+pipeline:
+  - name: Install zig
+    runs: |
+      wget -O /tmp/zig.tar.xz https://ziglang.org/download/${{package.version}}/zig-${{build.arch}}-linux-${{package.version}}.tar.xz
+      tar x -C /tmp -J -f /tmp/zig.tar.xz
+      mkdir -p ${{targets.destdir}}/usr/bin
+      mkdir -p ${{targets.destdir}}/usr/lib
+      cp /tmp/zig-${{build.arch}}-linux-${{package.version}}/zig ${{targets.destdir}}/usr/bin
+      cp -R /tmp/zig-${{build.arch}}-linux-${{package.version}}/lib ${{targets.destdir}}/usr/lib/zig
