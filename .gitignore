@@ -1,6 +1,8 @@
 dist/
 mise.local.toml
+mise.local.lock
 mise.*.local.toml
+mise.*.local.lock
 pages/public/
 values.local.yaml
 *.rsa
