@@ -79,9 +79,9 @@ runs:
       shell: sh
       run: make grype ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
 
-    # - name: Scan OCI images with Trivy
-    #   shell: sh
-    #   run: make trivy ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
+    - name: Scan OCI images with Trivy
+      shell: sh
+      run: make trivy ARCH=${{ inputs.image_arch }} IMAGE=${{ inputs.image_name }} VERSION="${{ env.IMAGE_VERSION }}"
 
     # - name: Scan OCI images with Snyk
     #   shell: sh

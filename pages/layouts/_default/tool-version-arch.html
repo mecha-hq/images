@@ -65,6 +65,9 @@
         {{ range .Resources.Match "grype.json" }}
         {{ partial "article-card.html" (dict "Resource" . "Icon" (resources.Get "img/grype-logo.png")) }}
         {{ end }}
+        {{ range .Resources.Match "trivy.json" }}
+        {{ partial "article-card.html" (dict "Resource" . "Icon" (resources.Get "img/trivy-logo.png")) }}
+        {{ end }}
         </section>
       </div>
     </div>
