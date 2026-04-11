@@ -1,3 +1,5 @@
+[env]
+  AQUA_COSIGN_DISABLED = "true"
 
 [tools]
   act = "0.2.87"
@@ -8,7 +10,8 @@
   hugo = "0.144.2"
   melange = "0.48.2"
   snyk = "1.1304.0"
+  taplo = "0.10.0"
   trivy = "0.69.3"
-  updatecli = "0.115.0"
+  updatecli = "0.116.0"
   yq = "4.52.5"
   ytt = "0.53.2"
