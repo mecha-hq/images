@@ -74,7 +74,7 @@ with:
 
 #@ def step_checkout():
 name: Checkout code
-uses: actions/checkout@v4
+uses: actions/checkout@v6
 with:
   token: "${{ secrets.CI_TOKEN }}"
   submodules: recursive
