@@ -2,6 +2,9 @@ package:
   name: jsonlint
   version: 1.6.3
   epoch: 0
+  cpe:
+    vendor: "zaach"
+    product: "jsonlint"
   description: zaach/jsonlint image.
   copyright:
     - license: MIT
@@ -10,6 +13,14 @@ package:
   dependencies:
     runtime:
       - nodejs-current
+  checks: {}
+
+capabilities:
+  add: []
+  drop: []
+
+update:
+  enabled: false
 
 environment:
   contents:

@@ -2,6 +2,9 @@ package:
   name: file-lint
   version: "0.8"
   epoch: 0
+  cpe:
+    vendor: "cytopia"
+    product: "file-lint"
   description: cytopia/file-lint image.
 
   copyright:
@@ -10,6 +13,14 @@ package:
         - "*"
   dependencies:
     runtime: []
+  checks: {}
+
+capabilities:
+  add: []
+  drop: []
+
+update:
+  enabled: false
 
 environment:
   contents:

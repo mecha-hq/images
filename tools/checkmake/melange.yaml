@@ -2,6 +2,9 @@ package:
   name: checkmake
   version: 0.2.2
   epoch: 0
+  cpe:
+    vendor: "mrtazz"
+    product: "checkmake"
   description: mrtazz/checkmake image.
   copyright:
     - license: MIT
@@ -9,6 +12,14 @@ package:
         - "*"
   dependencies:
     runtime: []
+  checks: {}
+
+capabilities:
+  add: []
+  drop: []
+
+update:
+  enabled: false
 
 environment:
   contents:

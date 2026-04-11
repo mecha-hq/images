@@ -2,6 +2,9 @@ package:
   name: yamlfmt
   version: 0.17.2
   epoch: 0
+  cpe:
+    vendor: "google"
+    product: "yamlfmt"
   description: google/yamlfmt image.
   copyright:
     - license: MIT
@@ -9,6 +12,14 @@ package:
         - "*"
   dependencies:
     runtime: []
+  checks: {}
+
+capabilities:
+  add: []
+  drop: []
+
+update:
+  enabled: false
 
 environment:
   contents:
