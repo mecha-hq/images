@@ -28,7 +28,7 @@ jobs:
         with:
           cosign-release: v3.0.6
       - name: Install mise
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v4
         with:
           version: 2025.4.0
       - name: Activate mise
